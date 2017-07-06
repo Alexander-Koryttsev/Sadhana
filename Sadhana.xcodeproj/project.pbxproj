@@ -7,23 +7,46 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		96F600541EC996AC006DAECE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F600531EC996AC006DAECE /* AppDelegate.swift */; };
-		96F600561EC996AC006DAECE /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F600551EC996AC006DAECE /* FirstViewController.swift */; };
-		96F600581EC996AC006DAECE /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F600571EC996AC006DAECE /* SecondViewController.swift */; };
-		96F6005B1EC996AC006DAECE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96F600591EC996AC006DAECE /* Main.storyboard */; };
-		96F6005D1EC996AC006DAECE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96F6005C1EC996AC006DAECE /* Assets.xcassets */; };
-		96F600601EC996AC006DAECE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96F6005E1EC996AC006DAECE /* LaunchScreen.storyboard */; };
+		30C7E711667CDBC29B92157F /* Pods_Sadhana.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B60592337E436959AB732F /* Pods_Sadhana.framework */; };
+		9612BD821F0130A700336A1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 966056A31EF2B50D00973FA4 /* Assets.xcassets */; };
+		9612BD831F0130B000336A1B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 966056A41EF2B50D00973FA4 /* LaunchScreen.storyboard */; };
+		9612BD841F0130B000336A1B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 966056A61EF2B50D00973FA4 /* Main.storyboard */; };
+		9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9612BD881F02BD3400336A1B /* RxSwift+Extensions.swift */; };
+		966056B41EF2B50D00973FA4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966056A91EF2B50D00973FA4 /* AppDelegate.swift */; };
+		966056B51EF2B50D00973FA4 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966056AC1EF2B50D00973FA4 /* FirstViewController.swift */; };
+		966056B61EF2B50D00973FA4 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966056AD1EF2B50D00973FA4 /* SecondViewController.swift */; };
+		967D791E1F00F10D00A961D6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D791D1F00F10C00A961D6 /* User.swift */; };
+		967D79241F00F3CD00A961D6 /* LocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79201F00F3CD00A961D6 /* LocalService.swift */; };
+		967D79251F00F3CD00A961D6 /* RemoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79231F00F3CD00A961D6 /* RemoteService.swift */; };
+		967D79271F00F3E100A961D6 /* RemoteUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79261F00F3E100A961D6 /* RemoteUser.swift */; };
+		967D79291F00F63E00A961D6 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79281F00F63E00A961D6 /* General.swift */; };
+		96A9217E1F03FC9D0056BC5B /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 96A9217C1F03FC9D0056BC5B /* Model.xcdatamodeld */; };
+		96A921891F03FF360056BC5B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A921881F03FF360056BC5B /* CoreData.framework */; };
+		96A9218C1F03FFF70056BC5B /* LocalUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A9218A1F03FFF70056BC5B /* LocalUser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9612BD881F02BD3400336A1B /* RxSwift+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RxSwift+Extensions.swift"; sourceTree = "<group>"; };
+		9612BD8A1F02BE4400336A1B /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
+		966056A31EF2B50D00973FA4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		966056A51EF2B50D00973FA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		966056A71EF2B50D00973FA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		966056A91EF2B50D00973FA4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		966056AC1EF2B50D00973FA4 /* FirstViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
+		966056AD1EF2B50D00973FA4 /* SecondViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
+		967D791D1F00F10C00A961D6 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		967D79201F00F3CD00A961D6 /* LocalService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalService.swift; sourceTree = "<group>"; };
+		967D79231F00F3CD00A961D6 /* RemoteService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteService.swift; sourceTree = "<group>"; };
+		967D79261F00F3E100A961D6 /* RemoteUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteUser.swift; sourceTree = "<group>"; };
+		967D79281F00F63E00A961D6 /* General.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
+		96A9217D1F03FC9D0056BC5B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		96A921881F03FF360056BC5B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		96A9218A1F03FFF70056BC5B /* LocalUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalUser.swift; sourceTree = "<group>"; };
 		96F600501EC996AC006DAECE /* Sadhana.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sadhana.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		96F600531EC996AC006DAECE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		96F600551EC996AC006DAECE /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
-		96F600571EC996AC006DAECE /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
-		96F6005A1EC996AC006DAECE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		96F6005C1EC996AC006DAECE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		96F6005F1EC996AC006DAECE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		96F600611EC996AC006DAECE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A1A22DCDB6FD8FA97E2D8CCC /* Pods-Sadhana.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sadhana.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sadhana/Pods-Sadhana.release.xcconfig"; sourceTree = "<group>"; };
+		B0B60592337E436959AB732F /* Pods_Sadhana.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sadhana.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2023B1DDA367BF561B5CECF /* Pods-Sadhana.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sadhana.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sadhana/Pods-Sadhana.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,17 +54,155 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96A921891F03FF360056BC5B /* CoreData.framework in Frameworks */,
+				30C7E711667CDBC29B92157F /* Pods_Sadhana.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		521E873884D8805D3F1CE802 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E2023B1DDA367BF561B5CECF /* Pods-Sadhana.debug.xcconfig */,
+				A1A22DCDB6FD8FA97E2D8CCC /* Pods-Sadhana.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		9612BD871F02BD2200336A1B /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				9612BD881F02BD3400336A1B /* RxSwift+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		966056A21EF2B50D00973FA4 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				966056A31EF2B50D00973FA4 /* Assets.xcassets */,
+				966056A41EF2B50D00973FA4 /* LaunchScreen.storyboard */,
+				966056A61EF2B50D00973FA4 /* Main.storyboard */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		966056A81EF2B50D00973FA4 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				966056A91EF2B50D00973FA4 /* AppDelegate.swift */,
+				967D79281F00F63E00A961D6 /* General.swift */,
+				966056AA1EF2B50D00973FA4 /* GUI */,
+				966056AF1EF2B50D00973FA4 /* Services */,
+				967D791C1F00F10200A961D6 /* Model */,
+				966056B01EF2B50D00973FA4 /* Utilites */,
+				9612BD8A1F02BE4400336A1B /* MyPlayground.playground */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		966056AA1EF2B50D00973FA4 /* GUI */ = {
+			isa = PBXGroup;
+			children = (
+				966056AB1EF2B50D00973FA4 /* Base */,
+				966056AC1EF2B50D00973FA4 /* FirstViewController.swift */,
+				966056AD1EF2B50D00973FA4 /* SecondViewController.swift */,
+				966056AE1EF2B50D00973FA4 /* Utilites */,
+			);
+			path = GUI;
+			sourceTree = "<group>";
+		};
+		966056AB1EF2B50D00973FA4 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		966056AE1EF2B50D00973FA4 /* Utilites */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utilites;
+			sourceTree = "<group>";
+		};
+		966056AF1EF2B50D00973FA4 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				967D791F1F00F3CD00A961D6 /* Local */,
+				967D79211F00F3CD00A961D6 /* Remote */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		966056B01EF2B50D00973FA4 /* Utilites */ = {
+			isa = PBXGroup;
+			children = (
+				9612BD871F02BD2200336A1B /* Extensions */,
+			);
+			path = Utilites;
+			sourceTree = "<group>";
+		};
+		967D791C1F00F10200A961D6 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				967D791D1F00F10C00A961D6 /* User.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		967D791F1F00F3CD00A961D6 /* Local */ = {
+			isa = PBXGroup;
+			children = (
+				96A9217B1F03FC880056BC5B /* Model */,
+				967D79201F00F3CD00A961D6 /* LocalService.swift */,
+			);
+			path = Local;
+			sourceTree = "<group>";
+		};
+		967D79211F00F3CD00A961D6 /* Remote */ = {
+			isa = PBXGroup;
+			children = (
+				967D79231F00F3CD00A961D6 /* RemoteService.swift */,
+				967D79221F00F3CD00A961D6 /* Model */,
+			);
+			path = Remote;
+			sourceTree = "<group>";
+		};
+		967D79221F00F3CD00A961D6 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				967D79261F00F3E100A961D6 /* RemoteUser.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		96A9217B1F03FC880056BC5B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				96A9217F1F03FD4A0056BC5B /* ManagedObjects */,
+				96A9217C1F03FC9D0056BC5B /* Model.xcdatamodeld */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		96A9217F1F03FD4A0056BC5B /* ManagedObjects */ = {
+			isa = PBXGroup;
+			children = (
+				96A9218A1F03FFF70056BC5B /* LocalUser.swift */,
+			);
+			path = ManagedObjects;
+			sourceTree = "<group>";
+		};
 		96F600471EC996AC006DAECE = {
 			isa = PBXGroup;
 			children = (
 				96F600521EC996AC006DAECE /* Sadhana */,
 				96F600511EC996AC006DAECE /* Products */,
+				521E873884D8805D3F1CE802 /* Pods */,
+				BE0E881CE1E0CBEEC8CB8F93 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,15 +217,20 @@
 		96F600521EC996AC006DAECE /* Sadhana */ = {
 			isa = PBXGroup;
 			children = (
-				96F600531EC996AC006DAECE /* AppDelegate.swift */,
-				96F600551EC996AC006DAECE /* FirstViewController.swift */,
-				96F600571EC996AC006DAECE /* SecondViewController.swift */,
-				96F600591EC996AC006DAECE /* Main.storyboard */,
-				96F6005C1EC996AC006DAECE /* Assets.xcassets */,
-				96F6005E1EC996AC006DAECE /* LaunchScreen.storyboard */,
+				966056A81EF2B50D00973FA4 /* Sources */,
+				966056A21EF2B50D00973FA4 /* Resources */,
 				96F600611EC996AC006DAECE /* Info.plist */,
 			);
 			path = Sadhana;
+			sourceTree = "<group>";
+		};
+		BE0E881CE1E0CBEEC8CB8F93 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				96A921881F03FF360056BC5B /* CoreData.framework */,
+				B0B60592337E436959AB732F /* Pods_Sadhana.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,9 +240,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 96F600641EC996AC006DAECE /* Build configuration list for PBXNativeTarget "Sadhana" */;
 			buildPhases = (
+				93E2FFE241D22707E34A4FFF /* [CP] Check Pods Manifest.lock */,
 				96F6004C1EC996AC006DAECE /* Sources */,
 				96F6004D1EC996AC006DAECE /* Frameworks */,
 				96F6004E1EC996AC006DAECE /* Resources */,
+				8BEF93875A25A91ED22FF6B7 /* [CP] Embed Pods Frameworks */,
+				871768126BE3474AAF8538C8 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -127,42 +296,98 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96F600601EC996AC006DAECE /* LaunchScreen.storyboard in Resources */,
-				96F6005D1EC996AC006DAECE /* Assets.xcassets in Resources */,
-				96F6005B1EC996AC006DAECE /* Main.storyboard in Resources */,
+				9612BD831F0130B000336A1B /* LaunchScreen.storyboard in Resources */,
+				9612BD841F0130B000336A1B /* Main.storyboard in Resources */,
+				9612BD821F0130A700336A1B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		871768126BE3474AAF8538C8 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Sadhana/Pods-Sadhana-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8BEF93875A25A91ED22FF6B7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Sadhana/Pods-Sadhana-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		93E2FFE241D22707E34A4FFF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		96F6004C1EC996AC006DAECE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96F600581EC996AC006DAECE /* SecondViewController.swift in Sources */,
-				96F600541EC996AC006DAECE /* AppDelegate.swift in Sources */,
-				96F600561EC996AC006DAECE /* FirstViewController.swift in Sources */,
+				966056B61EF2B50D00973FA4 /* SecondViewController.swift in Sources */,
+				967D79251F00F3CD00A961D6 /* RemoteService.swift in Sources */,
+				966056B41EF2B50D00973FA4 /* AppDelegate.swift in Sources */,
+				967D79271F00F3E100A961D6 /* RemoteUser.swift in Sources */,
+				9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */,
+				96A9218C1F03FFF70056BC5B /* LocalUser.swift in Sources */,
+				967D791E1F00F10D00A961D6 /* User.swift in Sources */,
+				967D79241F00F3CD00A961D6 /* LocalService.swift in Sources */,
+				96A9217E1F03FC9D0056BC5B /* Model.xcdatamodeld in Sources */,
+				967D79291F00F63E00A961D6 /* General.swift in Sources */,
+				966056B51EF2B50D00973FA4 /* FirstViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		96F600591EC996AC006DAECE /* Main.storyboard */ = {
+		966056A41EF2B50D00973FA4 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				96F6005A1EC996AC006DAECE /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		96F6005E1EC996AC006DAECE /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				96F6005F1EC996AC006DAECE /* Base */,
+				966056A51EF2B50D00973FA4 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		966056A61EF2B50D00973FA4 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				966056A71EF2B50D00973FA4 /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -263,10 +488,12 @@
 		};
 		96F600651EC996AC006DAECE /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E2023B1DDA367BF561B5CECF /* Pods-Sadhana.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = Q5BCCLALJ5;
 				INFOPLIST_FILE = Sadhana/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alexander-koryttsev.Sadhana";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -276,10 +503,12 @@
 		};
 		96F600661EC996AC006DAECE /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A1A22DCDB6FD8FA97E2D8CCC /* Pods-Sadhana.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = Q5BCCLALJ5;
 				INFOPLIST_FILE = Sadhana/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alexander-koryttsev.Sadhana";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -306,8 +535,22 @@
 				96F600661EC996AC006DAECE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		96A9217C1F03FC9D0056BC5B /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				96A9217D1F03FC9D0056BC5B /* Model.xcdatamodel */,
+			);
+			currentVersion = 96A9217D1F03FC9D0056BC5B /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 96F600481EC996AC006DAECE /* Project object */;
 }
