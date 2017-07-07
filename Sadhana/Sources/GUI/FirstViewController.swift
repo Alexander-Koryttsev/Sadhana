@@ -14,6 +14,8 @@ class FirstViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+
         let loadUser = RemoteService.shared.loadCurrentUser()
         let loadUserWithErrorHandling = loadUser.asObservable().catchError { (error) -> Observable<User> in
             let returningError = Observable<User>.error(error)
@@ -25,10 +27,10 @@ class FirstViewController: UIViewController {
             }
             
         }
-        let sendUser = loadUserWithErrorHandling.do(onNext: { (user) in
-           // RemoteService.shared.send(user: user as! MutableUser)
-        })
-        _ = sendUser.debug().subscribe()
+        let saveUser = loadUserWithErrorHandling.flatMap { (user) -> Single<LocalUser> in
+            return LocalService.shared.save(user)
+        }
+        _ = saveUser.debug().subscribe()
         
     }
 

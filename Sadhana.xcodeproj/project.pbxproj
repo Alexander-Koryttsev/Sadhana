@@ -23,6 +23,9 @@
 		96A9217E1F03FC9D0056BC5B /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 96A9217C1F03FC9D0056BC5B /* Model.xcdatamodeld */; };
 		96A921891F03FF360056BC5B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A921881F03FF360056BC5B /* CoreData.framework */; };
 		96A9218C1F03FFF70056BC5B /* LocalUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A9218A1F03FFF70056BC5B /* LocalUser.swift */; };
+		96B070861F0FDB78004C9249 /* SadhanaEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070851F0FDB78004C9249 /* SadhanaEntry.swift */; };
+		96B070881F0FE5C8004C9249 /* RemoteSadhanaEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070871F0FE5C8004C9249 /* RemoteSadhanaEntry.swift */; };
+		96B0708A1F0FE6D3004C9249 /* MappingHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070891F0FE6D3004C9249 /* MappingHelpers.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +45,9 @@
 		96A9217D1F03FC9D0056BC5B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		96A921881F03FF360056BC5B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		96A9218A1F03FFF70056BC5B /* LocalUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalUser.swift; sourceTree = "<group>"; };
+		96B070851F0FDB78004C9249 /* SadhanaEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SadhanaEntry.swift; sourceTree = "<group>"; };
+		96B070871F0FE5C8004C9249 /* RemoteSadhanaEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteSadhanaEntry.swift; sourceTree = "<group>"; };
+		96B070891F0FE6D3004C9249 /* MappingHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappingHelpers.swift; sourceTree = "<group>"; };
 		96F600501EC996AC006DAECE /* Sadhana.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sadhana.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96F600611EC996AC006DAECE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1A22DCDB6FD8FA97E2D8CCC /* Pods-Sadhana.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sadhana.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sadhana/Pods-Sadhana.release.xcconfig"; sourceTree = "<group>"; };
@@ -149,6 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				967D791D1F00F10C00A961D6 /* User.swift */,
+				96B070851F0FDB78004C9249 /* SadhanaEntry.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -156,8 +163,8 @@
 		967D791F1F00F3CD00A961D6 /* Local */ = {
 			isa = PBXGroup;
 			children = (
-				96A9217B1F03FC880056BC5B /* Model */,
 				967D79201F00F3CD00A961D6 /* LocalService.swift */,
+				96A9217B1F03FC880056BC5B /* Model */,
 			);
 			path = Local;
 			sourceTree = "<group>";
@@ -174,7 +181,9 @@
 		967D79221F00F3CD00A961D6 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				96B070891F0FE6D3004C9249 /* MappingHelpers.swift */,
 				967D79261F00F3E100A961D6 /* RemoteUser.swift */,
+				96B070871F0FE5C8004C9249 /* RemoteSadhanaEntry.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -360,7 +369,10 @@
 				966056B61EF2B50D00973FA4 /* SecondViewController.swift in Sources */,
 				967D79251F00F3CD00A961D6 /* RemoteService.swift in Sources */,
 				966056B41EF2B50D00973FA4 /* AppDelegate.swift in Sources */,
+				96B070881F0FE5C8004C9249 /* RemoteSadhanaEntry.swift in Sources */,
+				96B070861F0FDB78004C9249 /* SadhanaEntry.swift in Sources */,
 				967D79271F00F3E100A961D6 /* RemoteUser.swift in Sources */,
+				96B0708A1F0FE6D3004C9249 /* MappingHelpers.swift in Sources */,
 				9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */,
 				96A9218C1F03FFF70056BC5B /* LocalUser.swift in Sources */,
 				967D791E1F00F10D00A961D6 /* User.swift in Sources */,
@@ -493,7 +505,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = Q5BCCLALJ5;
 				INFOPLIST_FILE = Sadhana/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alexander-koryttsev.Sadhana";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -508,7 +520,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = Q5BCCLALJ5;
 				INFOPLIST_FILE = Sadhana/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.alexander-koryttsev.Sadhana";
 				PRODUCT_NAME = "$(TARGET_NAME)";

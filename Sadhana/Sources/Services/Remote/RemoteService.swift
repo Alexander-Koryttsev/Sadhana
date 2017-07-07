@@ -22,6 +22,9 @@ enum RemoteError : Error {
     case noData
     case invalidData
     case notLoggedIn
+    case noTokens
+    case tokensExpired
+    case authorisationRequired
     case unacceptableResponce(type:Any.Type)
 }
 
@@ -65,7 +68,6 @@ class RemoteService {
     
     init() {
         self.restoreTokensFromCache()
-        self.tokens.access = nil
     }
     
     
@@ -79,6 +81,7 @@ class RemoteService {
     }
     
     func map(tokens: JSON) -> Void {
+        //TODO: validate tokens
         self.tokens.access = tokens["access_token"] as? String
         self.tokens.refresh = tokens["refresh_token"] as? String
         self.tokens.type = tokens["token_type"] as? String
@@ -127,18 +130,23 @@ class RemoteService {
     func baseRequest(_ method: Alamofire.HTTPMethod,
                      _ path: String,
                      parameters: [String: Any]? = nil,
-                     authenticate: Bool? = false) -> Single<JSON> {
-        return baseRequest(method, path, parameters: parameters, authenticate: authenticate, responseType: JSON.self)
+                     authorise: Bool = false) -> Single<JSON> {
+        return baseRequest(method, path, parameters: parameters, authorise: authorise, responseType: JSON.self)
     }
     
     func baseRequest<T>(_ method: Alamofire.HTTPMethod,
                      _ path: String,
                      parameters: [String: Any]? = nil,
-                     authenticate: Bool? = false,
+                     authorise: Bool = false,
                      responseType: T.Type) -> Single<T> {
         return Single<T>.create { [weak self] (observer) -> Disposable in
             
-            let request = Alamofire.request("\(URLs.base)/\(path)", method: method, parameters: parameters, encoding: URLEncoding.default, headers: authenticate! ? self?.authorizationHeaders : nil)
+            if authorise == true && self?.tokens.access == nil {
+                observer(.error(RemoteError.noTokens))
+                return Disposables.create {} 
+            }
+            
+            let request = Alamofire.request("\(URLs.base)/\(path)", method: method, parameters: parameters, encoding: URLEncoding.default, headers: authorise ? self?.authorizationHeaders : nil)
             
             print("\n\t\t\t\t\t--- \(method) \(path) ---\n\nHead: \(desc(request.request?.allHTTPHeaderFields))\n\nParamteters: \(desc(parameters))")
             
@@ -161,7 +169,8 @@ class RemoteService {
                     }
                     
                     if(400..<500).contains(statusCode) {
-                        observer(.error(RemoteError.notLoggedIn))
+                        //TODO: test in postman when tokens are not valid (for example login, check tokens,logout, check tokens)
+                        observer(.error(authorise ? RemoteError.tokensExpired : RemoteError.authorisationRequired))
                         return
                     }
                     
@@ -194,34 +203,26 @@ class RemoteService {
                     responseType: T.Type)
         -> Single<T> {
 
-            let request = baseRequest(method, "\(URLs.api)/\(path)", parameters: parameters, authenticate: true, responseType:T.self)
-            let requestAfterRefresh = request.asObservable().after(self.refreshTokens()).asSingle()
-            let notLoggedInError = Single<T>.error(RemoteError.notLoggedIn)
-  
-            if tokens.access == nil {
-                return (tokens.refresh != nil) ? requestAfterRefresh : notLoggedInError
-            }
+            let request = baseRequest(method, "\(URLs.api)/\(path)", parameters: parameters, authorise: true, responseType:T.self)
             
-            //Refresh Access Token if expired
-            let requestRefreshable = request.catchError { (handler: Error) -> Single<T> in
+            return request.catchError { (handler: Error) -> Single<T> in
                 let returningError = Single<T>.error(handler)
                 guard let remoteError = handler as? RemoteError else { return returningError }
                 
                 switch remoteError {
-                    case .notLoggedIn: return requestAfterRefresh
+                case .noTokens: return Single<T>.error(RemoteError.notLoggedIn)
+                case .tokensExpired: return request.asObservable().after(self.refreshTokens()).asSingle().catchError({ (handler) -> PrimitiveSequence<SingleTrait, T> in
+                    let returningError = Single<T>.error(handler)
+                    guard let remoteError = handler as? RemoteError else { return returningError }
+                    switch remoteError {
+                        case .tokensExpired: return Single<T>.error(RemoteError.notLoggedIn)
+                        default: return returningError
+                    }
+                    
+                })
                     default: return returningError
                 }
             }
             
-            //Set Not Logged error if have no refresh token
-            return requestRefreshable.catchError({ (error) -> Single<T> in
-                let returningError = Single<T>.error(error)
-                guard let remoteError = error as? RemoteError else { return returningError }
-                
-                switch remoteError {
-                    case .notLoggedIn: return notLoggedInError
-                    default: return returningError
-                }
-            });
     }
 }

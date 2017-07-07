@@ -26,11 +26,12 @@ extension ObservableType {
     
     func after<O>(_ first: O) -> RxSwift.Observable<Self.E> where O : ObservableConvertibleType {
         return Observable<Self.E>.create({ (subscriber) -> Disposable in
-            return first.asObservable().subscribe(onError: { (error) in
+            _ = first.asObservable().subscribe(onError: { (error) in
                 subscriber.onError(error)
             }, onCompleted: {
                 _ = self.subscribe(subscriber)
             })
+            return Disposables.create {}
         })
     }
     
