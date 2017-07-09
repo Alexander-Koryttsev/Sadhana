@@ -10,20 +10,20 @@ import Foundation
 import Mapper
 
 struct RemoteSadhanaEntry : SadhanaEntry, Mappable {
-    let ID : Int32
+    let ID : Int32?
     let userID : Int32
     let date : Date
     
-    let japaCount7_30 : Int32
-    let japaCount10 : Int32
-    let japaCount18 : Int32
-    let japaCount24 : Int32
+    let japaCount7_30 : Int16
+    let japaCount10 : Int16
+    let japaCount18 : Int16
+    let japaCount24 : Int16
     
-    let reading : Int32
+    let reading : Int16
     let kirtan : Bool
     
-    let bedTime : Date
-    let wakeUpTime : Date
+    let bedTime : Date?
+    let wakeUpTime : Date?
     
     let exercise : Bool
     let service : Bool
@@ -45,15 +45,16 @@ struct RemoteSadhanaEntry : SadhanaEntry, Mappable {
         try reading = map.from("reading")
         try kirtan = map.from("kirtan")
         
-        try bedTime = map.from("opt_sleep", transformation: extractTime)
-        try wakeUpTime = map.from("opt_wake_up", transformation: extractTime)
+        //TODO: use GMT+0
+        bedTime = map.optionalFrom("opt_sleep", transformation: extractTime)
+        wakeUpTime = map.optionalFrom("opt_wake_up", transformation: extractTime)
         
         try exercise = map.from("opt_exercise")
-        try service = map.from("opt_exercise")
+        try service = map.from("opt_service")
         try lections = map.from("opt_lections")
         
-        try dateCreated = map.from("opt_sleep", transformation: extractDateAndTime)
-        try dateUpdated = map.from("opt_sleep", transformation: extractDateAndTime)
+        try dateCreated = map.from("created_at", transformation: extractDateAndTime)
+        try dateUpdated = map.from("updated_at", transformation: extractDateAndTime)
     }
 }
 

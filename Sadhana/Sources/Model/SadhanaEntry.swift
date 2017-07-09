@@ -9,20 +9,20 @@
 import Foundation
 
 protocol SadhanaEntry {
-    var ID : Int32 { get }
+    var ID : Int32? { get }
     var userID : Int32 { get }
     var date : Date { get }
     
-    var japaCount7_30 : Int32 { get }
-    var japaCount10 : Int32 { get }
-    var japaCount18 : Int32 { get }
-    var japaCount24 : Int32 { get }
+    var japaCount7_30 : Int16 { get }
+    var japaCount10 : Int16 { get }
+    var japaCount18 : Int16 { get }
+    var japaCount24 : Int16 { get }
     
-    var reading : Int32 { get }
+    var reading : Int16 { get }
     var kirtan : Bool { get }
     
-    var bedTime : Date { get }
-    var wakeUpTime : Date { get }
+    var bedTime : Date? { get }
+    var wakeUpTime : Date? { get }
     
     var exercise : Bool { get }
     var service : Bool { get }

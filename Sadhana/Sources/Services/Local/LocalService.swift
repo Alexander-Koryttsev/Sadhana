@@ -51,7 +51,7 @@ class LocalService: NSObject {
         }
     }
     
-    func perform<T:NSManagedObject>(_ request:NSFetchRequest<T>) -> Single<[T]> {
+    private func perform<T:NSManagedObject>(_ request:NSFetchRequest<T>) -> Single<[T]> {
         return Single<[T]>.create { [weak self] (observer) -> Disposable in 
             self?.backgroundContext.perform {
                 do {
@@ -70,33 +70,78 @@ class LocalService: NSObject {
         }
     }
     
+    private func performSingle<T:NSManagedObject>(_ request:NSFetchRequest<T>) -> Single<T?> {
+        request.fetchLimit = 1;
+        return perform(request).map({ (objects) -> T? in
+            return objects.first
+        })
+    }
+    
+    func create<T:NSManagedObject>(_ type: T.Type) -> T {
+        return NSEntityDescription.insertNewObject(forEntityName: NSStringFromClass(T.self), into: self.backgroundContext) as! T
+    }
+    
     func save(_ user:User) -> Single<LocalUser> {
         let request = LocalUser.request()
-        request.predicate = NSPredicate(format: "id = %d", user.ID)  
+        request.predicate = NSPredicate(format: "id = %d", user.ID)
         request.fetchLimit = 1
         return perform(request).map { [weak self] (localUsers) -> LocalUser in
-            let localUser:LocalUser
-            if (localUsers.count > 0) {
-                localUser = localUsers.first!
-            }
-            else {
-                if let selfWeak = self {
-                    localUser = NSEntityDescription.insertNewObject(forEntityName: LocalUser.entityName(), into: selfWeak.backgroundContext) as! LocalUser
+            let localUser = localUsers.count > 0 ? localUsers.first! : self!.create(LocalUser.self)
+            return localUser.map(user)
+        }.concat(self.saveContext())
+    }
+    
+    func save(_ entries:[SadhanaEntry]) -> Single<[LocalSadhanaEntry]> {
+        let request = LocalSadhanaEntry.request()
+        let IDs = entries.flatMap { (entry) -> Int32 in
+            return entry.ID!
+        }
+        request.predicate = NSPredicate(format: "id IN %@", IDs)
+        request.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
+        return self.perform(request).map { [weak self] (localEntries) -> [LocalSadhanaEntry] in
+            var remoteEntries = entries.sorted(by: { (entry1, entry2) -> Bool in
+                //TODO: check IDs sorting
+                return entry1.ID! <  entry2.ID!
+            })
+            var localEntriesMutable = localEntries
+            var updatedLocalEntries = [LocalSadhanaEntry]()
+            
+            while remoteEntries.count > 0 {
+                let remoteEntry = remoteEntries.first!
+                let remoteEntryID = remoteEntry.ID!
+                if localEntriesMutable.count > 0 {
+                    let localEntry = localEntriesMutable.first!
+                    let localEntryID = localEntry.ID!
+                    switch localEntryID {
+                        case remoteEntryID:
+                            localEntry.map(remoteEntry)
+                            updatedLocalEntries.append(localEntry)
+                            localEntriesMutable.removeFirst()
+                            remoteEntries.removeFirst()
+                            continue
+                        case 0..<remoteEntryID:
+                            localEntriesMutable.removeFirst()
+                            continue
+                        default: break
+                    }
                 }
-                else {
-                    throw LocalError.noData
-                }
+              
+                let newEntry = self!.create(LocalSadhanaEntry.self)
+                newEntry.map(remoteEntry)
+                updatedLocalEntries.append(newEntry)
+                remoteEntries.removeFirst()
             }
             
-            return localUser.map(user)
-        }.do(onCompleted: {
-            do {
-                try self.backgroundContext.save()
-                print("saved");
-            } catch {
-                fatalError("Failure to save context: \(error)")
-            }
-        })
+            return updatedLocalEntries
+        }.concat(self.saveContext())
+    }
+    
+    func fetchUser() -> Single<LocalUser?> {
+        return performSingle(LocalUser.request())
+    }
+    
+    func fetchSadhanaEntry() -> Single<LocalSadhanaEntry?> {
+        return performSingle(LocalSadhanaEntry.request())
     }
 }
 

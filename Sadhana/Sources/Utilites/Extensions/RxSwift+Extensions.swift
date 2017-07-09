@@ -10,7 +10,35 @@ import Foundation
 import RxSwift
 import Mapper
 
+extension PrimitiveSequence where Trait == SingleTrait {
+    func concat(_ second: Completable) -> Single<PrimitiveSequence.ElementType> {
+        return self.asObservable().concat(second).asSingle()
+    }
+    
+    func map<T>(object:T.Type) -> Single<T> where T:Mappable {
+        return self.asObservable().map(object:object).asSingle()
+    }
+    
+    func map<T>(array:T.Type) -> Single<[T]> where T:Mappable {
+        return self.asObservable().map(array:array).asSingle()
+    }
+    func cast<T>(_ type: T.Type) -> Single<T> {
+        return self.asObservable().cast(type).asSingle()
+    }
+    func cast<T>(array elementType: T.Type) -> Single<[T]> {
+        return self.asObservable().cast(array: elementType).asSingle()
+    }
+    
+    func after(_ first: Completable) -> Single<PrimitiveSequence.ElementType> {
+        return self.asObservable().after(first).asSingle()
+    }
+}
+
 extension ObservableType {
+    func concat(_ second: Completable) -> Observable<Self.E> {
+        return self.concat(second.asObservable().cast(Self.E.self))
+    }
+    
     func completable() -> Completable {
         let completable = Completable.create { (completable) -> Disposable in
             return self.subscribe(onNext: { (object) in

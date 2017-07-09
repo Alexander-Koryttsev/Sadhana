@@ -103,7 +103,7 @@ class RemoteService {
              }).completable()
     }
 
-    func login(name: String, password: String) -> Completable {
+    func login(name:String, password:String) -> Completable {
         return baseRequest(.post, URLs.authToken, parameters:
             ["grant_type" : GrantType.password.rawValue,
              "client_id" : clientID,
@@ -113,18 +113,6 @@ class RemoteService {
                 self?.mapAndCache(tokens: json)
                 return true
              }).completable()
-    }
-    
-    func loadCurrentUser() -> Single <User> {
-        return apiRequest(.get, "me", responseType:RemoteUser.self, castTo:User.self)
-    }
-    
-    @discardableResult
-    func send(user: User & JSONConvertible) -> Completable {
-        
-        print(desc(user.json()))
-        
-        return Completable.empty()
     }
     
     func baseRequest(_ method: Alamofire.HTTPMethod,
@@ -162,7 +150,7 @@ class RemoteService {
                     observer(.success(result))
                     
                 case .failure(let error):
-                    
+                    print(response.value ?? "Empty Response Value")
                     guard let statusCode = response.response?.statusCode else {
                         observer(.error(error))
                         return
@@ -181,20 +169,21 @@ class RemoteService {
         }
     }
     
-    func apiRequest<T:Mappable, T2>(_ method: Alamofire.HTTPMethod,
+    
+    
+    func apiRequest<T:Mappable>(_ method: Alamofire.HTTPMethod,
                     _ path: String,
                     parameters: [String: Any]? = nil,
-                    responseType: T.Type,
-                    castTo: T2.Type) -> Single<T2> {
-        return apiRequest(method, path, parameters: parameters, responseType: JSON.self).asObservable().map(object:responseType).cast(castTo).asSingle()
+                    responseType: T.Type) -> Single<T> {
+        
+        return apiRequest(method, path, parameters: parameters).map(object:responseType)
     }
     
-    func apiRequest<T:Mappable, T2>(_ method: Alamofire.HTTPMethod,
+    func apiRequest(_ method: Alamofire.HTTPMethod,
                     _ path: String,
-                    parameters: [String: Any]? = nil,
-                    responseArrayElementType: T.Type,
-                    castTo: T2.Type) -> Single<[T2]> {
-        return apiRequest(method, path, parameters: parameters, responseType: [JSON].self).asObservable().map(array:responseArrayElementType).cast(array:castTo).asSingle()
+                    parameters: [String: Any]? = nil) -> Single<JSON> {
+        
+        return apiRequest(method, path, parameters: parameters, responseType: JSON.self)
     }
     
     func apiRequest<T>(_ method: Alamofire.HTTPMethod,
@@ -211,18 +200,50 @@ class RemoteService {
                 
                 switch remoteError {
                 case .noTokens: return Single<T>.error(RemoteError.notLoggedIn)
-                case .tokensExpired: return request.asObservable().after(self.refreshTokens()).asSingle().catchError({ (handler) -> PrimitiveSequence<SingleTrait, T> in
+                case .tokensExpired: return request.after(self.refreshTokens()).catchError({ (handler) -> PrimitiveSequence<SingleTrait, T> in
                     let returningError = Single<T>.error(handler)
                     guard let remoteError = handler as? RemoteError else { return returningError }
                     switch remoteError {
                         case .tokensExpired: return Single<T>.error(RemoteError.notLoggedIn)
                         default: return returningError
                     }
-                    
                 })
                     default: return returningError
                 }
             }
             
+    }
+    // MARK: API Methods
+    func loadCurrentUser() -> Single <User> {
+        return apiRequest(.get, "me", responseType:RemoteUser.self).cast(User.self)
+    }
+    
+    @discardableResult
+    func send(_ user: User & JSONConvertible) -> Completable {
+        return apiRequest(.post, "options/\(user.ID)", parameters: user.json()).completable()
+    }
+    
+    func loadSadhanaEntries(userID:Int32, year:Int, month:Int) -> Single <[SadhanaEntry]> {
+        return apiRequest(.post, "userSadhanaEntries/\(userID)", parameters:["year": year, "month": month], responseType:JSON.self).map({ (json) -> [JSON] in
+            guard let entries = json["entries"] as? [JSON] else {
+                throw RemoteError.invalidData
+            }
+            return entries
+        }).map(array:RemoteSadhanaEntry.self).cast([SadhanaEntry].self)
+    }
+    
+    func send(_ sadhanaEntry: SadhanaEntry & JSONConvertible) -> Single<Int32> {
+        var path = "sadhanaEntry/\(sadhanaEntry.userID)"
+        if sadhanaEntry.ID != nil {
+            path.append("/\(sadhanaEntry.ID!)")
+        }
+        
+        return apiRequest(.post, path, parameters: sadhanaEntry.json()).map({ (json) -> Int32 in
+            guard let number = json["entry_id"] as? String else {
+                throw RemoteError.invalidData
+            }
+        
+            return Int32(number)!
+        })
     }
 }

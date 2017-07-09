@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (4.5.0)
+  - EasyPeasy (1.4.2)
   - ModelMapper (6.0.0)
   - RxCocoa (3.4.0):
     - RxSwift (~> 3.4)
@@ -7,16 +8,18 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.4)
+  - EasyPeasy (~> 1.4)
   - ModelMapper (~> 6.0)
   - RxCocoa (~> 3.4)
   - RxSwift (~> 3.4)
 
 SPEC CHECKSUMS:
   Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
+  EasyPeasy: 50e7130b61f495ce105796e438d4136e2c8d2cc0
   ModelMapper: 3596a82f26c43491f6a8d3a00bcdba6ba0e62a93
   RxCocoa: d14ef6b6029e1ddc6e966508c09289090de68ff9
   RxSwift: 3789a1af753002a14edecdb698a2424624296a9c
 
-PODFILE CHECKSUM: bd505d7582742a62b4b9101be94c4aea30314ff0
+PODFILE CHECKSUM: c1072dbca66db735bde097e881d8613d634a9a8e
 
 COCOAPODS: 1.2.0

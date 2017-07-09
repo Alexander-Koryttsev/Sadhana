@@ -8,6 +8,10 @@
 
 import Foundation
 
+enum GeneralError : Error {
+    case error
+}
+
 typealias JSON = [String: Any]
 typealias JSONArray = [JSON]
 

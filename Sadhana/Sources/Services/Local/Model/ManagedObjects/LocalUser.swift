@@ -42,23 +42,6 @@ class LocalUser: NSManagedObject, User, JSONConvertible {
     @NSManaged var lectionsEnabled : Bool
     @NSManaged var bedTimeEnabled : Bool
     
-    func json() -> JSON {
-        return [
-            "userid" : ID,
-            "user_name": name,
-            "avatar_url": avatarURLString ?? "",
-            
-            "cfg_public": isPublic,
-            "cfg_showmoresixteen": showMore16,
-            
-            "opt_wake": wakeUpTimeEnabled,
-            "opt_service": serviceEnabled,
-            "opt_exercise": exerciseEnabled,
-            "opt_lections": lectionsEnabled,
-            "opt_sleep": bedTimeEnabled,
-        ]
-    }
-    
     @discardableResult
     func map(_ user: User) -> Self {
         ID = user.ID
@@ -77,12 +60,25 @@ class LocalUser: NSManagedObject, User, JSONConvertible {
         return self
     }
     
-    class func entityName() -> String {
-        return "LocalUser"
+    func json() -> JSON {
+        return ["userid": ID,
+                "user_name": name,
+                "avatar_url": avatarURLString ?? "",
+            
+                "cfg_public": isPublic,
+                "cfg_showmoresixteen": showMore16,
+            
+                "opt_wake": wakeUpTimeEnabled,
+                "opt_service": serviceEnabled,
+                "opt_exercise": exerciseEnabled,
+                "opt_lections": lectionsEnabled,
+                "opt_sleep": bedTimeEnabled]
     }
     
+    static let entityName = "LocalUser"
+    
     @nonobjc public class func request() -> NSFetchRequest<LocalUser> {
-        return NSFetchRequest<LocalUser>(entityName: self.entityName())
+        return NSFetchRequest<LocalUser>(entityName: entityName)
     }
 }
 
