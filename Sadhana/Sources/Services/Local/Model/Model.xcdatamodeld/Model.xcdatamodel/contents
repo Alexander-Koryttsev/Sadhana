@@ -6,7 +6,7 @@
         <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="dateUpdated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="exercise" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="id" attributeType="Integer 32" usesScalarValueType="YES" indexed="YES" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" usesScalarValueType="YES" indexed="YES" syncable="YES"/>
         <attribute name="japaCount7_30" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="japaCount10" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="japaCount18" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>

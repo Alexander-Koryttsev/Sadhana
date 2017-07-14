@@ -17,9 +17,14 @@ enum LocalError : Error {
 class LocalService: NSObject {
     
     static let shared = LocalService {}
+    var viewContext : NSManagedObjectContext {
+        get {
+            return persistentContainer.viewContext;
+        }
+    }
     
     private let persistentContainer: NSPersistentContainer
-    private var backgroundContext: NSManagedObjectContext
+    var backgroundContext: NSManagedObjectContext
     
     init(completionClosure: @escaping () -> ()) {
         persistentContainer = NSPersistentContainer(name: "Model")
@@ -27,19 +32,111 @@ class LocalService: NSObject {
             if let error = error {
                 fatalError("Failed to load Core Data stack: \(error)")
             }
-            else {
-                
-            }
             completionClosure()
         }
         backgroundContext = persistentContainer.newBackgroundContext()
     }
     
-    func saveContext() -> Completable {
+    func newForegroundContext() -> NSManagedObjectContext {
+        let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        context.persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator;
+        return context;
+    }
+    
+    func newBackgroundContext() -> NSManagedObjectContext {
+        return persistentContainer.newBackgroundContext();
+    }
+}
+
+
+extension NSManagedObjectContext {
+    func save(_ user:User) -> Single<LocalUser> {
+        let request = LocalUser.request()
+        request.predicate = NSPredicate(format: "id = %d", user.ID)
+        request.fetchLimit = 1
+        return rxFetch(request).map { [weak self] (localUsers) -> LocalUser in
+            let localUser = localUsers.count > 0 ? localUsers.first! : self!.create(LocalUser.self)
+            return localUser.map(user)
+        }.concat(rxSave())
+    }
+    
+    func save(_ entries:[SadhanaEntry]) -> Single<[LocalSadhanaEntry]> {
+        //TODO: make thread-safe
+        let request = LocalSadhanaEntry.request()
+        let IDs = entries.flatMap { (entry) -> Int32 in
+            return entry.ID!
+        }
+        request.predicate = NSPredicate(format: "id IN %@", IDs)
+        request.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
+        return self.rxFetch(request).map { [weak self] (localEntries) -> [LocalSadhanaEntry] in
+            var remoteEntries = entries.sorted(by: { (entry1, entry2) -> Bool in
+                return entry1.ID! <  entry2.ID!
+            })
+            var localEntriesMutable = localEntries
+            var updatedLocalEntries = [LocalSadhanaEntry]()
+            
+            while remoteEntries.count > 0 {
+                let remoteEntry = remoteEntries.first!
+                let remoteEntryID = remoteEntry.ID!
+                if localEntriesMutable.count > 0 {
+                    let localEntry = localEntriesMutable.first!
+                    let localEntryID = localEntry.ID!
+                    switch localEntryID {
+                    case remoteEntryID:
+                        localEntry.map(remoteEntry)
+                        updatedLocalEntries.append(localEntry)
+                        localEntriesMutable.removeFirst()
+                        remoteEntries.removeFirst()
+                        continue
+                    case 0..<remoteEntryID:
+                        localEntriesMutable.removeFirst()
+                        continue
+                    default: break
+                    }
+                }
+                
+                let newEntry = self!.create(LocalSadhanaEntry.self)
+                newEntry.map(remoteEntry)
+                updatedLocalEntries.append(newEntry)
+                remoteEntries.removeFirst()
+            }
+            
+            return updatedLocalEntries
+            }.concat(rxSave())
+    }
+    
+    func fetchUser() -> LocalUser? {
+        return fetchSingle(LocalUser.request())
+    }
+    
+    func fetchUser(ID:Int32) -> LocalUser? {
+        let request = LocalUser.request()
+        request.predicate = NSPredicate(format: "id = %d", ID)
+        return fetchSingle(request)
+    }
+    
+    func fetchSadhanaEntry() -> Single<LocalSadhanaEntry?> {
+        return rxFetchSingle(LocalSadhanaEntry.request())
+    }
+    
+    func fetchSingle<T>(_ request: NSFetchRequest<T>) -> T? where T : NSFetchRequestResult {
+        request.fetchLimit = 1
+        
+        do {
+            return try fetch(request).first
+        }
+        catch {
+            print(error)
+        }
+        
+        return nil
+    }
+    
+    func rxSave() -> Completable {
         return Completable.create { [weak self] (observer) -> Disposable in
-            self?.backgroundContext.perform {
+            self?.perform {
                 do {
-                    try self?.backgroundContext.save()
+                    try self?.save()
                     observer(.completed)
                 } catch {
                     observer(.error(error))
@@ -51,11 +148,11 @@ class LocalService: NSObject {
         }
     }
     
-    private func perform<T:NSManagedObject>(_ request:NSFetchRequest<T>) -> Single<[T]> {
-        return Single<[T]>.create { [weak self] (observer) -> Disposable in 
-            self?.backgroundContext.perform {
+    private func rxFetch<T:NSManagedObject>(_ request:NSFetchRequest<T>) -> Single<[T]> {
+        return Single<[T]>.create { [weak self] (observer) -> Disposable in
+            self?.perform {
                 do {
-                    if let result = try self?.backgroundContext.fetch(request) {
+                    if let result = try self?.fetch(request) {
                         observer(.success(result))
                     }
                     else {
@@ -70,78 +167,16 @@ class LocalService: NSObject {
         }
     }
     
-    private func performSingle<T:NSManagedObject>(_ request:NSFetchRequest<T>) -> Single<T?> {
+    private func rxFetchSingle<T:NSManagedObject>(_ request:NSFetchRequest<T>) -> Single<T?> {
         request.fetchLimit = 1;
-        return perform(request).map({ (objects) -> T? in
+        return rxFetch(request).map({ (objects) -> T? in
             return objects.first
         })
     }
     
     func create<T:NSManagedObject>(_ type: T.Type) -> T {
-        return NSEntityDescription.insertNewObject(forEntityName: NSStringFromClass(T.self), into: self.backgroundContext) as! T
+        return NSEntityDescription.insertNewObject(forEntityName: NSStringFromClass(T.self), into: self) as! T
     }
-    
-    func save(_ user:User) -> Single<LocalUser> {
-        let request = LocalUser.request()
-        request.predicate = NSPredicate(format: "id = %d", user.ID)
-        request.fetchLimit = 1
-        return perform(request).map { [weak self] (localUsers) -> LocalUser in
-            let localUser = localUsers.count > 0 ? localUsers.first! : self!.create(LocalUser.self)
-            return localUser.map(user)
-        }.concat(self.saveContext())
-    }
-    
-    func save(_ entries:[SadhanaEntry]) -> Single<[LocalSadhanaEntry]> {
-        let request = LocalSadhanaEntry.request()
-        let IDs = entries.flatMap { (entry) -> Int32 in
-            return entry.ID!
-        }
-        request.predicate = NSPredicate(format: "id IN %@", IDs)
-        request.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
-        return self.perform(request).map { [weak self] (localEntries) -> [LocalSadhanaEntry] in
-            var remoteEntries = entries.sorted(by: { (entry1, entry2) -> Bool in
-                //TODO: check IDs sorting
-                return entry1.ID! <  entry2.ID!
-            })
-            var localEntriesMutable = localEntries
-            var updatedLocalEntries = [LocalSadhanaEntry]()
-            
-            while remoteEntries.count > 0 {
-                let remoteEntry = remoteEntries.first!
-                let remoteEntryID = remoteEntry.ID!
-                if localEntriesMutable.count > 0 {
-                    let localEntry = localEntriesMutable.first!
-                    let localEntryID = localEntry.ID!
-                    switch localEntryID {
-                        case remoteEntryID:
-                            localEntry.map(remoteEntry)
-                            updatedLocalEntries.append(localEntry)
-                            localEntriesMutable.removeFirst()
-                            remoteEntries.removeFirst()
-                            continue
-                        case 0..<remoteEntryID:
-                            localEntriesMutable.removeFirst()
-                            continue
-                        default: break
-                    }
-                }
-              
-                let newEntry = self!.create(LocalSadhanaEntry.self)
-                newEntry.map(remoteEntry)
-                updatedLocalEntries.append(newEntry)
-                remoteEntries.removeFirst()
-            }
-            
-            return updatedLocalEntries
-        }.concat(self.saveContext())
-    }
-    
-    func fetchUser() -> Single<LocalUser?> {
-        return performSingle(LocalUser.request())
-    }
-    
-    func fetchSadhanaEntry() -> Single<LocalSadhanaEntry?> {
-        return performSingle(LocalSadhanaEntry.request())
-    }
+
 }
 

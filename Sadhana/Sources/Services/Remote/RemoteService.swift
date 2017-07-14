@@ -70,7 +70,6 @@ class RemoteService {
         self.restoreTokensFromCache()
     }
     
-    
     func restoreTokensFromCache() -> Void {
         guard let cachedTokens = UserDefaults.standard.object(forKey: UserDefaultsKey.tokens) as? JSON else { return }
         map(tokens: cachedTokens)
@@ -109,9 +108,8 @@ class RemoteService {
              "client_id" : clientID,
              "client_secret" : clientSecret,
              "username" : name,
-             "password" : password]).map({ [weak self] (json) -> Bool in
+             "password" : password]).do(onNext: { [weak self] (json) in
                 self?.mapAndCache(tokens: json)
-                return true
              }).completable()
     }
     
@@ -119,22 +117,15 @@ class RemoteService {
                      _ path: String,
                      parameters: [String: Any]? = nil,
                      authorise: Bool = false) -> Single<JSON> {
-        return baseRequest(method, path, parameters: parameters, authorise: authorise, responseType: JSON.self)
-    }
-    
-    func baseRequest<T>(_ method: Alamofire.HTTPMethod,
-                     _ path: String,
-                     parameters: [String: Any]? = nil,
-                     authorise: Bool = false,
-                     responseType: T.Type) -> Single<T> {
-        return Single<T>.create { [weak self] (observer) -> Disposable in
+        
+        return Single<JSON>.create { [unowned self] (observer) -> Disposable in
             
-            if authorise == true && self?.tokens.access == nil {
+            if authorise == true && self.tokens.access == nil {
                 observer(.error(RemoteError.noTokens))
                 return Disposables.create {} 
             }
             
-            let request = Alamofire.request("\(URLs.base)/\(path)", method: method, parameters: parameters, encoding: URLEncoding.default, headers: authorise ? self?.authorizationHeaders : nil)
+            let request = Alamofire.request("\(URLs.base)/\(path)", method: method, parameters: parameters, encoding: URLEncoding.default, headers: authorise ? self.authorizationHeaders : nil)
             
             print("\n\t\t\t\t\t--- \(method) \(path) ---\n\nHead: \(desc(request.request?.allHTTPHeaderFields))\n\nParamteters: \(desc(parameters))")
             
@@ -143,8 +134,8 @@ class RemoteService {
                 switch response.result {
                 case .success(let value):
                     
-                    guard let result = value as? T else {
-                        observer(.error(RemoteError.cantCast(value: value, toType: T.self)))
+                    guard let result = value as? JSON else {
+                        observer(.error(RemoteError.cantCast(value: value, toType: JSON.self)))
                         return
                     }
                     observer(.success(result))
@@ -165,46 +156,29 @@ class RemoteService {
                     observer(.error(error))
                 }
             })
-            return Disposables.create {}
+            return Disposables.create {
+                request.cancel()
+            }
         }
-    }
-    
-    
-    
-    func apiRequest<T:Mappable>(_ method: Alamofire.HTTPMethod,
-                    _ path: String,
-                    parameters: [String: Any]? = nil,
-                    responseType: T.Type) -> Single<T> {
-        
-        return apiRequest(method, path, parameters: parameters).map(object:responseType)
     }
     
     func apiRequest(_ method: Alamofire.HTTPMethod,
                     _ path: String,
                     parameters: [String: Any]? = nil) -> Single<JSON> {
-        
-        return apiRequest(method, path, parameters: parameters, responseType: JSON.self)
-    }
-    
-    func apiRequest<T>(_ method: Alamofire.HTTPMethod,
-                    _ path: String,
-                    parameters: [String: Any]? = nil,
-                    responseType: T.Type)
-        -> Single<T> {
 
-            let request = baseRequest(method, "\(URLs.api)/\(path)", parameters: parameters, authorise: true, responseType:T.self)
+            let request = baseRequest(method, "\(URLs.api)/\(path)", parameters: parameters, authorise: true)
             
-            return request.catchError { (handler: Error) -> Single<T> in
-                let returningError = Single<T>.error(handler)
+            return request.catchError { (handler: Error) -> Single<JSON> in
+                let returningError = Single<JSON>.error(handler)
                 guard let remoteError = handler as? RemoteError else { return returningError }
                 
                 switch remoteError {
-                case .noTokens: return Single<T>.error(RemoteError.notLoggedIn)
-                case .tokensExpired: return request.after(self.refreshTokens()).catchError({ (handler) -> PrimitiveSequence<SingleTrait, T> in
-                    let returningError = Single<T>.error(handler)
+                case .noTokens: return Single<JSON>.error(RemoteError.notLoggedIn)
+                case .tokensExpired: return request.after(self.refreshTokens()).catchError({ (handler) -> PrimitiveSequence<SingleTrait, JSON> in
+                    let returningError = Single<JSON>.error(handler)
                     guard let remoteError = handler as? RemoteError else { return returningError }
                     switch remoteError {
-                        case .tokensExpired: return Single<T>.error(RemoteError.notLoggedIn)
+                        case .tokensExpired: return Single<JSON>.error(RemoteError.notLoggedIn)
                         default: return returningError
                     }
                 })
@@ -215,7 +189,7 @@ class RemoteService {
     }
     // MARK: API Methods
     func loadCurrentUser() -> Single <User> {
-        return apiRequest(.get, "me", responseType:RemoteUser.self).cast(User.self)
+        return apiRequest(.get, "me").map(object: RemoteUser.self).cast(User.self)
     }
     
     @discardableResult
@@ -224,7 +198,7 @@ class RemoteService {
     }
     
     func loadSadhanaEntries(userID:Int32, year:Int, month:Int) -> Single <[SadhanaEntry]> {
-        return apiRequest(.post, "userSadhanaEntries/\(userID)", parameters:["year": year, "month": month], responseType:JSON.self).map({ (json) -> [JSON] in
+        return apiRequest(.post, "userSadhanaEntries/\(userID)", parameters:["year": year, "month": month]).map({ (json) -> [JSON] in
             guard let entries = json["entries"] as? [JSON] else {
                 throw RemoteError.invalidData
             }

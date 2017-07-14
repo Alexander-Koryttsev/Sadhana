@@ -12,6 +12,8 @@
 		9612BD831F0130B000336A1B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 966056A41EF2B50D00973FA4 /* LaunchScreen.storyboard */; };
 		9612BD841F0130B000336A1B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 966056A61EF2B50D00973FA4 /* Main.storyboard */; };
 		9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9612BD881F02BD3400336A1B /* RxSwift+Extensions.swift */; };
+		964C828E1F17D56D00A41D8A /* MySadhanaVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C828D1F17D56D00A41D8A /* MySadhanaVC.swift */; };
+		964C82901F17D5A200A41D8A /* NavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C828F1F17D5A200A41D8A /* NavigationVC.swift */; };
 		966056B41EF2B50D00973FA4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966056A91EF2B50D00973FA4 /* AppDelegate.swift */; };
 		966056B51EF2B50D00973FA4 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966056AC1EF2B50D00973FA4 /* FirstViewController.swift */; };
 		966056B61EF2B50D00973FA4 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966056AD1EF2B50D00973FA4 /* SecondViewController.swift */; };
@@ -21,17 +23,27 @@
 		967D79251F00F3CD00A961D6 /* RemoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79231F00F3CD00A961D6 /* RemoteService.swift */; };
 		967D79271F00F3E100A961D6 /* RemoteUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79261F00F3E100A961D6 /* RemoteUser.swift */; };
 		967D79291F00F63E00A961D6 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79281F00F63E00A961D6 /* General.swift */; };
+		96A55B481F12919300FD3700 /* RootRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B471F12919300FD3700 /* RootRouter.swift */; };
+		96A55B4A1F1291D500FD3700 /* MainTabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B491F1291D500FD3700 /* MainTabBarVC.swift */; };
+		96A55B4C1F14AD6200FD3700 /* LocalDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B4B1F14AD6200FD3700 /* LocalDefaults.swift */; };
 		96A9217E1F03FC9D0056BC5B /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 96A9217C1F03FC9D0056BC5B /* Model.xcdatamodeld */; };
 		96A921891F03FF360056BC5B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A921881F03FF360056BC5B /* CoreData.framework */; };
 		96A9218C1F03FFF70056BC5B /* LocalUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A9218A1F03FFF70056BC5B /* LocalUser.swift */; };
 		96B070861F0FDB78004C9249 /* SadhanaEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070851F0FDB78004C9249 /* SadhanaEntry.swift */; };
 		96B070881F0FE5C8004C9249 /* RemoteSadhanaEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070871F0FE5C8004C9249 /* RemoteSadhanaEntry.swift */; };
 		96B0708A1F0FE6D3004C9249 /* MappingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070891F0FE6D3004C9249 /* MappingHelper.swift */; };
+		96E976771F15473400F6766F /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976761F15473400F6766F /* LoginVC.swift */; };
+		96E9767B1F15476B00F6766F /* BaseRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E9767A1F15476B00F6766F /* BaseRouter.swift */; };
+		96E976811F1548E600F6766F /* LoginVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976801F1548E600F6766F /* LoginVM.swift */; };
+		96E976851F16463B00F6766F /* BaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976841F16463B00F6766F /* BaseVC.swift */; };
+		96E9768D1F1734A000F6766F /* RxCocoa+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E9768C1F1734A000F6766F /* RxCocoa+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9612BD881F02BD3400336A1B /* RxSwift+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RxSwift+Extensions.swift"; sourceTree = "<group>"; };
 		9612BD8A1F02BE4400336A1B /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
+		964C828D1F17D56D00A41D8A /* MySadhanaVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MySadhanaVC.swift; sourceTree = "<group>"; };
+		964C828F1F17D5A200A41D8A /* NavigationVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationVC.swift; sourceTree = "<group>"; };
 		966056A31EF2B50D00973FA4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		966056A51EF2B50D00973FA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		966056A71EF2B50D00973FA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -44,12 +56,20 @@
 		967D79231F00F3CD00A961D6 /* RemoteService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteService.swift; sourceTree = "<group>"; };
 		967D79261F00F3E100A961D6 /* RemoteUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteUser.swift; sourceTree = "<group>"; };
 		967D79281F00F63E00A961D6 /* General.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = General.swift; sourceTree = "<group>"; };
+		96A55B471F12919300FD3700 /* RootRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootRouter.swift; sourceTree = "<group>"; };
+		96A55B491F1291D500FD3700 /* MainTabBarVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarVC.swift; sourceTree = "<group>"; };
+		96A55B4B1F14AD6200FD3700 /* LocalDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDefaults.swift; sourceTree = "<group>"; };
 		96A9217D1F03FC9D0056BC5B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		96A921881F03FF360056BC5B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		96A9218A1F03FFF70056BC5B /* LocalUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalUser.swift; sourceTree = "<group>"; };
 		96B070851F0FDB78004C9249 /* SadhanaEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SadhanaEntry.swift; sourceTree = "<group>"; };
 		96B070871F0FE5C8004C9249 /* RemoteSadhanaEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteSadhanaEntry.swift; sourceTree = "<group>"; };
 		96B070891F0FE6D3004C9249 /* MappingHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappingHelper.swift; sourceTree = "<group>"; };
+		96E976761F15473400F6766F /* LoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
+		96E9767A1F15476B00F6766F /* BaseRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseRouter.swift; sourceTree = "<group>"; };
+		96E976801F1548E600F6766F /* LoginVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVM.swift; sourceTree = "<group>"; };
+		96E976841F16463B00F6766F /* BaseVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseVC.swift; sourceTree = "<group>"; };
+		96E9768C1F1734A000F6766F /* RxCocoa+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RxCocoa+Extensions.swift"; sourceTree = "<group>"; };
 		96F600501EC996AC006DAECE /* Sadhana.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sadhana.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96F600611EC996AC006DAECE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1A22DCDB6FD8FA97E2D8CCC /* Pods-Sadhana.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sadhana.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sadhana/Pods-Sadhana.release.xcconfig"; sourceTree = "<group>"; };
@@ -83,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				9612BD881F02BD3400336A1B /* RxSwift+Extensions.swift */,
+				96E9768C1F1734A000F6766F /* RxCocoa+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -114,19 +135,16 @@
 		966056AA1EF2B50D00973FA4 /* GUI */ = {
 			isa = PBXGroup;
 			children = (
-				966056AB1EF2B50D00973FA4 /* Base */,
+				96A55B471F12919300FD3700 /* RootRouter.swift */,
+				96A55B431F12917200FD3700 /* Base */,
+				96A55B441F12917200FD3700 /* Login */,
+				96A55B451F12917200FD3700 /* MySadhana */,
+				96A55B461F12917200FD3700 /* TabBar */,
 				966056AC1EF2B50D00973FA4 /* FirstViewController.swift */,
 				966056AD1EF2B50D00973FA4 /* SecondViewController.swift */,
 				966056AE1EF2B50D00973FA4 /* Utilites */,
 			);
 			path = GUI;
-			sourceTree = "<group>";
-		};
-		966056AB1EF2B50D00973FA4 /* Base */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Base;
 			sourceTree = "<group>";
 		};
 		966056AE1EF2B50D00973FA4 /* Utilites */ = {
@@ -166,6 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				967D79201F00F3CD00A961D6 /* LocalService.swift */,
+				96A55B4B1F14AD6200FD3700 /* LocalDefaults.swift */,
 				96A9217B1F03FC880056BC5B /* Model */,
 			);
 			path = Local;
@@ -188,6 +207,41 @@
 				96B070871F0FE5C8004C9249 /* RemoteSadhanaEntry.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		96A55B431F12917200FD3700 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				96E9767A1F15476B00F6766F /* BaseRouter.swift */,
+				96E976841F16463B00F6766F /* BaseVC.swift */,
+				964C828F1F17D5A200A41D8A /* NavigationVC.swift */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		96A55B441F12917200FD3700 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				96E976761F15473400F6766F /* LoginVC.swift */,
+				96E976801F1548E600F6766F /* LoginVM.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		96A55B451F12917200FD3700 /* MySadhana */ = {
+			isa = PBXGroup;
+			children = (
+				964C828D1F17D56D00A41D8A /* MySadhanaVC.swift */,
+			);
+			path = MySadhana;
+			sourceTree = "<group>";
+		};
+		96A55B461F12917200FD3700 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				96A55B491F1291D500FD3700 /* MainTabBarVC.swift */,
+			);
+			path = TabBar;
 			sourceTree = "<group>";
 		};
 		96A9217B1F03FC880056BC5B /* Model */ = {
@@ -369,8 +423,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96A55B481F12919300FD3700 /* RootRouter.swift in Sources */,
 				966056B61EF2B50D00973FA4 /* SecondViewController.swift in Sources */,
 				967D79251F00F3CD00A961D6 /* RemoteService.swift in Sources */,
+				96E976771F15473400F6766F /* LoginVC.swift in Sources */,
+				96A55B4C1F14AD6200FD3700 /* LocalDefaults.swift in Sources */,
+				96E9768D1F1734A000F6766F /* RxCocoa+Extensions.swift in Sources */,
 				966056B41EF2B50D00973FA4 /* AppDelegate.swift in Sources */,
 				96B070881F0FE5C8004C9249 /* RemoteSadhanaEntry.swift in Sources */,
 				96B070861F0FDB78004C9249 /* SadhanaEntry.swift in Sources */,
@@ -380,9 +438,15 @@
 				96A9218C1F03FFF70056BC5B /* LocalUser.swift in Sources */,
 				967D791E1F00F10D00A961D6 /* User.swift in Sources */,
 				967D79241F00F3CD00A961D6 /* LocalService.swift in Sources */,
+				964C82901F17D5A200A41D8A /* NavigationVC.swift in Sources */,
 				96A9217E1F03FC9D0056BC5B /* Model.xcdatamodeld in Sources */,
 				967D79291F00F63E00A961D6 /* General.swift in Sources */,
+				964C828E1F17D56D00A41D8A /* MySadhanaVC.swift in Sources */,
+				96E9767B1F15476B00F6766F /* BaseRouter.swift in Sources */,
+				96E976851F16463B00F6766F /* BaseVC.swift in Sources */,
 				9667E4511F1148AC002589AE /* LocalSadhanaEntry.swift in Sources */,
+				96A55B4A1F1291D500FD3700 /* MainTabBarVC.swift in Sources */,
+				96E976811F1548E600F6766F /* LoginVM.swift in Sources */,
 				966056B51EF2B50D00973FA4 /* FirstViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

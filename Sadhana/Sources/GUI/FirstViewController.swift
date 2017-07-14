@@ -39,7 +39,7 @@ class FirstViewController: UIViewController {
                 _ = RemoteService.shared.send(user!).debug().subscribe()
             }
         })*/
-        
+        /*
         let fetchSadhana = LocalService.shared.fetchSadhanaEntry()
         _ = fetchSadhana.subscribe(onSuccess: { (sadhanaEntry) in
             if sadhanaEntry != nil {
@@ -49,7 +49,7 @@ class FirstViewController: UIViewController {
                     LocalService.shared.saveContext().subscribe()
                 })
             }
-        })
+        })*/
         
         
        /* let loadSadhana = RemoteService.shared.loadSadhanaEntries(userID: 398, year: 2017, month: 2).debug().subscribe()*/

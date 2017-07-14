@@ -24,3 +24,12 @@ func desc(_ object:Any?) -> String {
 protocol JSONConvertible {
     func json() -> JSON
 }
+
+struct Local {
+    static let service = LocalService.shared
+    static let defaults = LocalDefaults.shared
+}
+
+struct Remote {
+    static let service = RemoteService.shared
+}

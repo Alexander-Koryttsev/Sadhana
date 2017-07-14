@@ -34,6 +34,24 @@ extension PrimitiveSequence where Trait == SingleTrait {
     }
 }
 
+extension PrimitiveSequence where Trait == CompletableTrait {
+    func concat<T>(_ second: Single<T>) -> Single<T> {
+        return Single<T>.create(subscribe: { (observer) -> Disposable in
+            _ = self.asObservable().subscribe(onError: { (error) in
+                observer(.error(error))
+            }, onCompleted: { 
+                _ = second.subscribe(onSuccess: { (value) in
+                    observer(.success(value))
+                }, onError: { (error) in
+                    observer(.error(error))
+                })
+            });
+            
+            return Disposables.create {}
+        })
+    }
+}
+
 extension ObservableType {
     func concat(_ second: Completable) -> Observable<Self.E> {
         return self.concat(second.asObservable().cast(Self.E.self))
