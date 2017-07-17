@@ -20,6 +20,14 @@ class LocalDefaults {
         }
         set {
             UserDefaults.standard.set(newValue, forKey: userIDKey)
+            UserDefaults.standard.synchronize()
         }
+    }
+
+    func reset() {
+        for key in UserDefaults.standard.dictionaryRepresentation().keys {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+        UserDefaults.resetStandardUserDefaults()
     }
 }

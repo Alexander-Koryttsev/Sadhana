@@ -10,6 +10,7 @@ import Foundation
 
 enum GeneralError : Error {
     case error
+    case noSelf
 }
 
 typealias JSON = [String: Any]

@@ -14,6 +14,7 @@ class LocalSadhanaEntry: NSManagedObject, SadhanaEntry, JSONConvertible {
     
     @NSManaged public var bedTime: Date?
     @NSManaged public var date: Date
+    @NSManaged public var month: Date
     @NSManaged public var dateCreated: Date
     @NSManaged public var dateUpdated: Date
     @NSManaged public var exercise: Bool
@@ -44,6 +45,8 @@ class LocalSadhanaEntry: NSManagedObject, SadhanaEntry, JSONConvertible {
         dateUpdated = sadhanaEntry.dateUpdated
         userID = sadhanaEntry.userID
         date = sadhanaEntry.date
+
+        month = DateUtilities.monthFrom(date: date)
         japaCount7_30 = sadhanaEntry.japaCount7_30
         japaCount10 = sadhanaEntry.japaCount10
         japaCount18 = sadhanaEntry.japaCount18
@@ -55,8 +58,11 @@ class LocalSadhanaEntry: NSManagedObject, SadhanaEntry, JSONConvertible {
         exercise = sadhanaEntry.exercise
         service = sadhanaEntry.service
         lections = sadhanaEntry.lections
+
         return self
     }
+
+    
     
     func json() -> JSON {
         return ["id": ID ?? NSNull(),

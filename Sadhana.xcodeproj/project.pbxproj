@@ -10,7 +10,6 @@
 		30C7E711667CDBC29B92157F /* Pods_Sadhana.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B60592337E436959AB732F /* Pods_Sadhana.framework */; };
 		9612BD821F0130A700336A1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 966056A31EF2B50D00973FA4 /* Assets.xcassets */; };
 		9612BD831F0130B000336A1B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 966056A41EF2B50D00973FA4 /* LaunchScreen.storyboard */; };
-		9612BD841F0130B000336A1B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 966056A61EF2B50D00973FA4 /* Main.storyboard */; };
 		9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9612BD881F02BD3400336A1B /* RxSwift+Extensions.swift */; };
 		964C828E1F17D56D00A41D8A /* MySadhanaVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C828D1F17D56D00A41D8A /* MySadhanaVC.swift */; };
 		964C82901F17D5A200A41D8A /* NavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C828F1F17D5A200A41D8A /* NavigationVC.swift */; };
@@ -32,8 +31,17 @@
 		96B070861F0FDB78004C9249 /* SadhanaEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070851F0FDB78004C9249 /* SadhanaEntry.swift */; };
 		96B070881F0FE5C8004C9249 /* RemoteSadhanaEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070871F0FE5C8004C9249 /* RemoteSadhanaEntry.swift */; };
 		96B0708A1F0FE6D3004C9249 /* MappingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070891F0FE6D3004C9249 /* MappingHelper.swift */; };
+		96B607C01F18DBAC002B9AB5 /* BaseVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607BF1F18DBAC002B9AB5 /* BaseVM.swift */; };
+		96B607C41F18E7A1002B9AB5 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607C31F18E7A1002B9AB5 /* ActivityIndicator.swift */; };
+		96B607C81F18F45E002B9AB5 /* Localisable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 96B607CA1F18F45E002B9AB5 /* Localisable.strings */; };
+		96B607CD1F190225002B9AB5 /* MySadhanaVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607CC1F190225002B9AB5 /* MySadhanaVM.swift */; };
+		96B607CF1F1902BF002B9AB5 /* MySadhanaRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607CE1F1902BF002B9AB5 /* MySadhanaRouter.swift */; };
+		96B607D11F19097F002B9AB5 /* MainTabBarRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607D01F19097F002B9AB5 /* MainTabBarRouter.swift */; };
+		96B607D31F190990002B9AB5 /* MainTabBarVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607D21F190990002B9AB5 /* MainTabBarVM.swift */; };
+		96B607D51F1A39C5002B9AB5 /* DateUtilites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607D41F1A39C5002B9AB5 /* DateUtilites.swift */; };
+		96B607DA1F1BB6B3002B9AB5 /* CircleGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607D91F1BB6B3002B9AB5 /* CircleGradientView.swift */; };
+		96B607DC1F1BB92A002B9AB5 /* UIColor+SDAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607DB1F1BB92A002B9AB5 /* UIColor+SDAdditions.swift */; };
 		96E976771F15473400F6766F /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976761F15473400F6766F /* LoginVC.swift */; };
-		96E9767B1F15476B00F6766F /* BaseRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E9767A1F15476B00F6766F /* BaseRouter.swift */; };
 		96E976811F1548E600F6766F /* LoginVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976801F1548E600F6766F /* LoginVM.swift */; };
 		96E976851F16463B00F6766F /* BaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976841F16463B00F6766F /* BaseVC.swift */; };
 		96E9768D1F1734A000F6766F /* RxCocoa+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E9768C1F1734A000F6766F /* RxCocoa+Extensions.swift */; };
@@ -46,7 +54,6 @@
 		964C828F1F17D5A200A41D8A /* NavigationVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationVC.swift; sourceTree = "<group>"; };
 		966056A31EF2B50D00973FA4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		966056A51EF2B50D00973FA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		966056A71EF2B50D00973FA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		966056A91EF2B50D00973FA4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		966056AC1EF2B50D00973FA4 /* FirstViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
 		966056AD1EF2B50D00973FA4 /* SecondViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
@@ -65,8 +72,19 @@
 		96B070851F0FDB78004C9249 /* SadhanaEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SadhanaEntry.swift; sourceTree = "<group>"; };
 		96B070871F0FE5C8004C9249 /* RemoteSadhanaEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteSadhanaEntry.swift; sourceTree = "<group>"; };
 		96B070891F0FE6D3004C9249 /* MappingHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappingHelper.swift; sourceTree = "<group>"; };
+		96B607BF1F18DBAC002B9AB5 /* BaseVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseVM.swift; sourceTree = "<group>"; };
+		96B607C31F18E7A1002B9AB5 /* ActivityIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
+		96B607C51F18F433002B9AB5 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		96B607C91F18F45E002B9AB5 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localisable.strings; sourceTree = "<group>"; };
+		96B607CB1F18F462002B9AB5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localisable.strings; sourceTree = "<group>"; };
+		96B607CC1F190225002B9AB5 /* MySadhanaVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MySadhanaVM.swift; sourceTree = "<group>"; };
+		96B607CE1F1902BF002B9AB5 /* MySadhanaRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MySadhanaRouter.swift; sourceTree = "<group>"; };
+		96B607D01F19097F002B9AB5 /* MainTabBarRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarRouter.swift; sourceTree = "<group>"; };
+		96B607D21F190990002B9AB5 /* MainTabBarVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarVM.swift; sourceTree = "<group>"; };
+		96B607D41F1A39C5002B9AB5 /* DateUtilites.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateUtilites.swift; sourceTree = "<group>"; };
+		96B607D91F1BB6B3002B9AB5 /* CircleGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleGradientView.swift; sourceTree = "<group>"; };
+		96B607DB1F1BB92A002B9AB5 /* UIColor+SDAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+SDAdditions.swift"; sourceTree = "<group>"; };
 		96E976761F15473400F6766F /* LoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
-		96E9767A1F15476B00F6766F /* BaseRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseRouter.swift; sourceTree = "<group>"; };
 		96E976801F1548E600F6766F /* LoginVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVM.swift; sourceTree = "<group>"; };
 		96E976841F16463B00F6766F /* BaseVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseVC.swift; sourceTree = "<group>"; };
 		96E9768C1F1734A000F6766F /* RxCocoa+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RxCocoa+Extensions.swift"; sourceTree = "<group>"; };
@@ -113,7 +131,7 @@
 			children = (
 				966056A31EF2B50D00973FA4 /* Assets.xcassets */,
 				966056A41EF2B50D00973FA4 /* LaunchScreen.storyboard */,
-				966056A61EF2B50D00973FA4 /* Main.storyboard */,
+				96B607CA1F18F45E002B9AB5 /* Localisable.strings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -150,6 +168,8 @@
 		966056AE1EF2B50D00973FA4 /* Utilites */ = {
 			isa = PBXGroup;
 			children = (
+				96B607D61F1BB65F002B9AB5 /* Components */,
+				96B607D71F1BB65F002B9AB5 /* Extensions */,
 			);
 			path = Utilites;
 			sourceTree = "<group>";
@@ -166,7 +186,9 @@
 		966056B01EF2B50D00973FA4 /* Utilites */ = {
 			isa = PBXGroup;
 			children = (
+				96B607C21F18E7A1002B9AB5 /* Rx */,
 				9612BD871F02BD2200336A1B /* Extensions */,
+				96B607D41F1A39C5002B9AB5 /* DateUtilites.swift */,
 			);
 			path = Utilites;
 			sourceTree = "<group>";
@@ -212,8 +234,8 @@
 		96A55B431F12917200FD3700 /* Base */ = {
 			isa = PBXGroup;
 			children = (
-				96E9767A1F15476B00F6766F /* BaseRouter.swift */,
 				96E976841F16463B00F6766F /* BaseVC.swift */,
+				96B607BF1F18DBAC002B9AB5 /* BaseVM.swift */,
 				964C828F1F17D5A200A41D8A /* NavigationVC.swift */,
 			);
 			path = Base;
@@ -232,6 +254,8 @@
 			isa = PBXGroup;
 			children = (
 				964C828D1F17D56D00A41D8A /* MySadhanaVC.swift */,
+				96B607CC1F190225002B9AB5 /* MySadhanaVM.swift */,
+				96B607CE1F1902BF002B9AB5 /* MySadhanaRouter.swift */,
 			);
 			path = MySadhana;
 			sourceTree = "<group>";
@@ -240,6 +264,8 @@
 			isa = PBXGroup;
 			children = (
 				96A55B491F1291D500FD3700 /* MainTabBarVC.swift */,
+				96B607D21F190990002B9AB5 /* MainTabBarVM.swift */,
+				96B607D01F19097F002B9AB5 /* MainTabBarRouter.swift */,
 			);
 			path = TabBar;
 			sourceTree = "<group>";
@@ -260,6 +286,38 @@
 				9667E4501F1148AC002589AE /* LocalSadhanaEntry.swift */,
 			);
 			path = ManagedObjects;
+			sourceTree = "<group>";
+		};
+		96B607C21F18E7A1002B9AB5 /* Rx */ = {
+			isa = PBXGroup;
+			children = (
+				96B607C31F18E7A1002B9AB5 /* ActivityIndicator.swift */,
+			);
+			path = Rx;
+			sourceTree = "<group>";
+		};
+		96B607D61F1BB65F002B9AB5 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				96B607D81F1BB6A7002B9AB5 /* View */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		96B607D71F1BB65F002B9AB5 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				96B607DB1F1BB92A002B9AB5 /* UIColor+SDAdditions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		96B607D81F1BB6A7002B9AB5 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				96B607D91F1BB6B3002B9AB5 /* CircleGradientView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		96F600471EC996AC006DAECE = {
@@ -363,7 +421,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9612BD831F0130B000336A1B /* LaunchScreen.storyboard in Resources */,
-				9612BD841F0130B000336A1B /* Main.storyboard in Resources */,
+				96B607C81F18F45E002B9AB5 /* Localisable.strings in Resources */,
 				9612BD821F0130A700336A1B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -430,24 +488,32 @@
 				96A55B4C1F14AD6200FD3700 /* LocalDefaults.swift in Sources */,
 				96E9768D1F1734A000F6766F /* RxCocoa+Extensions.swift in Sources */,
 				966056B41EF2B50D00973FA4 /* AppDelegate.swift in Sources */,
+				96B607C01F18DBAC002B9AB5 /* BaseVM.swift in Sources */,
 				96B070881F0FE5C8004C9249 /* RemoteSadhanaEntry.swift in Sources */,
 				96B070861F0FDB78004C9249 /* SadhanaEntry.swift in Sources */,
+				96B607CF1F1902BF002B9AB5 /* MySadhanaRouter.swift in Sources */,
 				967D79271F00F3E100A961D6 /* RemoteUser.swift in Sources */,
 				96B0708A1F0FE6D3004C9249 /* MappingHelper.swift in Sources */,
 				9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */,
+				96B607CD1F190225002B9AB5 /* MySadhanaVM.swift in Sources */,
 				96A9218C1F03FFF70056BC5B /* LocalUser.swift in Sources */,
+				96B607DC1F1BB92A002B9AB5 /* UIColor+SDAdditions.swift in Sources */,
 				967D791E1F00F10D00A961D6 /* User.swift in Sources */,
 				967D79241F00F3CD00A961D6 /* LocalService.swift in Sources */,
+				96B607C41F18E7A1002B9AB5 /* ActivityIndicator.swift in Sources */,
 				964C82901F17D5A200A41D8A /* NavigationVC.swift in Sources */,
 				96A9217E1F03FC9D0056BC5B /* Model.xcdatamodeld in Sources */,
 				967D79291F00F63E00A961D6 /* General.swift in Sources */,
+				96B607DA1F1BB6B3002B9AB5 /* CircleGradientView.swift in Sources */,
 				964C828E1F17D56D00A41D8A /* MySadhanaVC.swift in Sources */,
-				96E9767B1F15476B00F6766F /* BaseRouter.swift in Sources */,
+				96B607D51F1A39C5002B9AB5 /* DateUtilites.swift in Sources */,
+				96B607D11F19097F002B9AB5 /* MainTabBarRouter.swift in Sources */,
 				96E976851F16463B00F6766F /* BaseVC.swift in Sources */,
 				9667E4511F1148AC002589AE /* LocalSadhanaEntry.swift in Sources */,
 				96A55B4A1F1291D500FD3700 /* MainTabBarVC.swift in Sources */,
 				96E976811F1548E600F6766F /* LoginVM.swift in Sources */,
 				966056B51EF2B50D00973FA4 /* FirstViewController.swift in Sources */,
+				96B607D31F190990002B9AB5 /* MainTabBarVM.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -458,16 +524,18 @@
 			isa = PBXVariantGroup;
 			children = (
 				966056A51EF2B50D00973FA4 /* Base */,
+				96B607C51F18F433002B9AB5 /* ru */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
-		966056A61EF2B50D00973FA4 /* Main.storyboard */ = {
+		96B607CA1F18F45E002B9AB5 /* Localisable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				966056A71EF2B50D00973FA4 /* Base */,
+				96B607C91F18F45E002B9AB5 /* ru */,
+				96B607CB1F18F462002B9AB5 /* en */,
 			);
-			name = Main.storyboard;
+			name = Localisable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -477,6 +545,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -527,6 +596,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";

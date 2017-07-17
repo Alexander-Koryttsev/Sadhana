@@ -12,14 +12,28 @@ import Mapper
 class MappingHelper {
     static let shared = MappingHelper()
     
-    let dateTimeFormatter = DateFormatter()
-    let dateFormatter = DateFormatter()
-    let timeFormatter = DateFormatter()
+    let dateTimeFormatter = DateFormatter.create()
+    let dateFormatter = DateFormatter.create()
+    let timeFormatter = DateFormatter.create()
     
     init() {
         dateTimeFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         dateFormatter.dateFormat = "yyyy-MM-dd"
         timeFormatter.dateFormat = "HH:mm"
+    }
+}
+
+extension DateFormatter {
+    static func create() -> DateFormatter {
+        let formatter = DateFormatter()
+        formatter.timeZone = TimeZone.create()
+        return formatter
+    }
+}
+
+extension TimeZone {
+    static func create() -> TimeZone {
+        return TimeZone(secondsFromGMT:0)!
     }
 }
 

@@ -42,15 +42,42 @@ class LocalService: NSObject {
         context.persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator;
         return context;
     }
+
+    func newSubViewBackgroundContext() -> NSManagedObjectContext {
+        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        context.parent = viewContext;
+        return context;
+    }
     
     func newBackgroundContext() -> NSManagedObjectContext {
         return persistentContainer.newBackgroundContext();
+    }
+
+    func dropDatabase(completionClosure: @escaping () -> ()) {
+        let stores = persistentContainer.persistentStoreCoordinator.persistentStores
+        for store in stores {
+            if let urlLet = store.url {
+                do {
+                try persistentContainer.persistentStoreCoordinator.remove(store)
+                try FileManager.default.removeItem(at: urlLet)
+                }
+                catch {
+                    print(error)
+                }
+            }
+        }
+        persistentContainer.loadPersistentStores() { (description, error) in
+            if let error = error {
+                fatalError("Failed to load Core Data stack: \(error)")
+            }
+            completionClosure()
+        }
     }
 }
 
 
 extension NSManagedObjectContext {
-    func save(_ user:User) -> Single<LocalUser> {
+    func save(user:User) -> Single<LocalUser> {
         let request = LocalUser.request()
         request.predicate = NSPredicate(format: "id = %d", user.ID)
         request.fetchLimit = 1
@@ -118,6 +145,14 @@ extension NSManagedObjectContext {
     func fetchSadhanaEntry() -> Single<LocalSadhanaEntry?> {
         return rxFetchSingle(LocalSadhanaEntry.request())
     }
+
+
+    func mySadhanaEntriesFRC() -> NSFetchedResultsController<LocalSadhanaEntry> {
+        let request = LocalSadhanaEntry.request()
+        request.sortDescriptors = [NSSortDescriptor(key:"date", ascending:false)]
+        return NSFetchedResultsController(fetchRequest: request, managedObjectContext: self, sectionNameKeyPath: "month", cacheName: nil)
+    }
+
     
     func fetchSingle<T>(_ request: NSFetchRequest<T>) -> T? where T : NSFetchRequestResult {
         request.fetchLimit = 1
@@ -137,7 +172,12 @@ extension NSManagedObjectContext {
             self?.perform {
                 do {
                     try self?.save()
-                    observer(.completed)
+                    if let parent = self?.parent {
+                        _ = parent.rxSave().subscribe(observer)
+                    }
+                    else {
+                        observer(.completed)
+                    }
                 } catch {
                     observer(.error(error))
                     fatalError("Failure to save context: \(error)")

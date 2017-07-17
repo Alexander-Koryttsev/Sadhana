@@ -11,31 +11,34 @@ import RxSwift
 import Alamofire
 import Mapper
 
+//TODO: cache sending requests
+
 enum GrantType : String {
     case password = "password"
     case refreshToken = "refresh_token"
 }
 
 enum RemoteError : Error {
+    case invalidResponse
+    case responseBodyIsNotJSON
     case noRefreshToken
-    case cantCast(value:Any, toType:Any.Type)
-    case noData
     case invalidData
-    case notLoggedIn
     case noTokens
+    case notLoggedIn
     case tokensExpired
     case authorisationRequired
-    case unacceptableResponce(type:Any.Type)
+    case invalidRequest(type:InvalidRequestType, description:String)
 }
 
-enum URLStatusCode : Int {
-    case badRequest = 400
-    case notLoggedIn = 401
+enum InvalidRequestType : String {
+    case invalidGrant = "invalid_grant"
+    case notLoggedIn = "json_not_logged_in"
+    case unknown
 }
 
 struct URLs {
     static let base = "https://vaishnavaseva.net"
-    static let api = "vs-api/v1/sadhana"
+    static let api = "vs-api/v2/sadhana"
     static let authToken = "?oauth=token"
     static let default_avatar = "wp-content/themes/salient-child/img/default_avatar.gif"
 }
@@ -45,7 +48,7 @@ struct UserDefaultsKey {
     static let tokens = "\(prefix)Tokens"
 }
 
-class RemoteService {
+class RemoteService {   
     static let shared = RemoteService()
     let clientID = "IXndKqmEoXPTwu46f7nmTcoJ2CfIS6"
     let clientSecret = "1A4oOPOatd8j6EOaL3i9pblOUnqa6j"
@@ -65,9 +68,14 @@ class RemoteService {
             return ["Authorization" : "\(tokenType) \(accessToken)"];
         }
     }
+    let acceptableStatusCodes:Array<Int>
     
     init() {
-        self.restoreTokensFromCache()
+        var codes = Array(200..<300)
+        codes.append(contentsOf: (400..<500))
+        acceptableStatusCodes = codes
+        restoreTokensFromCache()
+        tokens.access = "111"
     }
     
     func restoreTokensFromCache() -> Void {
@@ -103,6 +111,7 @@ class RemoteService {
     }
 
     func login(name:String, password:String) -> Completable {
+
         return baseRequest(.post, URLs.authToken, parameters:
             ["grant_type" : GrantType.password.rawValue,
              "client_id" : clientID,
@@ -125,34 +134,60 @@ class RemoteService {
                 return Disposables.create {} 
             }
             
-            let request = Alamofire.request("\(URLs.base)/\(path)", method: method, parameters: parameters, encoding: URLEncoding.default, headers: authorise ? self.authorizationHeaders : nil)
+            let request = Alamofire.request("\(URLs.base)/\(path)", method: method, parameters: parameters, encoding: JSONEncoding.default, headers: authorise ? self.authorizationHeaders : nil)
             
             print("\n\t\t\t\t\t--- \(method) \(path) ---\n\nHead: \(desc(request.request?.allHTTPHeaderFields))\n\nParamteters: \(desc(parameters))")
-            
-            request.validate().responseJSON(completionHandler: { (response) in
+            request .validate(statusCode: self.acceptableStatusCodes)
+                    .validate(contentType: ["application/json"])
+                    .responseJSON(completionHandler: { (response) in
                 print("\nResponse\n\(response)\n")
                 switch response.result {
                 case .success(let value):
-                    
-                    guard let result = value as? JSON else {
-                        observer(.error(RemoteError.cantCast(value: value, toType: JSON.self)))
+
+                    let statusCode = response.response!.statusCode
+                    print("Status Code:\(statusCode)")
+
+                    var result:JSON
+
+                    if let resultArray = value as? [JSON] {
+                        result = resultArray.first!
+                    }
+                    else if let resultObject = value as? JSON {
+                        result = resultObject
+                    }
+                    else {
+                        observer(.error(RemoteError.responseBodyIsNotJSON))
                         return
                     }
+
+                    //Additional Validation
+                    guard (200..<300).contains(statusCode) else {
+
+                        //TODO: test in postman when tokens are not valid (for example login, check tokens,logout, check tokens)
+                        var error = RemoteError.invalidResponse
+                        var type = InvalidRequestType.unknown
+
+                            if  let errorType = (result["error"] ?? result["code"]) as? String,
+                                let errorDescription = (result["error_description"] ?? result["message"]) as? String,
+                                let typeLet = InvalidRequestType(rawValue: errorType) {
+                                    type = typeLet
+                                    error = RemoteError.invalidRequest(type:type, description:errorDescription)
+                            }
+
+                            switch type {
+                                case .notLoggedIn, .unknown:
+                                    error = authorise ? RemoteError.tokensExpired : RemoteError.authorisationRequired
+                                break
+                                default: break
+                            }
+
+                            observer(.error(error))
+                            return
+                    }
+
                     observer(.success(result))
                     
                 case .failure(let error):
-                    print(response.value ?? "Empty Response Value")
-                    guard let statusCode = response.response?.statusCode else {
-                        observer(.error(error))
-                        return
-                    }
-                    
-                    if(400..<500).contains(statusCode) {
-                        //TODO: test in postman when tokens are not valid (for example login, check tokens,logout, check tokens)
-                        observer(.error(authorise ? RemoteError.tokensExpired : RemoteError.authorisationRequired))
-                        return
-                    }
-                    
                     observer(.error(error))
                 }
             })

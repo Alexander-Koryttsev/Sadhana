@@ -7,42 +7,58 @@
 //
 
 import UIKit
+import RxSwift
 
 class RootRouter {
+
+    static var shared:RootRouter?
     
     let window: UIWindow
+    let mainTabBarRouter = MainTabBarRouter()
     
     init(_ aWindow:UIWindow) {
         window = aWindow
+        RootRouter.shared = self
     }
     
     func showInitialVC() -> Void {
-       /* if let userID = Local.defaults.userID,
+        if let userID = Local.defaults.userID,
             Local.service.viewContext.fetchUser(ID: userID) != nil {
             showTabBarVC()
-        } else {*/
+        } else {
             showLoginVC()
-        //}
+        }
     }
     
     func commitSignIn() -> Void {
-        print("signed in!")
+        showTabBarVC()
+    }
+
+    func logOut(errorMessage: String? = nil) {
+        //TODO: show progress
+        showLoginVC(errorMessage: errorMessage)
+        Local.defaults.reset()
+        Local.service.dropDatabase {}
     }
     
-    private func showLoginVC() -> Void {
+    private func showLoginVC(errorMessage: String? = nil) -> Void {
         for view in window.subviews {
             view.removeFromSuperview()
         }
-        window.rootViewController = LoginVC(viewModel:LoginVM(router: self))
+        let vm = LoginVM(self)
+        window.rootViewController = LoginVC(vm)
         window.makeKeyAndVisible()
+
+        if let errorMessage = errorMessage {
+            vm.errorMessages.onNext(errorMessage)
+        }
     }
-    
+
     private func showTabBarVC() -> Void {
         for view in window.subviews {
             view.removeFromSuperview()
         }
-        window.rootViewController = MainTabBarVC()
+        window.rootViewController = mainTabBarRouter.initialVC()
         window.makeKeyAndVisible()
     }
-    
 }

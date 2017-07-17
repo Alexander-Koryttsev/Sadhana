@@ -14,6 +14,10 @@ extension PrimitiveSequence where Trait == SingleTrait {
     func concat(_ second: Completable) -> Single<PrimitiveSequence.ElementType> {
         return self.asObservable().concat(second).asSingle()
     }
+
+    func concat(_ second: Single<PrimitiveSequence.ElementType>) -> Observable<PrimitiveSequence.ElementType> {
+        return self.asObservable().concat(second)
+    }
     
     func map<T>(object:T.Type) -> Single<T> where T:Mappable {
         return self.asObservable().map(object:object).asSingle()
@@ -49,6 +53,10 @@ extension PrimitiveSequence where Trait == CompletableTrait {
             
             return Disposables.create {}
         })
+    }
+
+    func concat(_ second: Completable) -> Completable {
+        return self.asObservable().concat(second).completable()
     }
 }
 

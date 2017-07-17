@@ -13,6 +13,7 @@
         <attribute name="japaCount24" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="kirtan" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="lections" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="month" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="reading" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="service" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="userID" attributeType="Integer 32" usesScalarValueType="YES" indexed="YES" syncable="YES"/>
@@ -31,7 +32,7 @@
         <attribute name="wakeUpTimeEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <elements>
-        <element name="LocalSadhanaEntry" positionX="-63" positionY="54" width="128" height="285"/>
+        <element name="LocalSadhanaEntry" positionX="-63" positionY="54" width="128" height="300"/>
         <element name="LocalUser" positionX="-63" positionY="-18" width="128" height="195"/>
     </elements>
 </model>

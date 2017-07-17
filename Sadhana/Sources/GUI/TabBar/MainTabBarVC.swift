@@ -8,6 +8,6 @@
 
 import UIKit
 
-class MainTabBarVC : UITabBarController {
+class MainTabBarVC : BaseTabBarVC<MainTabBarVM> {
     
 }
