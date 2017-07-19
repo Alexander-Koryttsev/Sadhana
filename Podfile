@@ -7,4 +7,5 @@ target 'Sadhana' do
     pod 'Alamofire',    '~> 4.4'
     pod 'ModelMapper',  '~> 6.0'
     pod 'EasyPeasy',    '~> 1.4'
+    pod 'DynamicButton', '~> 4.0'
 end

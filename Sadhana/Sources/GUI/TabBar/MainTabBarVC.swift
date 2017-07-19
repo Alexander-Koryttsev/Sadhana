@@ -7,7 +7,14 @@
 //
 
 import UIKit
+import RxCocoa
+import EasyPeasy
 
 class MainTabBarVC : BaseTabBarVC<MainTabBarVM> {
+    override func setViewControllers(_ viewControllers: [UIViewController]?, animated: Bool) {
+        super.setViewControllers(viewControllers, animated: animated)
+        tabBar.isHidden = (viewControllers?.count ?? 0) < 2
+    }
+
     
 }

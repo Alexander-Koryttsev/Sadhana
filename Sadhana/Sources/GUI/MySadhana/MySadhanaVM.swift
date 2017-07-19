@@ -9,40 +9,40 @@
 import RxCocoa
 import RxSwift
 import CoreData
+import Foundation
 
-class MySadhanaVM: BaseVM<MySadhanaRouter> {
+class MySadhanaVM: BaseVM {
     let frc = Local.service.viewContext.mySadhanaEntriesFRC()
     let running = ActivityIndicator()
     let refresh = PublishSubject<Void>()
     let endOfList = PublishSubject<Void>()
+    private let router: MySadhanaRouter
 
-    override init(_ router: MySadhanaRouter) {
-        super.init(router)
-    }
+    init(_ router: MySadhanaRouter) {
+        self.router = router
 
-    override func setUp() {
-        super.setUp()
+        super.init()
 
-        do { try frc.performFetch() }
-        catch { print(error) }
+        frc.managedObjectContext.perform { [weak self] () in
+            if self == nil {return}
+            do { try self!.frc.performFetch() }
+            catch { print(error) }
+        }
 
-        refresh.subscribe(onNext:{ [weak self] () in
-            if self == nil { return }
-            self!.loadEntries().subscribe()
-            .disposed(by: self!.disposeBag)
-        })
-        .disposed(by: disposeBag)
+        let loadNewEntries = loadEntries().asBoolObservable()
+        refresh.flatMap({ return loadNewEntries })
+            .subscribe()
+            .disposed(by: disposeBag)
 
         endOfList.withLatestFrom(running.asObservable())
-        .filter { (running) -> Bool in return !running}
-        .subscribe(onNext: { [weak self] _ in
-            guard self != nil,
-            let entry = self?.frc.sections?.last?.objects?.first as? LocalSadhanaEntry else { return }
-            self!.loadEntries(month:entry.month, monthAgo:1).subscribe()
-            .disposed(by: self!.disposeBag)
-        })
-        .disposed(by: disposeBag)
-
+            .filter { (running) -> Bool in return !running }
+            .flatMap({ [weak self] (_) -> Observable<Bool> in
+                guard self != nil,
+                    let entry = self?.frc.sections?.last?.objects?.first as? LocalSadhanaEntry else { return Observable.just(false)}
+                return self!.loadEntries(month:entry.month, monthAgo:1).asBoolObservable()
+            })
+            .subscribe()
+            .disposed(by: disposeBag)
 
         Observable.of(loadEntries(),
                       loadEntries(monthAgo:1),
@@ -62,11 +62,11 @@ class MySadhanaVM: BaseVM<MySadhanaRouter> {
             let calendar = Calendar.current
             let yearValue = calendar.component(.year, from: month ?? Date())
             let monthValue = calendar.component(.month, from: month ?? Date()) - monthAgo!
-            let context = Local.service.newSubViewBackgroundContext()
+            let context = self!.frc.managedObjectContext
 
             return Remote.service.loadSadhanaEntries(userID: Local.defaults.userID!, year: yearValue, month: monthValue)
                 .flatMap { (remoteEntries) -> Single<[LocalSadhanaEntry]> in
-                    return context.save(remoteEntries)
+                    return context.rxSave(remoteEntries)
                 }
                 .track(self!.errors)
                 .track(self!.running)

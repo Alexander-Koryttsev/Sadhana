@@ -8,6 +8,7 @@
 
 import UIKit
 import RxCocoa
+import RxSwift
 import EasyPeasy
 
 class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
@@ -18,9 +19,10 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
     let form = UIView()
     let loginField = UITextField()
     let passwordField = UITextField()
+    let loginButton = Button()
     let errorLabel = UILabel()
-    let loginButton = UIButton(type: .system)
-    
+    let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .white)
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
@@ -29,50 +31,63 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
     }
 
-    override var preferredStatusBarStyle: UIStatusBarStyle { get {
-        return UIStatusBarStyle.lightContent
-        }
-    }
+    override var preferredStatusBarStyle: UIStatusBarStyle { get { return UIStatusBarStyle.lightContent } }
     
     func setUpSubviews() {
         setUpBackground()
         setUpFormAndLogo()
+        setUpActivityIndicator()
+        setUpErrorLabel()
     }
 
     func setUpBackground() {
         let gradient = CircleGradientView()
         view.addSubview(gradient)
-
         gradient <- Edges()
 
-        let prabhupada = UIImageView(image:UIImage(named:"prabhupada"))
+        let prabhupada = UIImageView(image:#imageLiteral(resourceName: "prabhupada"))
         prabhupada.contentMode = .scaleAspectFill
         view.addSubview(prabhupada)
-
         prabhupada <- [
             Left(),
             Top(),
             Right()
         ]
 
-        let sevaLogo = UIImageView(image:UIImage(named:"v-seva-logo"))
+        let sevaLogo = UIImageView(image:#imageLiteral(resourceName: "v-seva-logo"))
         view.addSubview(sevaLogo)
-
         sevaLogo <- [
             Right(12),
             Bottom(12)
         ]
 
+        view.addSubview(darkBackground)
         darkBackground.backgroundColor = UIColor.black
         darkBackground.alpha = 0
-        view.addSubview(darkBackground)
-
         darkBackground <- Edges()
     }
 
+    func setUpLogo() {
+        formArea.addSubview(titleLabel)
+        titleLabel.text = "Садхана"
+        titleLabel.font = UIFont.sdTextStyle1Font()
+        titleLabel.textColor = UIColor.white
+        titleLabel <- [
+            Bottom(22).to(formContainer),
+            CenterX()
+        ]
+
+        let logo = UIImageView(image:#imageLiteral(resourceName: "icon"))
+        formArea.addSubview(logo)
+        logo <- [
+            CenterX(),
+            Bottom().to(titleLabel)
+        ]
+    }
+
     func setUpFormAndLogo() {
-        formArea.backgroundColor = UIColor.clear
         view.addSubview(formArea)
+        formArea.backgroundColor = UIColor.clear
         formArea <- [
             Top(),
             Left(),
@@ -80,36 +95,31 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
             Bottom(0)
         ]
 
+        formArea.addSubview(formContainer)
         formContainer.layer.shadowOpacity = 1
         formContainer.layer.shadowRadius = 5
         formContainer.layer.shadowColor = UIColor.sdMudBrown12.cgColor
         formContainer.layer.shadowOffset = CGSize(width: 0, height: 1)
-        formArea.addSubview(formContainer)
-
         formContainer <- [
             Top(-5).to(formArea, .centerY),
             Width(280),
             CenterX()
         ]
 
+        formContainer.addSubview(form)
         form.backgroundColor = UIColor.white
         form.clipsToBounds = true
         form.layer.cornerRadius = 5
-
-        formContainer.addSubview(form)
-
         form <- Edges()
 
         setUpLoginField()
         setUpPasswordField()
-        //setUpErrorLabel()
         setUpLoginButton()
         setUpLogo()
     }
 
     func setUpLoginField(){
         form.addSubview(loginField)
-        
         loginField.placeholder = "Логин"
         loginField.borderStyle = .none
         loginField.textAlignment = .center
@@ -119,7 +129,6 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         loginField.keyboardType = .emailAddress
         loginField.returnKeyType = .next
         loginField.delegate = self
-        
         loginField <- [
             Top(),
             Left(8),
@@ -129,11 +138,9 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
     }
     
     func setUpPasswordField() {
-
         let separator = UIView()
-        separator.backgroundColor = UIColor.sdPaleGrey
         form.addSubview(separator)
-
+        separator.backgroundColor = UIColor.sdPaleGrey
         separator <- [
             Top().to(loginField),
             Left().to(loginField, .left),
@@ -142,7 +149,6 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         ]
 
         form.addSubview(passwordField)
-        
         passwordField.placeholder = "Пароль"
         passwordField.isSecureTextEntry = true
         passwordField.borderStyle = loginField.borderStyle
@@ -152,7 +158,6 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         passwordField.returnKeyType = .go
         passwordField.enablesReturnKeyAutomatically = true
         passwordField.delegate = self
-        
         passwordField <- [
             Top().to(separator),
             Left().to(loginField, .left),
@@ -161,23 +166,14 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         ]
     }
 
-    func setUpErrorLabel() {
-        view.addSubview(errorLabel)
-
-        errorLabel.text = ""
-
-        errorLabel <- [CenterX(),
-                        CenterY(-50)]
-    }
-
     func setUpLoginButton() {
         form.addSubview(loginButton)
-        
         loginButton.setTitle("Войти", for: .normal)
         loginButton.backgroundColor = UIColor.sdTangerine
         loginButton.setTitleColor(UIColor.white, for: .normal)
+        loginButton.setTitleColor(UIColor.white, for: .highlighted)
+        loginButton.setTitleColor(UIColor.white, for: .disabled)
         loginButton.titleLabel?.font = UIFont.sdTextStyle2Font()
-        
         loginButton <- [
             Top().to(passwordField),
             Left(),
@@ -187,35 +183,32 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         ]
     }
 
-    func setUpLogo() {
-        titleLabel.text = "Садхана"
-        titleLabel.font = UIFont.sdTextStyle1Font()
-        titleLabel.textColor = UIColor.white
-
-        formArea.addSubview(titleLabel)
-
-        titleLabel <- [
-            Bottom(22).to(formContainer),
-            CenterX()
-        ]
-
-        let logo = UIImageView(image:UIImage(named:"icon"))
-
-        formArea.addSubview(logo)
-
-        logo <- [
+    func setUpActivityIndicator() {
+        formContainer.addSubview(activityIndicator)
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator <- [
             CenterX(),
-            Bottom().to(titleLabel)
+            Top(14).to(form)
         ]
     }
 
+    func setUpErrorLabel() {
+        view.addSubview(errorLabel)
+        errorLabel.numberOfLines = 0
+        errorLabel.textColor = UIColor.white
+        errorLabel.textAlignment = .center
+        errorLabel.text = ""
+        errorLabel <- [
+            Top(12).to(form),
+            CenterX(),
+            Width(280)
+        ]
+    }
+
+
     func keyboardWillChange(notification:NSNotification) {
         guard let userInfo = notification.userInfo,
-            let keyboarFrame = userInfo[UIKeyboardFrameEndUserInfoKey] as? CGRect
-        else {
-            return
-        }
-
+            let keyboarFrame = userInfo[UIKeyboardFrameEndUserInfoKey] as? CGRect else { return }
         let shown = keyboarFrame.origin.y < UIScreen.main.bounds.size.height
 
         UIView.animate(withDuration: 0.3) {
@@ -226,7 +219,6 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-
         if textField == loginField {
             passwordField.becomeFirstResponder()
             return false
@@ -239,21 +231,56 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
     
     override func bindViewModel() {
         super.bindViewModel()
-        _ = loginField.rx.textRequired.asDriver().drive(viewModel.login)
-        _ = passwordField.rx.textRequired.asDriver().drive(viewModel.password)
-        _ = loginButton.rx.tap.asDriver()
+        loginField.text = "sanio91@ya.ru"
+        loginField.rx.textRequired.asDriver().distinctUntilChanged()
+            .do(onNext:{ [weak self] _ in self?.errorLabel.text = nil})
+            .drive(viewModel.login).disposed(by: disposeBag)
+
+        passwordField.text = "Ale248Vai"
+        passwordField.rx.textRequired.asDriver().distinctUntilChanged()
+            .do(onNext:{ [weak self] _ in self?.errorLabel.text = nil})
+            .drive(viewModel.password).disposed(by: disposeBag)
+
+        loginButton.rx.tap.asDriver()
             .do(onNext:{ [weak self] () in self?.errorLabel.text = nil})
-            .drive(viewModel.tap)
-        _ = viewModel.canSignIn.drive(loginButton.rx.isEnabled)
-        _ = viewModel.errorMessagesUI.drive(errorLabel.rx.text)
+            .drive(viewModel.tap).disposed(by: disposeBag)
 
+        viewModel.canSignIn
+            .drive(loginButton.rx.isEnabled).disposed(by: disposeBag)
 
-        _ = viewModel.errorMessagesUI.asObservable().subscribe(onNext: { (message) in
-            let animation = CAKeyframeAnimation(keyPath: "transform.translation.x")
-            animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionLinear)
-            animation.duration = 0.6
-            animation.values = [-20.0, 20.0, -15.0, 15.0, -10.0, 10.0, -5.0, 5.0, 0.0 ]
-            self.form.layer.add(animation, forKey: "shake")
-        })
+        viewModel.activityIndicator
+            .drive(activityIndicator.rx.isAnimating).disposed(by: disposeBag)
+
+        let enabled = viewModel.activityIndicator
+            .map({ (animating) -> Bool in  return !animating })
+
+        enabled.drive(loginField.rx.isEnabled).disposed(by: disposeBag)
+
+        enabled.drive(passwordField.rx.isEnabled).disposed(by: disposeBag)
+
+        viewModel.errorMessagesUI
+            .drive(errorLabel.rx.text).disposed(by: disposeBag)
+
+        viewModel.errors.asObservable()
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] (error) in
+            switch error {
+                case RemoteError.invalidRequest(let type, _):
+                    if type == InvalidRequestType.invalidGrant {
+                        self?.form.shake()
+                    }
+                    break
+                default: break
+                }
+            }).disposed(by: disposeBag)
+
+        let tapBackground = UITapGestureRecognizer()
+        tapBackground.rx.event
+            .subscribe(onNext: { [weak self] _ in
+                self?.loginField.resignFirstResponder()
+                self?.passwordField.resignFirstResponder()
+            })
+            .disposed(by: disposeBag)
+        view.addGestureRecognizer(tapBackground)
     }
 }

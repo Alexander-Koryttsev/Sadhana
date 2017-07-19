@@ -112,10 +112,9 @@ func extractBool(value:Any?) throws -> Bool {
         if let object = Bool(string) {
             return object
         }
-    }
-    
-    if let int = value as? Int {
-        return int != 0
+        if let int = Int(string) {
+            return int != 0
+        }
     }
     
     return false

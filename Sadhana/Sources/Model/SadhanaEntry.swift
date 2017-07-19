@@ -31,3 +31,11 @@ protocol SadhanaEntry {
     var dateCreated : Date { get }
     var dateUpdated : Date { get }
 }
+
+extension SadhanaEntry {
+    var japaSum : Int16 {
+        get {
+            return japaCount7_30 + japaCount10 + japaCount18 + japaCount24
+        }
+    }
+}

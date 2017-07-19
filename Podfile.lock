@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (4.5.0)
+  - DynamicButton (4.0.0)
   - EasyPeasy (1.4.2)
   - ModelMapper (6.0.0)
   - RxCocoa (3.4.0):
@@ -8,6 +9,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.4)
+  - DynamicButton (~> 4.0)
   - EasyPeasy (~> 1.4)
   - ModelMapper (~> 6.0)
   - RxCocoa (~> 3.4)
@@ -15,11 +17,12 @@ DEPENDENCIES:
 
 SPEC CHECKSUMS:
   Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
+  DynamicButton: ddc1e8d79e37f2761ab64df0c02e89061b05d812
   EasyPeasy: 50e7130b61f495ce105796e438d4136e2c8d2cc0
   ModelMapper: 3596a82f26c43491f6a8d3a00bcdba6ba0e62a93
   RxCocoa: d14ef6b6029e1ddc6e966508c09289090de68ff9
   RxSwift: 3789a1af753002a14edecdb698a2424624296a9c
 
-PODFILE CHECKSUM: 108001388e3bf4d2492b045762a23e1b9c4b7594
+PODFILE CHECKSUM: fc436007ae558892183b863846b85911b8197e81
 
 COCOAPODS: 1.2.0

@@ -46,7 +46,7 @@ class LocalSadhanaEntry: NSManagedObject, SadhanaEntry, JSONConvertible {
         userID = sadhanaEntry.userID
         date = sadhanaEntry.date
 
-        month = DateUtilities.monthFrom(date: date)
+        month = date.monthDate
         japaCount7_30 = sadhanaEntry.japaCount7_30
         japaCount10 = sadhanaEntry.japaCount10
         japaCount18 = sadhanaEntry.japaCount18

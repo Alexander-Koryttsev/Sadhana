@@ -58,6 +58,18 @@ extension PrimitiveSequence where Trait == CompletableTrait {
     func concat(_ second: Completable) -> Completable {
         return self.asObservable().concat(second).completable()
     }
+
+    func concat<T>(_ second: Observable<T>) -> Observable<T> {
+        return Observable<T>.create({ (observer) -> Disposable in
+            _ = self.asObservable().subscribe(onError: { (error) in
+                observer.onError(error)
+            }, onCompleted: {
+                _ = second.subscribe(observer)
+            });
+
+            return Disposables.create {}
+        })
+    }
 }
 
 extension ObservableType {
@@ -142,4 +154,13 @@ extension ObservableType where E:Any {
     }
 }
 
+
+extension ObservableConvertibleType {
+    public func asBoolObservable() -> Observable<Bool> {
+        return asObservable().map({ (object) -> Bool in
+            return true
+        })
+        .catchErrorJustReturn(false)
+    }
+}
 

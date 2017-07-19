@@ -3,6 +3,7 @@
 import UIKit
 import RxSwift
 
-enum JustError : Error {
-    case error
-}
+let dateFormatter = DateFormatter()
+dateFormatter.dateFormat =  "LLLL YYYY"
+dateFormatter.locale = Locale(identifier: "RU")
+dateFormatter.string(from: Date()).capitalized

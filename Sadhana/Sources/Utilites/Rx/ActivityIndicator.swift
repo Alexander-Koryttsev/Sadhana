@@ -79,6 +79,12 @@ extension ObservableConvertibleType {
     public func track(_ activity: ActivityIndicator) -> Observable<E> {
         return activity.trackActivityOfObservable(self)
     }
+    public func track(activity: ActivityIndicator) -> Observable<E> {
+        return activity.trackActivityOfObservable(self)
+    }
+    public func trackActivity(_ activity: ActivityIndicator) -> Observable<E> {
+        return activity.trackActivityOfObservable(self)
+    }
 }
 
 extension PrimitiveSequence where Trait == SingleTrait {

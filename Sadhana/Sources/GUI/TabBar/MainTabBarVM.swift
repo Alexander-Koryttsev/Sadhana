@@ -8,6 +8,10 @@
 
 import Foundation
 
-class MainTabBarVM: BaseVM<MainTabBarRouter> {
+class MainTabBarVM: BaseVM {
+    let router : MainTabBarRouter
 
+    init(_ router : MainTabBarRouter) {
+        self.router = router
+    }
 }

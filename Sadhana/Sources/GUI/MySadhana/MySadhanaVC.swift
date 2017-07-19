@@ -8,19 +8,41 @@
 
 import UIKit
 import CoreData
+import RxSwift
+import RxCocoa
+import EasyPeasy
 
 class MySadhanaVC: BaseFetchedResultsVC<MySadhanaVM> {
 
     override var title:String? {
-        get { return "My Sadhana" }
+        get { return "Мой график" }
         set {}
     }
+
+    let errorLabel = UILabel()
+    let errorContainer = UIView()
+    var maxCounts = [Int : Int16]()
 
     override func viewDidLoad() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style:.plain, target:self, action:#selector(logOut(sender:)))
         viewModel.frc.delegate = self;
         refreshControl = UIRefreshControl()
+        setUpErrorLabel()
+
         super.viewDidLoad()
+
+        tabBarItem = UITabBarItem(title: title, image:UIImage(named:"tab-bar-icon-my"), tag:0)
+        tableView.register(SadhanaEntryCell.self, forCellReuseIdentifier: NSStringFromClass(SadhanaEntryCell.self))
+        tableView.register(GraphHeader.self, forHeaderFooterViewReuseIdentifier: NSStringFromClass(GraphHeader.self))
+    }
+
+    func setUpErrorLabel() {
+        errorContainer.backgroundColor = UIColor.white
+        errorContainer.addSubview(errorLabel)
+        errorLabel.textAlignment = .center
+        errorLabel.numberOfLines = 0
+        errorLabel.textColor = UIColor.sdBrownishGrey
+        errorLabel <- Edges(10)
     }
 
     func logOut(sender: UIBarButtonItem) {
@@ -29,8 +51,56 @@ class MySadhanaVC: BaseFetchedResultsVC<MySadhanaVM> {
 
     override func bindViewModel() {
         super.bindViewModel()
-        _ = refreshControl!.rx.controlEvent(.valueChanged).asDriver().drive(viewModel.refresh)
-        _ = viewModel.running.asDriver().drive(refreshControl!.rx.isRefreshing)
+        refreshControl!.rx.controlEvent(.valueChanged).asDriver()
+            .do(onNext:{
+                self.tableView.tableHeaderView = nil
+            })
+            .drive(viewModel.refresh).disposed(by: disposeBag)
+
+        viewModel.running.asDriver()
+            .drive(refreshControl!.rx.isRefreshing).disposed(by: disposeBag)
+
+        viewModel.errorMessagesUI.asObservable()
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { (message) in
+                self.errorLabel.text = message
+                //TODO: fix layout bug
+                //TODO: move to the extension
+                //set the tableHeaderView so that the required height can be determined
+                self.tableView.tableHeaderView = self.errorContainer;
+                self.errorContainer.setNeedsLayout()
+                self.errorContainer.layoutIfNeeded()
+                let height = self.errorContainer.systemLayoutSizeFitting(UILayoutFittingCompressedSize).height
+
+                //update the header's frame and set it again
+                var headerFrame = self.errorContainer.frame;
+                headerFrame.size.height = height;
+                self.errorContainer.frame = headerFrame;
+                self.tableView.tableHeaderView = self.errorContainer;
+            }).disposed(by: disposeBag)
+    }
+
+    override func reloadData() {
+        maxCounts.removeAll()
+        super.reloadData()
+    }
+
+    override func sectionsDidUpdate(_ sections:IndexSet) {
+        super.sectionsDidUpdate(sections)
+        maxCounts.removeAll()
+    }
+
+    func maxCount(for section:Int) -> Int16 {
+
+        if let cachedCount = maxCounts[section] {
+            return cachedCount
+        }
+        let maxCount = viewModel.frc.sections![section].objects?.reduce(16, { (result, entry) -> Int16 in
+            let sum = (entry as! SadhanaEntry).japaSum
+            return sum > result ? sum : result
+        })
+        maxCounts[section] = maxCount
+        return maxCount!
     }
 
     //MARK: Table Data Source
@@ -44,14 +114,22 @@ class MySadhanaVC: BaseFetchedResultsVC<MySadhanaVM> {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let section = viewModel.frc.sections?[section] else { return nil }
-        return section.name
+        return (section.objects?.first! as! SadhanaEntry).date.month
+    }
+
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: NSStringFromClass(GraphHeader.self)) as! GraphHeader
+        header.textLabel?.isHidden = true
+        header.titleLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
+        return header
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") ?? UITableViewCell(style: .value2, reuseIdentifier: "Cell")
+        let cell = (tableView.dequeueReusableCell(withIdentifier: NSStringFromClass(SadhanaEntryCell.self)) ?? SadhanaEntryCell()) as! SadhanaEntryCell
+
         let entry = viewModel.frc.object(at: indexPath)
-        cell.textLabel?.text = entry.date.description
-        cell.detailTextLabel?.text = "\(entry.japaCount7_30), \(entry.japaCount10), \(entry.japaCount18), \(entry.japaCount24)"
+        cell.map(entry, maxRoundsCount:self.maxCount(for: indexPath.section))
+
         return cell
     }
 
@@ -60,5 +138,26 @@ class MySadhanaVC: BaseFetchedResultsVC<MySadhanaVM> {
             indexPath.row > (viewModel.frc.sections?.last?.numberOfObjects)! - 3 {
             viewModel.endOfList.onNext()
         }
+    }
+}
+
+
+class GraphHeader: UITableViewHeaderFooterView {
+
+    let bar = UINavigationBar()
+    let titleLabel = UILabel()
+
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier ?? NSStringFromClass(GraphHeader.self))
+        backgroundView = bar
+        contentView.addSubview(titleLabel)
+        titleLabel.textAlignment = .center
+        titleLabel.font = UIFont.systemFont(ofSize: 15)
+        titleLabel.textColor = UIColor.sdBrownishGrey
+        titleLabel <- Center()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

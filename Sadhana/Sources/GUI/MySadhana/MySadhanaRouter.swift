@@ -8,10 +8,18 @@
 
 import UIKit
 
-class MySadhanaRouter {
+class MySadhanaRouter : SadhanaEditingRouter {
+    weak var parent : MainTabBarRouter?
 
     func initialVC() -> UIViewController {
         return NavigationVC(rootViewController: MySadhanaVC(MySadhanaVM(self)))
     }
 
+    func showSadhanaEditing(date: Date) {
+        self.parent?.showSadhanaEditing(date: date)
+    }
+
+    func hideSadhanaEditing() {
+        self.parent?.hideSadhanaEditing()
+    }
 }

@@ -23,7 +23,7 @@ class LocalService: NSObject {
         }
     }
     
-    private let persistentContainer: NSPersistentContainer
+    private var persistentContainer: NSPersistentContainer
     var backgroundContext: NSManagedObjectContext
     
     init(completionClosure: @escaping () -> ()) {
@@ -66,18 +66,20 @@ class LocalService: NSObject {
                 }
             }
         }
+        persistentContainer = NSPersistentContainer(name: "Model")
         persistentContainer.loadPersistentStores() { (description, error) in
             if let error = error {
                 fatalError("Failed to load Core Data stack: \(error)")
             }
             completionClosure()
         }
+        backgroundContext = persistentContainer.newBackgroundContext()
     }
 }
 
 
 extension NSManagedObjectContext {
-    func save(user:User) -> Single<LocalUser> {
+    func rxSave(user:User) -> Single<LocalUser> {
         let request = LocalUser.request()
         request.predicate = NSPredicate(format: "id = %d", user.ID)
         request.fetchLimit = 1
@@ -87,7 +89,7 @@ extension NSManagedObjectContext {
         }.concat(rxSave())
     }
     
-    func save(_ entries:[SadhanaEntry]) -> Single<[LocalSadhanaEntry]> {
+    func rxSave(_ entries:[SadhanaEntry]) -> Single<[LocalSadhanaEntry]> {
         //TODO: make thread-safe
         let request = LocalSadhanaEntry.request()
         let IDs = entries.flatMap { (entry) -> Int32 in
@@ -96,6 +98,7 @@ extension NSManagedObjectContext {
         request.predicate = NSPredicate(format: "id IN %@", IDs)
         request.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
         return self.rxFetch(request).map { [weak self] (localEntries) -> [LocalSadhanaEntry] in
+            //TODO: Check is context's queue
             var remoteEntries = entries.sorted(by: { (entry1, entry2) -> Bool in
                 return entry1.ID! <  entry2.ID!
             })
@@ -145,7 +148,6 @@ extension NSManagedObjectContext {
     func fetchSadhanaEntry() -> Single<LocalSadhanaEntry?> {
         return rxFetchSingle(LocalSadhanaEntry.request())
     }
-
 
     func mySadhanaEntriesFRC() -> NSFetchedResultsController<LocalSadhanaEntry> {
         let request = LocalSadhanaEntry.request()

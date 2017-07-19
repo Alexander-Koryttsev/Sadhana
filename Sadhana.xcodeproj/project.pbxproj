@@ -13,9 +13,8 @@
 		9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9612BD881F02BD3400336A1B /* RxSwift+Extensions.swift */; };
 		964C828E1F17D56D00A41D8A /* MySadhanaVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C828D1F17D56D00A41D8A /* MySadhanaVC.swift */; };
 		964C82901F17D5A200A41D8A /* NavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C828F1F17D5A200A41D8A /* NavigationVC.swift */; };
+		9654AE9A1F1E656F00F75772 /* OnOffImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9654AE991F1E656F00F75772 /* OnOffImageView.swift */; };
 		966056B41EF2B50D00973FA4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966056A91EF2B50D00973FA4 /* AppDelegate.swift */; };
-		966056B51EF2B50D00973FA4 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966056AC1EF2B50D00973FA4 /* FirstViewController.swift */; };
-		966056B61EF2B50D00973FA4 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966056AD1EF2B50D00973FA4 /* SecondViewController.swift */; };
 		9667E4511F1148AC002589AE /* LocalSadhanaEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9667E4501F1148AC002589AE /* LocalSadhanaEntry.swift */; };
 		967D791E1F00F10D00A961D6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D791D1F00F10C00A961D6 /* User.swift */; };
 		967D79241F00F3CD00A961D6 /* LocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79201F00F3CD00A961D6 /* LocalService.swift */; };
@@ -28,6 +27,10 @@
 		96A9217E1F03FC9D0056BC5B /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 96A9217C1F03FC9D0056BC5B /* Model.xcdatamodeld */; };
 		96A921891F03FF360056BC5B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A921881F03FF360056BC5B /* CoreData.framework */; };
 		96A9218C1F03FFF70056BC5B /* LocalUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A9218A1F03FFF70056BC5B /* LocalUser.swift */; };
+		96A9E5AA1F1F50CE003E9982 /* SadhanaEditingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A9E5A61F1F50CE003E9982 /* SadhanaEditingVC.swift */; };
+		96A9E5AB1F1F50CE003E9982 /* SadhanaEditingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A9E5A71F1F50CE003E9982 /* SadhanaEditingVM.swift */; };
+		96A9E5AC1F1F50CE003E9982 /* SadhanaEntryEditingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A9E5A81F1F50CE003E9982 /* SadhanaEntryEditingVC.swift */; };
+		96A9E5AD1F1F50CE003E9982 /* SadhanaEntryEditingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A9E5A91F1F50CE003E9982 /* SadhanaEntryEditingVM.swift */; };
 		96B070861F0FDB78004C9249 /* SadhanaEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070851F0FDB78004C9249 /* SadhanaEntry.swift */; };
 		96B070881F0FE5C8004C9249 /* RemoteSadhanaEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070871F0FE5C8004C9249 /* RemoteSadhanaEntry.swift */; };
 		96B0708A1F0FE6D3004C9249 /* MappingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070891F0FE6D3004C9249 /* MappingHelper.swift */; };
@@ -38,9 +41,14 @@
 		96B607CF1F1902BF002B9AB5 /* MySadhanaRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607CE1F1902BF002B9AB5 /* MySadhanaRouter.swift */; };
 		96B607D11F19097F002B9AB5 /* MainTabBarRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607D01F19097F002B9AB5 /* MainTabBarRouter.swift */; };
 		96B607D31F190990002B9AB5 /* MainTabBarVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607D21F190990002B9AB5 /* MainTabBarVM.swift */; };
-		96B607D51F1A39C5002B9AB5 /* DateUtilites.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607D41F1A39C5002B9AB5 /* DateUtilites.swift */; };
-		96B607DA1F1BB6B3002B9AB5 /* CircleGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607D91F1BB6B3002B9AB5 /* CircleGradientView.swift */; };
+		96B607D51F1A39C5002B9AB5 /* DateUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607D41F1A39C5002B9AB5 /* DateUtility.swift */; };
 		96B607DC1F1BB92A002B9AB5 /* UIColor+SDAdditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607DB1F1BB92A002B9AB5 /* UIColor+SDAdditions.swift */; };
+		96B607E11F1C7A49002B9AB5 /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607E01F1C7A49002B9AB5 /* UIView+Extensions.swift */; };
+		96B607F61F1D01DE002B9AB5 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607F01F1D01DE002B9AB5 /* Button.swift */; };
+		96B607F71F1D01DE002B9AB5 /* CircleGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607F31F1D01DE002B9AB5 /* CircleGradientView.swift */; };
+		96B607F81F1D01DE002B9AB5 /* JapaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607F41F1D01DE002B9AB5 /* JapaView.swift */; };
+		96B607F91F1D01DE002B9AB5 /* SadhanaEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607F51F1D01DE002B9AB5 /* SadhanaEntryView.swift */; };
+		96B607FB1F1D01EF002B9AB5 /* SadhanaEntryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607FA1F1D01EF002B9AB5 /* SadhanaEntryCell.swift */; };
 		96E976771F15473400F6766F /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976761F15473400F6766F /* LoginVC.swift */; };
 		96E976811F1548E600F6766F /* LoginVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976801F1548E600F6766F /* LoginVM.swift */; };
 		96E976851F16463B00F6766F /* BaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976841F16463B00F6766F /* BaseVC.swift */; };
@@ -52,11 +60,10 @@
 		9612BD8A1F02BE4400336A1B /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		964C828D1F17D56D00A41D8A /* MySadhanaVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MySadhanaVC.swift; sourceTree = "<group>"; };
 		964C828F1F17D5A200A41D8A /* NavigationVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationVC.swift; sourceTree = "<group>"; };
+		9654AE991F1E656F00F75772 /* OnOffImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnOffImageView.swift; sourceTree = "<group>"; };
 		966056A31EF2B50D00973FA4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		966056A51EF2B50D00973FA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		966056A91EF2B50D00973FA4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		966056AC1EF2B50D00973FA4 /* FirstViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
-		966056AD1EF2B50D00973FA4 /* SecondViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 		9667E4501F1148AC002589AE /* LocalSadhanaEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalSadhanaEntry.swift; sourceTree = "<group>"; };
 		967D791D1F00F10C00A961D6 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		967D79201F00F3CD00A961D6 /* LocalService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalService.swift; sourceTree = "<group>"; };
@@ -69,6 +76,10 @@
 		96A9217D1F03FC9D0056BC5B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		96A921881F03FF360056BC5B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		96A9218A1F03FFF70056BC5B /* LocalUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalUser.swift; sourceTree = "<group>"; };
+		96A9E5A61F1F50CE003E9982 /* SadhanaEditingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SadhanaEditingVC.swift; sourceTree = "<group>"; };
+		96A9E5A71F1F50CE003E9982 /* SadhanaEditingVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SadhanaEditingVM.swift; sourceTree = "<group>"; };
+		96A9E5A81F1F50CE003E9982 /* SadhanaEntryEditingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SadhanaEntryEditingVC.swift; sourceTree = "<group>"; };
+		96A9E5A91F1F50CE003E9982 /* SadhanaEntryEditingVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SadhanaEntryEditingVM.swift; sourceTree = "<group>"; };
 		96B070851F0FDB78004C9249 /* SadhanaEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SadhanaEntry.swift; sourceTree = "<group>"; };
 		96B070871F0FE5C8004C9249 /* RemoteSadhanaEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteSadhanaEntry.swift; sourceTree = "<group>"; };
 		96B070891F0FE6D3004C9249 /* MappingHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappingHelper.swift; sourceTree = "<group>"; };
@@ -81,9 +92,14 @@
 		96B607CE1F1902BF002B9AB5 /* MySadhanaRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MySadhanaRouter.swift; sourceTree = "<group>"; };
 		96B607D01F19097F002B9AB5 /* MainTabBarRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarRouter.swift; sourceTree = "<group>"; };
 		96B607D21F190990002B9AB5 /* MainTabBarVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarVM.swift; sourceTree = "<group>"; };
-		96B607D41F1A39C5002B9AB5 /* DateUtilites.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateUtilites.swift; sourceTree = "<group>"; };
-		96B607D91F1BB6B3002B9AB5 /* CircleGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleGradientView.swift; sourceTree = "<group>"; };
+		96B607D41F1A39C5002B9AB5 /* DateUtility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateUtility.swift; sourceTree = "<group>"; };
 		96B607DB1F1BB92A002B9AB5 /* UIColor+SDAdditions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+SDAdditions.swift"; sourceTree = "<group>"; };
+		96B607E01F1C7A49002B9AB5 /* UIView+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
+		96B607F01F1D01DE002B9AB5 /* Button.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
+		96B607F31F1D01DE002B9AB5 /* CircleGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleGradientView.swift; sourceTree = "<group>"; };
+		96B607F41F1D01DE002B9AB5 /* JapaView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JapaView.swift; sourceTree = "<group>"; };
+		96B607F51F1D01DE002B9AB5 /* SadhanaEntryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SadhanaEntryView.swift; sourceTree = "<group>"; };
+		96B607FA1F1D01EF002B9AB5 /* SadhanaEntryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SadhanaEntryCell.swift; sourceTree = "<group>"; };
 		96E976761F15473400F6766F /* LoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		96E976801F1548E600F6766F /* LoginVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVM.swift; sourceTree = "<group>"; };
 		96E976841F16463B00F6766F /* BaseVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseVC.swift; sourceTree = "<group>"; };
@@ -126,6 +142,14 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		9654AE981F1E1AA600F75772 /* Graph */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Graph;
+			path = Sadhana;
+			sourceTree = "<group>";
+		};
 		966056A21EF2B50D00973FA4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -154,12 +178,12 @@
 			isa = PBXGroup;
 			children = (
 				96A55B471F12919300FD3700 /* RootRouter.swift */,
+				96A9E5A51F1F50CE003E9982 /* SadhanaEditing */,
+				96B607EE1F1D01DE002B9AB5 /* Components */,
 				96A55B431F12917200FD3700 /* Base */,
 				96A55B441F12917200FD3700 /* Login */,
 				96A55B451F12917200FD3700 /* MySadhana */,
 				96A55B461F12917200FD3700 /* TabBar */,
-				966056AC1EF2B50D00973FA4 /* FirstViewController.swift */,
-				966056AD1EF2B50D00973FA4 /* SecondViewController.swift */,
 				966056AE1EF2B50D00973FA4 /* Utilites */,
 			);
 			path = GUI;
@@ -168,7 +192,6 @@
 		966056AE1EF2B50D00973FA4 /* Utilites */ = {
 			isa = PBXGroup;
 			children = (
-				96B607D61F1BB65F002B9AB5 /* Components */,
 				96B607D71F1BB65F002B9AB5 /* Extensions */,
 			);
 			path = Utilites;
@@ -188,7 +211,7 @@
 			children = (
 				96B607C21F18E7A1002B9AB5 /* Rx */,
 				9612BD871F02BD2200336A1B /* Extensions */,
-				96B607D41F1A39C5002B9AB5 /* DateUtilites.swift */,
+				96B607D41F1A39C5002B9AB5 /* DateUtility.swift */,
 			);
 			path = Utilites;
 			sourceTree = "<group>";
@@ -234,6 +257,7 @@
 		96A55B431F12917200FD3700 /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				9654AE981F1E1AA600F75772 /* Graph */,
 				96E976841F16463B00F6766F /* BaseVC.swift */,
 				96B607BF1F18DBAC002B9AB5 /* BaseVM.swift */,
 				964C828F1F17D5A200A41D8A /* NavigationVC.swift */,
@@ -288,6 +312,18 @@
 			path = ManagedObjects;
 			sourceTree = "<group>";
 		};
+		96A9E5A51F1F50CE003E9982 /* SadhanaEditing */ = {
+			isa = PBXGroup;
+			children = (
+				96A9E5A61F1F50CE003E9982 /* SadhanaEditingVC.swift */,
+				96A9E5A71F1F50CE003E9982 /* SadhanaEditingVM.swift */,
+				96A9E5A81F1F50CE003E9982 /* SadhanaEntryEditingVC.swift */,
+				96A9E5A91F1F50CE003E9982 /* SadhanaEntryEditingVM.swift */,
+			);
+			name = SadhanaEditing;
+			path = EditSadhana;
+			sourceTree = "<group>";
+		};
 		96B607C21F18E7A1002B9AB5 /* Rx */ = {
 			isa = PBXGroup;
 			children = (
@@ -296,26 +332,48 @@
 			path = Rx;
 			sourceTree = "<group>";
 		};
-		96B607D61F1BB65F002B9AB5 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				96B607D81F1BB6A7002B9AB5 /* View */,
-			);
-			path = Components;
-			sourceTree = "<group>";
-		};
 		96B607D71F1BB65F002B9AB5 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				96B607DB1F1BB92A002B9AB5 /* UIColor+SDAdditions.swift */,
+				96B607E01F1C7A49002B9AB5 /* UIView+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		96B607D81F1BB6A7002B9AB5 /* View */ = {
+		96B607EE1F1D01DE002B9AB5 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				96B607D91F1BB6B3002B9AB5 /* CircleGradientView.swift */,
+				96B607EF1F1D01DE002B9AB5 /* Button */,
+				96B607F11F1D01DE002B9AB5 /* Cell */,
+				96B607F21F1D01DE002B9AB5 /* View */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		96B607EF1F1D01DE002B9AB5 /* Button */ = {
+			isa = PBXGroup;
+			children = (
+				96B607F01F1D01DE002B9AB5 /* Button.swift */,
+			);
+			path = Button;
+			sourceTree = "<group>";
+		};
+		96B607F11F1D01DE002B9AB5 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				96B607FA1F1D01EF002B9AB5 /* SadhanaEntryCell.swift */,
+			);
+			path = Cell;
+			sourceTree = "<group>";
+		};
+		96B607F21F1D01DE002B9AB5 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				96B607F31F1D01DE002B9AB5 /* CircleGradientView.swift */,
+				96B607F41F1D01DE002B9AB5 /* JapaView.swift */,
+				96B607F51F1D01DE002B9AB5 /* SadhanaEntryView.swift */,
+				9654AE991F1E656F00F75772 /* OnOffImageView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -482,37 +540,45 @@
 			buildActionMask = 2147483647;
 			files = (
 				96A55B481F12919300FD3700 /* RootRouter.swift in Sources */,
-				966056B61EF2B50D00973FA4 /* SecondViewController.swift in Sources */,
 				967D79251F00F3CD00A961D6 /* RemoteService.swift in Sources */,
 				96E976771F15473400F6766F /* LoginVC.swift in Sources */,
+				96B607F61F1D01DE002B9AB5 /* Button.swift in Sources */,
 				96A55B4C1F14AD6200FD3700 /* LocalDefaults.swift in Sources */,
+				96A9E5AC1F1F50CE003E9982 /* SadhanaEntryEditingVC.swift in Sources */,
 				96E9768D1F1734A000F6766F /* RxCocoa+Extensions.swift in Sources */,
 				966056B41EF2B50D00973FA4 /* AppDelegate.swift in Sources */,
+				96B607E11F1C7A49002B9AB5 /* UIView+Extensions.swift in Sources */,
 				96B607C01F18DBAC002B9AB5 /* BaseVM.swift in Sources */,
 				96B070881F0FE5C8004C9249 /* RemoteSadhanaEntry.swift in Sources */,
 				96B070861F0FDB78004C9249 /* SadhanaEntry.swift in Sources */,
 				96B607CF1F1902BF002B9AB5 /* MySadhanaRouter.swift in Sources */,
 				967D79271F00F3E100A961D6 /* RemoteUser.swift in Sources */,
+				9654AE9A1F1E656F00F75772 /* OnOffImageView.swift in Sources */,
 				96B0708A1F0FE6D3004C9249 /* MappingHelper.swift in Sources */,
 				9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */,
+				96B607FB1F1D01EF002B9AB5 /* SadhanaEntryCell.swift in Sources */,
 				96B607CD1F190225002B9AB5 /* MySadhanaVM.swift in Sources */,
 				96A9218C1F03FFF70056BC5B /* LocalUser.swift in Sources */,
 				96B607DC1F1BB92A002B9AB5 /* UIColor+SDAdditions.swift in Sources */,
 				967D791E1F00F10D00A961D6 /* User.swift in Sources */,
+				96B607F91F1D01DE002B9AB5 /* SadhanaEntryView.swift in Sources */,
 				967D79241F00F3CD00A961D6 /* LocalService.swift in Sources */,
 				96B607C41F18E7A1002B9AB5 /* ActivityIndicator.swift in Sources */,
+				96A9E5AB1F1F50CE003E9982 /* SadhanaEditingVM.swift in Sources */,
 				964C82901F17D5A200A41D8A /* NavigationVC.swift in Sources */,
 				96A9217E1F03FC9D0056BC5B /* Model.xcdatamodeld in Sources */,
 				967D79291F00F63E00A961D6 /* General.swift in Sources */,
-				96B607DA1F1BB6B3002B9AB5 /* CircleGradientView.swift in Sources */,
+				96B607F81F1D01DE002B9AB5 /* JapaView.swift in Sources */,
 				964C828E1F17D56D00A41D8A /* MySadhanaVC.swift in Sources */,
-				96B607D51F1A39C5002B9AB5 /* DateUtilites.swift in Sources */,
+				96B607F71F1D01DE002B9AB5 /* CircleGradientView.swift in Sources */,
+				96B607D51F1A39C5002B9AB5 /* DateUtility.swift in Sources */,
+				96A9E5AD1F1F50CE003E9982 /* SadhanaEntryEditingVM.swift in Sources */,
 				96B607D11F19097F002B9AB5 /* MainTabBarRouter.swift in Sources */,
 				96E976851F16463B00F6766F /* BaseVC.swift in Sources */,
 				9667E4511F1148AC002589AE /* LocalSadhanaEntry.swift in Sources */,
 				96A55B4A1F1291D500FD3700 /* MainTabBarVC.swift in Sources */,
 				96E976811F1548E600F6766F /* LoginVM.swift in Sources */,
-				966056B51EF2B50D00973FA4 /* FirstViewController.swift in Sources */,
+				96A9E5AA1F1F50CE003E9982 /* SadhanaEditingVC.swift in Sources */,
 				96B607D31F190990002B9AB5 /* MainTabBarVM.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -565,8 +631,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -616,7 +681,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

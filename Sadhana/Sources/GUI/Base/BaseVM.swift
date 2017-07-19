@@ -9,36 +9,31 @@
 import RxCocoa
 import RxSwift
 
-class BaseVM<Router> {
-    let errorMessages = PublishSubject<String>()
-    let errorMessagesUI: Driver<String>
+class BaseVM {
+    private let errorMessages = PublishSubject<String>()
+    var errorMessagesUI: Driver<String> { get { return errorMessages.asDriver(onErrorJustReturn: "") } }
     let errors = PublishSubject<Error>()
     let disposeBag = DisposeBag()
-    let router:Router
 
-    init(_ router:Router) {
-        self.router = router
-        self.errorMessagesUI = errorMessages.asDriver(onErrorJustReturn: "")
-        self.setUp()
-    }
-
-    func setUp() {
+    init() {
         errors.subscribeOn(MainScheduler.instance)
-        .subscribe(onNext:{[weak self] (error) in
-            self?.handle(error:error)
-        })
-        .disposed(by: disposeBag)
+            .subscribe(onNext:{[weak self] (error) in
+                self?.handle(error:error)
+            })
+            .disposed(by: disposeBag)
     }
 
     func handle(error:Error) {
         switch error {
-        case RemoteError.notLoggedIn:
-            RootRouter.shared?.logOut(errorMessage:"Your session is expired")
+            case RemoteError.notLoggedIn:
+                RootRouter.shared?.logOut(errorMessage:"Your session is expired")
+                break
+            case RemoteError.invalidRequest(_, let description):
+                self.errorMessages.onNext(description)
+                break
+            default:
+                self.errorMessages.onNext(error.localizedDescription)
             break
-        case RemoteError.invalidRequest(_, let description):
-            self.errorMessages.onNext(description)
-            break
-        default: break
         }
     }
 }

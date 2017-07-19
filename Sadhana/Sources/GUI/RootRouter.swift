@@ -8,16 +8,19 @@
 
 import UIKit
 import RxSwift
+import DynamicButton
+import EasyPeasy
 
-class RootRouter {
+class RootRouter : WindowRouter {
 
     static var shared:RootRouter?
     
     let window: UIWindow
-    let mainTabBarRouter = MainTabBarRouter()
-    
+    var mainTabBarRouter : MainTabBarRouter
+
     init(_ aWindow:UIWindow) {
         window = aWindow
+        mainTabBarRouter = MainTabBarRouter(window: window)
         RootRouter.shared = self
     }
     
@@ -42,23 +45,29 @@ class RootRouter {
     }
     
     private func showLoginVC(errorMessage: String? = nil) -> Void {
-        for view in window.subviews {
-            view.removeFromSuperview()
-        }
-        let vm = LoginVM(self)
-        window.rootViewController = LoginVC(vm)
-        window.makeKeyAndVisible()
-
+        mainTabBarRouter.reset()
+        let vm = LoginVM()
+        setRootViewController(LoginVC(vm))
         if let errorMessage = errorMessage {
-            vm.errorMessages.onNext(errorMessage)
+            vm.handle(error: NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: errorMessage]))
         }
     }
 
     private func showTabBarVC() -> Void {
+        mainTabBarRouter.showInitialVC()
+    }
+}
+
+protocol WindowRouter {
+    var window: UIWindow { get }
+}
+
+extension WindowRouter {
+    func setRootViewController(_ vc: UIViewController) {
         for view in window.subviews {
             view.removeFromSuperview()
         }
-        window.rootViewController = mainTabBarRouter.initialVC()
+        window.rootViewController = vc
         window.makeKeyAndVisible()
     }
 }
