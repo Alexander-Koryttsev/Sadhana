@@ -12,7 +12,7 @@ import CoreData
 @objc(LocalSadhanaEntry)
 class LocalSadhanaEntry: NSManagedObject, SadhanaEntry, JSONConvertible {
     
-    @NSManaged public var bedTime: Date?
+    @NSManaged public var bedTime: String?
     @NSManaged public var date: Date
     @NSManaged public var month: Date
     @NSManaged public var dateCreated: Date
@@ -28,7 +28,7 @@ class LocalSadhanaEntry: NSManagedObject, SadhanaEntry, JSONConvertible {
     @NSManaged public var reading: Int16
     @NSManaged public var service: Bool
     @NSManaged public var userID: Int32
-    @NSManaged public var wakeUpTime: Date?
+    @NSManaged public var wakeUpTime: String?
     
     //TODO: check it
     var ID: Int32? { get {
@@ -76,8 +76,8 @@ class LocalSadhanaEntry: NSManagedObject, SadhanaEntry, JSONConvertible {
                 "jcount_after": japaCount24,
                 "reading": reading,
                 "kirtan": kirtan,
-                "opt_sleep": bedTime?.remoteTimeString() ?? NSNull(),
-                "opt_wake_up": wakeUpTime?.remoteTimeString() ?? NSNull(),
+                "opt_sleep": bedTime ?? NSNull(),
+                "opt_wake_up": wakeUpTime ?? NSNull(),
                 "opt_exercise": exercise,
                 "opt_service": service,
                 "opt_lections": lections]

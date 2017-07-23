@@ -26,6 +26,14 @@ protocol JSONConvertible {
     func json() -> JSON
 }
 
+extension String {
+    var localized: String {
+        get {
+            return self //TODO: implement
+        }
+    }
+}
+
 struct Local {
     static let service = LocalService.shared
     static let defaults = LocalDefaults.shared

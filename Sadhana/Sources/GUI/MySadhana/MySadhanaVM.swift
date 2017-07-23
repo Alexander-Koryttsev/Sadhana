@@ -23,6 +23,7 @@ class MySadhanaVM: BaseVM {
 
         super.init()
 
+        //TODO: check first fetch (table view is empty on launch
         frc.managedObjectContext.perform { [weak self] () in
             if self == nil {return}
             do { try self!.frc.performFetch() }

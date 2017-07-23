@@ -21,8 +21,8 @@ protocol SadhanaEntry {
     var reading : Int16 { get }
     var kirtan : Bool { get }
     
-    var bedTime : Date? { get }
-    var wakeUpTime : Date? { get }
+    var bedTime : String? { get }
+    var wakeUpTime : String? { get }
     
     var exercise : Bool { get }
     var service : Bool { get }

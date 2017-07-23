@@ -13,6 +13,7 @@ class LocalDefaults {
     
     private static let keyPrefix = "LocalDefaults"
     private let userIDKey = "\(keyPrefix)UserID"
+    private let optionFieldsKey = "\(keyPrefix)OptionFields"
     
     var userID: Int32? {
         get {
@@ -23,6 +24,28 @@ class LocalDefaults {
             UserDefaults.standard.synchronize()
         }
     }
+
+    var optionFields : [String : Bool] {
+        get {
+            return UserDefaults.standard.dictionary(forKey: optionFieldsKey) as? [String : Bool] ?? [String : Bool]()
+        }
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: optionFieldsKey)
+            UserDefaults.standard.synchronize()
+        }
+    }
+
+    func set(field:SadhanaEntryFieldKey, enabled:Bool) {
+        var fields = optionFields
+        fields[field.rawValue] = !enabled
+        optionFields = fields
+    }
+
+    func isFieldEnabled(_ field:SadhanaEntryFieldKey) -> Bool {
+        return optionFields[field.rawValue] == false || optionFields[field.rawValue] == nil
+    }
+
+
 
     func reset() {
         for key in UserDefaults.standard.dictionaryRepresentation().keys {

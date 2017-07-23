@@ -11,8 +11,11 @@ import RxSwift
 
 class SadhanaEditingVM: BaseVM {
     let router : SadhanaEditingRouter
-    let done = PublishSubject<Void>()
+    let save = PublishSubject<Void>()
     let cancel = PublishSubject<Void>()
+    let va = Variable()
+
+    private let context = Local.service.newSubViewForegroundContext()
 
     init(_ router : SadhanaEditingRouter) {
         self.router = router
@@ -23,8 +26,20 @@ class SadhanaEditingVM: BaseVM {
             router.hideSadhanaEditing()
         }).disposed(by: disposeBag)
 
-        done.subscribe(onNext:{
-            router.hideSadhanaEditing()
+        save.subscribe(onNext:{
+            self.context.saveHandled()
         }).disposed(by: disposeBag)
+    }
+
+    func viewModelForEntryEditing(before vm: SadhanaEntryEditingVM) -> SadhanaEntryEditingVM? {
+        return viewModelForEntryEditing(vm.date.yesterday)
+    }
+
+    func viewModelForEntryEditing(after vm: SadhanaEntryEditingVM) -> SadhanaEntryEditingVM? {
+        return viewModelForEntryEditing(vm.date.tomorrow)
+    }
+
+    func viewModelForEntryEditing(_ forDate: Date? = Date()) -> SadhanaEntryEditingVM? {
+        return forDate! <= Date() ? SadhanaEntryEditingVM(date: forDate!, context: context) : nil
     }
 }

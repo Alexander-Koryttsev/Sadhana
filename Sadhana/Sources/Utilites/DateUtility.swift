@@ -22,9 +22,36 @@ class DateUtility {
 }
 
 extension Date {
+
+    var minutes : Int {
+        get {
+            return Calendar.current.component(.minute, from: self)
+        }
+    }
+
+    var hours : Int {
+        get {
+            return Calendar.current.component(.hour, from: self)
+        }
+    }
+
     var day : Int {
         get {
             return Calendar.current.component(.day, from: self)
+        }
+    }
+
+    var dayDate : Date {
+        get {
+            //TODO : handle local time zone
+            let calendar = Calendar.current
+
+            let year = calendar.component(.year, from: self)
+            let month = calendar.component(.month, from: self)
+            let day = calendar.component(.day, from: self)
+
+            let components = DateComponents(calendar: calendar, timeZone:TimeZone.create(), year: year, month: month, day:day)
+            return components.date!
         }
     }
 
@@ -55,6 +82,18 @@ extension Date {
     var month: String {
         get {
             return DateUtility.shared.monthMediumFormatter.string(from: self).capitalized
+        }
+    }
+
+    var yesterday: Date {
+        get {
+            return Calendar.current.date(byAdding: .day, value: -1, to: self)!
+        }
+    }
+
+    var tomorrow: Date {
+        get {
+            return Calendar.current.date(byAdding: .day, value: 1, to: self)!
         }
     }
 }

@@ -15,7 +15,13 @@ class MainTabBarRouter : SadhanaEditingRouter, WindowRouter {
     var tabBarVC : MainTabBarVC?
     let window : UIWindow
     let plusButton = DynamicButton(style: .plus)
-    var isEditing = false
+    var isEditing = false {
+        didSet {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.plusButton.setStyle(self.isEditing ? .checkMark : .plus, animated: true)
+            }
+        }
+    }
 
     init(window: UIWindow) {
         self.window = window
@@ -38,31 +44,25 @@ class MainTabBarRouter : SadhanaEditingRouter, WindowRouter {
     }
 
     func showSadhanaEditing(date: Date) {
-        let vc = SadhanaEditingVC(SadhanaEditingVM(self))
+        let vm = SadhanaEditingVM(self)
+        plusButton.rx.tap.asDriver().drive(vm.save).disposed(by: vm.disposeBag)
+        //TODO: cancel warning
+        let vc = SadhanaEditingVC(vm)
         let navVC = NavigationVC(rootViewController: vc)
         tabBarVC?.present(navVC, animated: true, completion: nil)
+        isEditing = true
     }
 
     func hideSadhanaEditing() {
         tabBarVC?.dismiss(animated: true, completion: nil)
+        isEditing = false
     }
 
-    @objc func togglePlusButton(sender:DynamicButton) {
-        isEditing = !isEditing
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.plusButton.setStyle(self.isEditing ? .checkMark : .plus, animated: true)
-        }
-
-        if (isEditing) {
-            showSadhanaEditing()
-        }
-        else {
-            hideSadhanaEditing()
-        }
+    @objc private func togglePlusButton(sender:DynamicButton) {
+        isEditing ? hideSadhanaEditing() : showSadhanaEditing()
     }
 
     private func setUpPlusButton() {
-        //TODO: animation
         plusButton.strokeColor = .white
         plusButton.backgroundColor = .sdTangerine
         let inset = CGFloat(10)

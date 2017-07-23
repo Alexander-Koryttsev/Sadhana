@@ -11,7 +11,7 @@ import CoreData
 import RxSwift
 import Foundation
 
-class BaseVC<VM:BaseVM>: UIViewController, BaseVCProtocol {
+class BaseVC<VM:BaseVMProtocol>: UIViewController, BaseVCProtocol {
     let viewModel:VM
     
     init(_ viewModel:VM) {
@@ -37,7 +37,7 @@ class BaseVC<VM:BaseVM>: UIViewController, BaseVCProtocol {
     }
 }
 
-class BaseTableVC<VM:BaseVM>: UITableViewController, BaseVCProtocol {
+class BaseTableVC<VM:BaseVMProtocol>: UITableViewController, BaseVCProtocol {
     let viewModel:VM
     
     init(_ viewModel:VM, style:UITableViewStyle = .plain) {
@@ -67,7 +67,7 @@ class BaseTableVC<VM:BaseVM>: UITableViewController, BaseVCProtocol {
     }
 }
 
-class BaseTabBarVC<VM:BaseVM>: UITabBarController, BaseVCProtocol {
+class BaseTabBarVC<VM:BaseVMProtocol>: UITabBarController, BaseVCProtocol {
     let viewModel:VM
 
     init(_ viewModel:VM) {
@@ -93,7 +93,7 @@ class BaseTabBarVC<VM:BaseVM>: UITabBarController, BaseVCProtocol {
     }
 }
 
-class BaseFetchedResultsVC<VM:BaseVM>: BaseTableVC<VM>, NSFetchedResultsControllerDelegate {
+class BaseFetchedResultsVC<VM:BaseVMProtocol>: BaseTableVC<VM>, NSFetchedResultsControllerDelegate {
 
     var updatedSections = IndexSet()
     var insertedSections = IndexSet()
@@ -116,7 +116,7 @@ class BaseFetchedResultsVC<VM:BaseVM>: BaseTableVC<VM>, NSFetchedResultsControll
 
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo,
                     atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        print("change(\(type.rawValue)) section \(sectionIndex)")
+        //print("change(\(type.rawValue)) section \(sectionIndex)")
         switch type {
         case .insert:  /* tableView.insertSections(IndexSet(integer:sectionIndex), with: .none);*/ insertedSections.insert(sectionIndex); break
        // case .delete:   tableView.deleteSections(IndexSet(integer:sectionIndex), with: .none); break
@@ -127,18 +127,17 @@ class BaseFetchedResultsVC<VM:BaseVM>: BaseTableVC<VM>, NSFetchedResultsControll
     }
 
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("will change (now sections \(tableView.numberOfSections))")
+       // print("will change (now sections \(tableView.numberOfSections))")
         oldSectionsCount = tableView.numberOfSections
         updatedSections.removeAll()
         insertedSections.removeAll()
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("did change")
+        //print("did change")
        // reloadData()
 
         if self.tableView.window != nil && self.oldSectionsCount + self.insertedSections.count == controller.sections?.count {
-            //TODO: fix max rounds counts
             self.tableView.beginUpdates()
             self.tableView.reloadSections(self.updatedSections, with: .none)
             self.tableView.insertSections(self.insertedSections, with: .none)
@@ -158,7 +157,7 @@ class BaseFetchedResultsVC<VM:BaseVM>: BaseTableVC<VM>, NSFetchedResultsControll
 }
 
 protocol BaseVCProtocol {
-    associatedtype VM:BaseVM
+    associatedtype VM:BaseVMProtocol
     var viewModel:VM { get }
 }
 

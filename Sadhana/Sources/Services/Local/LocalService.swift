@@ -27,6 +27,7 @@ class LocalService: NSObject {
     var backgroundContext: NSManagedObjectContext
     
     init(completionClosure: @escaping () -> ()) {
+        //TODO: clear data base on migration
         persistentContainer = NSPersistentContainer(name: "Model")
         persistentContainer.loadPersistentStores() { (description, error) in
             if let error = error {
@@ -37,9 +38,9 @@ class LocalService: NSObject {
         backgroundContext = persistentContainer.newBackgroundContext()
     }
     
-    func newForegroundContext() -> NSManagedObjectContext {
+    func newSubViewForegroundContext() -> NSManagedObjectContext {
         let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        context.persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator;
+        context.parent = viewContext;
         return context;
     }
 
@@ -145,8 +146,12 @@ extension NSManagedObjectContext {
         return fetchSingle(request)
     }
     
-    func fetchSadhanaEntry() -> Single<LocalSadhanaEntry?> {
-        return rxFetchSingle(LocalSadhanaEntry.request())
+    func fetchSadhanaEntry(date: Date) -> LocalSadhanaEntry? {
+        let request = LocalSadhanaEntry.request()
+        //TODO: add user ID
+        //TODO: debug
+        request.predicate = NSPredicate(format: "date == %@", date as NSDate)
+        return fetchSingle(request)
     }
 
     func mySadhanaEntriesFRC() -> NSFetchedResultsController<LocalSadhanaEntry> {
@@ -182,12 +187,17 @@ extension NSManagedObjectContext {
                     }
                 } catch {
                     observer(.error(error))
+                    //RELEASE: Remove
                     fatalError("Failure to save context: \(error)")
                 }
             }
             
             return Disposables.create {}
         }
+    }
+
+    func saveHandled() {
+        do { try self.save() } catch { fatalError("Failure to save context: \(error)") }
     }
     
     private func rxFetch<T:NSManagedObject>(_ request:NSFetchRequest<T>) -> Single<[T]> {

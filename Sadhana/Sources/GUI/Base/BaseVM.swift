@@ -9,7 +9,7 @@
 import RxCocoa
 import RxSwift
 
-class BaseVM {
+class BaseVM: BaseVMProtocol {
     private let errorMessages = PublishSubject<String>()
     var errorMessagesUI: Driver<String> { get { return errorMessages.asDriver(onErrorJustReturn: "") } }
     let errors = PublishSubject<Error>()
@@ -36,6 +36,10 @@ class BaseVM {
             break
         }
     }
+}
+
+protocol BaseVMProtocol {
+    var disposeBag : DisposeBag { get }
 }
 
 extension ObservableType {

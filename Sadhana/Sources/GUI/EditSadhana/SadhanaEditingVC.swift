@@ -14,15 +14,23 @@ import EasyPeasy
 class SadhanaEditingVC: BaseVC<SadhanaEditingVM>, UIPageViewControllerDelegate, UIPageViewControllerDataSource, UICollectionViewDelegate, UICollectionViewDataSource {
 
     let pageVC = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
-    let topBar = UICollectionView(frame: CGRect(), collectionViewLayout: UICollectionViewFlowLayout())
+    let topBar = UIView()
+    let collectionView = UICollectionView(frame: CGRect(), collectionViewLayout: UICollectionViewFlowLayout())
 
     override func viewDidLoad() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
         title = "Edit"
-        setUpTopBar()
-        setUpPageView()
         view.backgroundColor = .white
         super.viewDidLoad()
+        automaticallyAdjustsScrollViewInsets = false
+        setUpTopBar()
+        setUpPageVC()
+        view.bringSubview(toFront: topBar)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isTranslucent = true
     }
 
     override func bindViewModel() {
@@ -32,32 +40,50 @@ class SadhanaEditingVC: BaseVC<SadhanaEditingVM>, UIPageViewControllerDelegate, 
     func setUpTopBar() {
         view.addSubview(topBar)
         topBar <- [
-            Top(),
+            Top().to(topLayoutGuide),
             Left(),
             Right(),
             Height(30)
         ]
+
+        let navBar = UINavigationBar()
+        topBar.addSubview(navBar)
+        navBar <- Edges()
     }
 
-    func setUpPageView() {
+    func setUpPageVC() {
         pageVC.willMove(toParentViewController: self)
         addChildViewController(pageVC)
         view.addSubview(pageVC.view)
         pageVC.view <- [
-            Top().to(topBar),
+            Top().to(view),
             Left(),
             Bottom(),
             Right()
         ]
         pageVC.didMove(toParentViewController: self)
+        pageVC.setViewControllers([SadhanaEntryEditingVC(viewModel.viewModelForEntryEditing()!)]
+            , direction:.forward, animated: false, completion: nil)
+        pageVC.dataSource = self
+        pageVC.delegate = self
     }
 
     //MARK: Page View Controller Data Source
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+       let viewController = viewController as! SadhanaEntryEditingVC
+        if let vm = viewModel.viewModelForEntryEditing(before: viewController.viewModel) {
+            return SadhanaEntryEditingVC(vm)
+        }
+
         return nil
     }
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+        let viewController = viewController as! SadhanaEntryEditingVC
+        if let vm = viewModel.viewModelForEntryEditing(after: viewController.viewModel) {
+            return SadhanaEntryEditingVC(vm)
+        }
+
         return nil
     }
     

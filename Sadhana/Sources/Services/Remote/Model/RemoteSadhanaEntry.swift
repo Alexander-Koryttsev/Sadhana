@@ -22,8 +22,8 @@ struct RemoteSadhanaEntry : SadhanaEntry, Mappable {
     let reading : Int16
     let kirtan : Bool
     
-    let bedTime : Date?
-    let wakeUpTime : Date?
+    let bedTime : String?
+    let wakeUpTime : String?
     
     let exercise : Bool
     let service : Bool
@@ -45,9 +45,8 @@ struct RemoteSadhanaEntry : SadhanaEntry, Mappable {
         try reading = map.from("reading")
         try kirtan = map.from("kirtan")
         
-        //TODO: use GMT+0
-        bedTime = map.optionalFrom("opt_sleep", transformation: extractTime)
-        wakeUpTime = map.optionalFrom("opt_wake_up", transformation: extractTime)
+        bedTime = map.optionalFrom("opt_sleep")
+        wakeUpTime = map.optionalFrom("opt_wake_up")
         
         try exercise = map.from("opt_exercise")
         try service = map.from("opt_service")

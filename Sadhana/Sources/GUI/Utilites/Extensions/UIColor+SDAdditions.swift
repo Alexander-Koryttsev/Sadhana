@@ -56,6 +56,10 @@ extension UIFont {
         return UIFont.systemFont(ofSize: 33.0, weight: UIFontWeightLight)
     }
 
+    class var sdTextStyle1_1Font: UIFont {
+        return UIFont.systemFont(ofSize: 25.0, weight: UIFontWeightRegular)
+    }
+
     class func sdTextStyle2Font() -> UIFont {
         return UIFont.systemFont(ofSize: 20.0, weight: UIFontWeightMedium)
     }
@@ -63,4 +67,14 @@ extension UIFont {
     class func sdTextStyle3Font() -> UIFont {
         return UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
     }
+
+    class var sdTextStyle4Font: UIFont {
+        return UIFont.systemFont(ofSize: 14.0, weight: UIFontWeightRegular)
+    }
+
+    class var sdTextStyle5Font: UIFont {
+        return UIFont.systemFont(ofSize: 10.0, weight: UIFontWeightRegular)
+    }
+
+
 }

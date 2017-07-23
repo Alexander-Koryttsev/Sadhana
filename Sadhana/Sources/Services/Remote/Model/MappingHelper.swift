@@ -155,15 +155,3 @@ func extractDateAndTime(object: Any?) throws -> Date {
     
     throw MapperError.convertibleError(value: object, type: String.self)
 }
-
-func extractTime(object: Any?) throws -> Date {
-    guard let string = object as? String else {
-        throw MapperError.convertibleError(value: object, type: String.self)
-    }
-    
-    if let date = MappingHelper.shared.timeFormatter.date(from:string) {
-        return date
-    }
-    
-    throw MapperError.convertibleError(value: object, type: String.self)
-}
