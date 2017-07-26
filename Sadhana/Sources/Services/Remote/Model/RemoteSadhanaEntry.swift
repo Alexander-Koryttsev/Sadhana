@@ -19,11 +19,11 @@ struct RemoteSadhanaEntry : SadhanaEntry, Mappable {
     let japaCount18 : Int16
     let japaCount24 : Int16
     
-    let reading : Int16
+    let reading : Time
     let kirtan : Bool
     
-    let bedTime : String?
-    let wakeUpTime : String?
+    let bedTime : Time?
+    let wakeUpTime : Time?
     
     let exercise : Bool
     let service : Bool
@@ -42,12 +42,12 @@ struct RemoteSadhanaEntry : SadhanaEntry, Mappable {
         try japaCount18 = map.from("jcount_1800")
         try japaCount24 = map.from("jcount_after")
         
-        try reading = map.from("reading")
+        try reading = map.from("reading", transformation: extractTimeFromRawValue)
         try kirtan = map.from("kirtan")
         
-        bedTime = map.optionalFrom("opt_sleep")
-        wakeUpTime = map.optionalFrom("opt_wake_up")
-        
+        bedTime = map.optionalFrom("opt_sleep", transformation: extractTimeFromString)
+        wakeUpTime = map.optionalFrom("opt_wake_up", transformation: extractTimeFromString)
+
         try exercise = map.from("opt_exercise")
         try service = map.from("opt_service")
         try lections = map.from("opt_lections")

@@ -1,5 +1,5 @@
 //
-//  MySadhanaVC.swift
+//  MyGraphVC.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 7/13/17.
@@ -12,7 +12,7 @@ import RxSwift
 import RxCocoa
 import EasyPeasy
 
-class MySadhanaVC: BaseFetchedResultsVC<MySadhanaVM> {
+class MyGraphVC: BaseFetchedResultsVC<MyGraphVM> {
 
     override var title:String? {
         get { return "Мой график" }
@@ -32,7 +32,7 @@ class MySadhanaVC: BaseFetchedResultsVC<MySadhanaVM> {
         super.viewDidLoad()
 
         tabBarItem = UITabBarItem(title: title, image:UIImage(named:"tab-bar-icon-my"), tag:0)
-        tableView.register(SadhanaEntryCell.self, forCellReuseIdentifier: NSStringFromClass(SadhanaEntryCell.self))
+        tableView.register(EntryCell.self, forCellReuseIdentifier: NSStringFromClass(EntryCell.self))
         tableView.register(GraphHeader.self, forHeaderFooterViewReuseIdentifier: NSStringFromClass(GraphHeader.self))
     }
 
@@ -114,7 +114,7 @@ class MySadhanaVC: BaseFetchedResultsVC<MySadhanaVM> {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let section = viewModel.frc.sections?[section] else { return nil }
-        return (section.objects?.first! as! SadhanaEntry).date.month
+        return (section.objects?.first! as! SadhanaEntry).date.monthMedium
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -125,7 +125,7 @@ class MySadhanaVC: BaseFetchedResultsVC<MySadhanaVM> {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = (tableView.dequeueReusableCell(withIdentifier: NSStringFromClass(SadhanaEntryCell.self)) ?? SadhanaEntryCell()) as! SadhanaEntryCell
+        let cell = (tableView.dequeueReusableCell(withIdentifier: NSStringFromClass(EntryCell.self)) ?? EntryCell()) as! EntryCell
 
         let entry = viewModel.frc.object(at: indexPath)
         cell.map(entry, maxRoundsCount:self.maxCount(for: indexPath.section))

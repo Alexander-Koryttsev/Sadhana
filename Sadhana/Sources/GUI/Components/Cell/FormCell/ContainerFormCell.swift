@@ -25,7 +25,7 @@ class CountsLayoutCell: ResponsibleCell {
         super.init(style: .default, reuseIdentifier: nil)
 
         selectionStyle = .none
-        separatorInset = UIEdgeInsetsMake(0, 16, 0, 16)
+        separatorInset = UIEdgeInsets()
 
         contentView.addSubview(titleLabel)
         titleLabel.font = .sdTextStyle4Font
@@ -46,6 +46,7 @@ class CountsLayoutCell: ResponsibleCell {
 
         countViewsBackgroundView.addSubview(stackView)
         stackView.axis = .horizontal
+        stackView.distribution = .equalCentering
         stackView.spacing = 1
         stackView.distribution = .fillEqually
         stackView <- Edges()
@@ -87,7 +88,7 @@ class CountsLayoutCell: ResponsibleCell {
 }
 
 class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
-    let viewModel: FieldsContainerVM
+    private let viewModel: FieldsContainerVM
 
     init(_ viewModel: FieldsContainerVM) {
         self.viewModel = viewModel

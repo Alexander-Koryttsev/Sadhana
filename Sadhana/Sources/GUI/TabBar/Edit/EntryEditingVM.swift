@@ -1,5 +1,5 @@
 //
-//  SadhanaEntryEditingVM.swift
+//  EntryEditingVM.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 7/19/17.
@@ -10,22 +10,7 @@ import Foundation
 import RxSwift
 import CoreData
 
-enum SadhanaEntryFieldKey : String {
-    case wakeUpTime = "wakeUpTime"
-    case japa = "japa_rounds"
-    case japa7_30 = "japaCount7_30"
-    case japa10 = "japaCount10"
-    case japa18 = "japaCount18"
-    case japa24 = "japaCount24"
-    case reading = "reading"
-    case kirtan = "kirtan"
-    case service = "service"
-    case yoga = "exercise"
-    case lections = "lections"
-    case bedTime = "bedTime"
-}
-
-class SadhanaEntryEditingVM: BaseVM {
+class EntryEditingVM: BaseVM {
 
     let date : Date
     private var fieldsInternal = [FormFieldVM]()
@@ -36,7 +21,7 @@ class SadhanaEntryEditingVM: BaseVM {
     private let entry : LocalSadhanaEntry
 
     init(date: Date, context: NSManagedObjectContext) {
-        self.date = date.dayDate
+        self.date = date.trimmedTime
 
         if let localEntry = context.fetchSadhanaEntry(date: self.date) {
             entry = localEntry
@@ -45,13 +30,14 @@ class SadhanaEntryEditingVM: BaseVM {
             entry = context.create(LocalSadhanaEntry.self)
             entry.userID = Local.defaults.userID!
             entry.date = self.date
+            entry.month = self.date.trimmedDayAndTime
             entry.dateCreated = Date()
             entry.dateUpdated = Date() //TODO: move to the 'save' event
         }
 
         super.init()
 
-        add(field: .wakeUpTime)
+        add(timeField: .wakeUpTime, optional: true)
 
         let japaFields = [
             self.field(forKey: .japa7_30),
@@ -62,22 +48,34 @@ class SadhanaEntryEditingVM: BaseVM {
         let japaContainer = FieldsContainerVM(SadhanaEntryFieldKey.japa.rawValue, japaFields, colors: [.sdSunflowerYellow, .sdTangerine, .sdNeonRed, .sdBrightBlue])
         fieldsInternal.append(japaContainer)
 
-        add(field: .reading)
+        add(timeField: .reading, optional: false)
         add(field: .kirtan)
         add(field: .service)
         add(field: .yoga)
         add(field: .lections)
-        add(field: .bedTime)
 
+        if self.date != Date().trimmedTime {
+            add(timeField: .bedTime, optional: true)
+        }
     }
 
     private func field(forKey: SadhanaEntryFieldKey) -> ManagedFieldVM {
         return ManagedFieldVM(forKey.rawValue, entry:entry)
     }
 
+    private func timeField(forKey: SadhanaEntryFieldKey, optional: Bool) -> TimeFieldVM {
+        return TimeFieldVM(forKey, entry:entry, optional: optional)
+    }
+
     private func add(field: SadhanaEntryFieldKey) {
         if Local.defaults.isFieldEnabled(field) {
             fieldsInternal.append(self.field(forKey:field))
+        }
+    }
+
+    private func add(timeField: SadhanaEntryFieldKey, optional: Bool) {
+        if Local.defaults.isFieldEnabled(timeField) {
+            fieldsInternal.append(self.timeField(forKey:timeField, optional: optional))
         }
     }
 }
@@ -89,17 +87,6 @@ protocol FormFieldVM {
 protocol VariableFieldVM: FormFieldVM {
     var variable : Variable<Any?> { get }
     var disposeBag : DisposeBag { get }
-}
-
-class FieldsContainerVM : FormFieldVM {
-    let key: String
-    let fields: [VariableFieldVM]
-    let colors: [UIColor]?
-    init(_ key: String, _ fields: [VariableFieldVM], colors: [UIColor]? = nil) {
-        self.key = key
-        self.fields = fields
-        self.colors = colors
-    }
 }
 
 class ManagedFieldVM : VariableFieldVM {
@@ -117,6 +104,39 @@ class ManagedFieldVM : VariableFieldVM {
             }
             else {
                 entry.setValue(next, forKey: key)
+            }
+        }).disposed(by: disposeBag)
+    }
+}
+
+class FieldsContainerVM : FormFieldVM {
+    let key: String
+    let fields: [VariableFieldVM]
+    let colors: [UIColor]?
+    init(_ key: String, _ fields: [ManagedFieldVM], colors: [UIColor]? = nil) {
+        self.key = key
+        self.fields = fields
+        self.colors = colors
+    }
+}
+
+class TimeFieldVM: VariableFieldVM {
+    let key : String
+    let variable : Variable<Any?>
+    private let entry : LocalSadhanaEntry
+    let disposeBag = DisposeBag()
+    let optional : Bool
+    init(_ key: SadhanaEntryFieldKey, entry: LocalSadhanaEntry, optional: Bool) {
+        self.key = key.rawValue
+        self.optional = optional
+        variable = Variable(entry.timeOptionalValue(forKey: key))
+        self.entry = entry
+        variable.asDriver().skip(1).drive(onNext: { (next) in
+            if optional {
+                entry.set(time: next as? Time, forKey: key)
+            }
+            else {
+                entry.set(time:(next as? Time ?? Time(rawValue: 0)), forKey: key)
             }
         }).disposed(by: disposeBag)
     }

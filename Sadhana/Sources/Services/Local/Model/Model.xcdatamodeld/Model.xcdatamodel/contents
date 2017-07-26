@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16F73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="LocalSadhanaEntry" representedClassName="LocalSadhanaEntry" syncable="YES">
-        <attribute name="bedTime" optional="YES" attributeType="String" valueTransformerName="TimeTransformer" customClassName="Time" syncable="YES"/>
+        <attribute name="bedTime" optional="YES" attributeType="Integer 16" valueTransformerName="TimeTransformer" usesScalarValueType="YES" customClassName="Time" syncable="YES"/>
         <attribute name="date" attributeType="Date" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
         <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="dateUpdated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
@@ -17,7 +17,7 @@
         <attribute name="reading" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="service" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="userID" attributeType="Integer 32" usesScalarValueType="YES" indexed="YES" syncable="YES"/>
-        <attribute name="wakeUpTime" optional="YES" attributeType="String" valueTransformerName="TimeTransformer" customClassName="Time" syncable="YES"/>
+        <attribute name="wakeUpTime" optional="YES" attributeType="Integer 16" valueTransformerName="TimeTransformer" usesScalarValueType="YES" customClassName="Time" syncable="YES"/>
     </entity>
     <entity name="LocalUser" representedClassName="LocalUser" syncable="YES">
         <attribute name="avatarURLString" optional="YES" attributeType="String" syncable="YES"/>

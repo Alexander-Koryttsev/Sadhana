@@ -1,5 +1,5 @@
 //
-//  SadhanaEntryEditingVC.swift
+//  EntryEditingVC.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 7/19/17.
@@ -10,15 +10,16 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class SadhanaEntryEditingVC : BaseTableVC<SadhanaEntryEditingVM> {
+class EntryEditingVC : BaseTableVC<EntryEditingVM> {
     var cells = [FormCell]()
 
     override func viewDidLoad() {
         automaticallyAdjustsScrollViewInsets = false
         super.viewDidLoad()
-        tableView.contentInset = UIEdgeInsetsMake(94, 0, 50, 0)
+        tableView.contentInset = UIEdgeInsetsMake(128, 0, 50, 0)
         tableView.keyboardDismissMode = .interactive
         tableView.tableFooterView = UIView()
+        tableView.showsVerticalScrollIndicator = false
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -27,7 +28,6 @@ class SadhanaEntryEditingVC : BaseTableVC<SadhanaEntryEditingVM> {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        tableView.contentOffset = CGPoint()
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -49,13 +49,16 @@ class SadhanaEntryEditingVC : BaseTableVC<SadhanaEntryEditingVM> {
         var firstResponsibleCell : ResponsibleCell?
         for field in viewModel.fields {
             var currentCell : FormCell?
-            if let field = field as? VariableFieldVM {
-                if field.variable.value is String? {
-                    currentCell = TimeKeyboardFormCell(field)
-                }
+            if let field = field as? TimeFieldVM {
+                currentCell = TimeKeyboardFormCell(field)
             }
             else if let field = field as? FieldsContainerVM {
                 currentCell = CountContainerCell(field)
+            }
+            if let field = field as? VariableFieldVM {
+                if field.variable.value is Bool {
+                    currentCell = BoolFormCell(field)
+                }
             }
 
             if let currentCell = currentCell {

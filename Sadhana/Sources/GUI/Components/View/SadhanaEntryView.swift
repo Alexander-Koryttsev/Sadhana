@@ -61,8 +61,8 @@ class SadhanaEntryView : UIView {
     func map(_ entry: SadhanaEntry, maxRoundsCount:Int16) {
         japaCountLabel.text = (entry.japaCount7_30 + entry.japaCount10 + entry.japaCount18 + entry.japaCount24).description
 
-        readingImageView.isOn = entry.reading > 0
-        readingLabel.text = entry.reading.description
+        readingImageView.isOn = entry.reading.rawValue > 0
+        readingLabel.text = entry.reading.rawValue.description
         kirtanImageView.isOn = entry.kirtan
 
         japaView.map(entry, maxCount: maxRoundsCount)

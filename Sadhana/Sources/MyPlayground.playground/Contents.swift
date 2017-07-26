@@ -1,11 +1,7 @@
 //: Playground - noun: a place where people can play
 
-import UIKit
-import RxSwift
+import Foundation
 
-let date = Date(timeIntervalSince1970: 0)
-var cal = Calendar(identifier: .gregorian)
-cal.timeZone = TimeZone(secondsFromGMT: 0)?
-cal.component(.hour, from: date)
-var components = DateComponents(calendar: Calendar.current, timeZone: TimeZone(secondsFromGMT: 0), hour: 12, minute: 32)
+var components = Calendar.current.dateComponents(in: TimeZone.current, from: Date())
+components.day = components.day! - components.weekday! + 1
 components.date

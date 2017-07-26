@@ -1,5 +1,5 @@
 //
-//  SadhanaEntryCell.swift
+//  EntryCell.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 7/17/17.
@@ -9,13 +9,13 @@
 import UIKit
 import EasyPeasy
 
-class SadhanaEntryCell: UITableViewCell {
+class EntryCell: UITableViewCell {
     let dateLabel = UILabel()
     let weekDayLabel = UILabel()
     let sadhanaEntryView = SadhanaEntryView()
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: .default, reuseIdentifier: NSStringFromClass(SadhanaEntryCell.self))
+        super.init(style: .default, reuseIdentifier: NSStringFromClass(EntryCell.self))
 
         contentView.layoutMargins = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
         separatorInset = UIEdgeInsets(top: 0, left: contentView.layoutMargins.left, bottom: 0, right: 0)

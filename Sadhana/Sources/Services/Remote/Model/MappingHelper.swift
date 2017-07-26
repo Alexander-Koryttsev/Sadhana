@@ -129,7 +129,28 @@ func extractID(object: Any?) throws -> Int32 {
         return id
     }
     
-    throw MapperError.convertibleError(value: object, type: String.self)
+    throw MapperError.convertibleError(value: object, type: Int32.self)
+}
+
+func extractTimeFromRawValue(object: Any) throws -> Time {
+    if let int = object as? Int {
+        return Time(rawValue:int)
+    }
+    if let string = object as? String {
+        if let time = Time(rawValue: string) {
+            return time
+        }
+    }
+
+    throw MapperError.convertibleError(value: object, type: Int16.self)
+}
+
+func extractTimeFromString(object: Any?) throws -> Time? {
+    guard   let string = object as? String,
+            let time = Time(string)
+    else { throw MapperError.convertibleError(value: object, type: Time.self) }
+
+    return time
 }
 
 func extractDate(object: Any?) throws -> Date {
@@ -141,7 +162,7 @@ func extractDate(object: Any?) throws -> Date {
         return date
     }
     
-    throw MapperError.convertibleError(value: object, type: String.self)
+    throw MapperError.convertibleError(value: object, type: Date.self)
 }
 
 func extractDateAndTime(object: Any?) throws -> Date {
@@ -153,5 +174,5 @@ func extractDateAndTime(object: Any?) throws -> Date {
         return date
     }
     
-    throw MapperError.convertibleError(value: object, type: String.self)
+    throw MapperError.convertibleError(value: object, type: Date.self)
 }

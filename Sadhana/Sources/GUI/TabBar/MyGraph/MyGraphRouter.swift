@@ -1,5 +1,5 @@
 //
-//  MySadhanaRouter.swift
+//  MyGraphRouter.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 7/14/17.
@@ -8,11 +8,11 @@
 
 import UIKit
 
-class MySadhanaRouter : SadhanaEditingRouter {
+class MyGraphRouter : EditingRouter {
     weak var parent : MainTabBarRouter?
 
     func initialVC() -> UIViewController {
-        return NavigationVC(rootViewController: MySadhanaVC(MySadhanaVM(self)))
+        return NavigationVC(rootViewController: MyGraphVC(MyGraphVM(self)))
     }
 
     func showSadhanaEditing(date: Date) {

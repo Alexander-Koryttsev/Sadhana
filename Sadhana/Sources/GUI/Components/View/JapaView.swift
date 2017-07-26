@@ -75,16 +75,7 @@ class JapaView: UIView {
             let width = roundWidth * CGFloat(entry.rounds)
             let rectInternal = CGRect(x: lastX, y: clipRect.origin.y, width: width, height: height)
             context.setFillColor(entry.color.cgColor)
-
-            if index < entries.count - 1 {
-                context.fill(rectInternal)
-            }
-            else {
-                let lastPath = UIBezierPath(roundedRect: rectInternal, byRoundingCorners: [.topRight, .bottomRight], cornerRadii: CGSize(width: height/2, height:height/2))
-                context.addPath(lastPath.cgPath)
-                context.fillPath()
-            }
-
+            context.fill(rectInternal)
             lastX = lastX + width
             index = index + 1
         }

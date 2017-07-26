@@ -27,7 +27,7 @@ class CircleGradientView: UIView {
 
         // Create gradient object from our color space, color components and locations
         let gradient = CGGradient.init(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: colors, locations: locations)
-
+        
         // Draw a gradient
         context!.drawRadialGradient(gradient!, startCenter: center, startRadius: 0.0, endCenter: center, endRadius: radius, options: .drawsAfterEndLocation)
         context?.restoreGState()

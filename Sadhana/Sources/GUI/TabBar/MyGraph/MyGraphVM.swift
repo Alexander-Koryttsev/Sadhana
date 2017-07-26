@@ -1,5 +1,5 @@
 //
-//  MySadhanaVM.swift
+//  MyGraphVM.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 7/14/17.
@@ -11,14 +11,14 @@ import RxSwift
 import CoreData
 import Foundation
 
-class MySadhanaVM: BaseVM {
+class MyGraphVM: BaseVM {
     let frc = Local.service.viewContext.mySadhanaEntriesFRC()
     let running = ActivityIndicator()
     let refresh = PublishSubject<Void>()
     let endOfList = PublishSubject<Void>()
-    private let router: MySadhanaRouter
+    private let router: MyGraphRouter
 
-    init(_ router: MySadhanaRouter) {
+    init(_ router: MyGraphRouter) {
         self.router = router
 
         super.init()

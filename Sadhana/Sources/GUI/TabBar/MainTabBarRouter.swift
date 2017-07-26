@@ -10,8 +10,8 @@ import UIKit
 import DynamicButton
 import EasyPeasy
 
-class MainTabBarRouter : SadhanaEditingRouter, WindowRouter {
-    var mySadhanaRouter = MySadhanaRouter()
+class MainTabBarRouter : EditingRouter, WindowRouter {
+    var myGraphRouter = MyGraphRouter()
     var tabBarVC : MainTabBarVC?
     let window : UIWindow
     let plusButton = DynamicButton(style: .plus)
@@ -28,9 +28,9 @@ class MainTabBarRouter : SadhanaEditingRouter, WindowRouter {
     }
 
     func showInitialVC() {
-        mySadhanaRouter.parent = self
+        myGraphRouter.parent = self
         tabBarVC = MainTabBarVC(MainTabBarVM(self))
-        tabBarVC!.setViewControllers([mySadhanaRouter.initialVC()], animated: false)
+        tabBarVC!.setViewControllers([myGraphRouter.initialVC()], animated: false)
         setRootViewController(tabBarVC!)
         setUpPlusButton()
     }
@@ -44,12 +44,11 @@ class MainTabBarRouter : SadhanaEditingRouter, WindowRouter {
     }
 
     func showSadhanaEditing(date: Date) {
-        let vm = SadhanaEditingVM(self)
-        plusButton.rx.tap.asDriver().drive(vm.save).disposed(by: vm.disposeBag)
+        let vm = EditingVM(self)
+        plusButton.rx.tap.bind(to:vm.save).disposed(by: vm.disposeBag)
         //TODO: cancel warning
-        let vc = SadhanaEditingVC(vm)
-        let navVC = NavigationVC(rootViewController: vc)
-        tabBarVC?.present(navVC, animated: true, completion: nil)
+        let vc = EditingVC(vm)
+        tabBarVC?.present(vc, animated: true, completion: nil)
         isEditing = true
     }
 
@@ -80,12 +79,12 @@ class MainTabBarRouter : SadhanaEditingRouter, WindowRouter {
     }
 }
 
-protocol SadhanaEditingRouter {
+protocol EditingRouter {
     func showSadhanaEditing(date: Date)
     func hideSadhanaEditing()
 }
 
-extension SadhanaEditingRouter {
+extension EditingRouter {
     func showSadhanaEditing() {
         showSadhanaEditing(date: Date())
     }

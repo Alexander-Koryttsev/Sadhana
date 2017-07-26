@@ -1,5 +1,5 @@
 //
-//  SadhanaEditingVM.swift
+//  EditingVM.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 7/19/17.
@@ -9,15 +9,15 @@
 import Foundation
 import RxSwift
 
-class SadhanaEditingVM: BaseVM {
-    let router : SadhanaEditingRouter
+class EditingVM: BaseVM {
+    let router : EditingRouter
     let save = PublishSubject<Void>()
     let cancel = PublishSubject<Void>()
     let va = Variable()
 
     private let context = Local.service.newSubViewForegroundContext()
 
-    init(_ router : SadhanaEditingRouter) {
+    init(_ router : EditingRouter) {
         self.router = router
 
         super.init()
@@ -31,15 +31,15 @@ class SadhanaEditingVM: BaseVM {
         }).disposed(by: disposeBag)
     }
 
-    func viewModelForEntryEditing(before vm: SadhanaEntryEditingVM) -> SadhanaEntryEditingVM? {
+    func viewModelForEntryEditing(before vm: EntryEditingVM) -> EntryEditingVM? {
         return viewModelForEntryEditing(vm.date.yesterday)
     }
 
-    func viewModelForEntryEditing(after vm: SadhanaEntryEditingVM) -> SadhanaEntryEditingVM? {
+    func viewModelForEntryEditing(after vm: EntryEditingVM) -> EntryEditingVM? {
         return viewModelForEntryEditing(vm.date.tomorrow)
     }
 
-    func viewModelForEntryEditing(_ forDate: Date? = Date()) -> SadhanaEntryEditingVM? {
-        return forDate! <= Date() ? SadhanaEntryEditingVM(date: forDate!, context: context) : nil
+    func viewModelForEntryEditing(_ forDate: Date? = Date()) -> EntryEditingVM? {
+        return forDate! <= Date() ? EntryEditingVM(date: forDate!, context: context) : nil
     }
 }

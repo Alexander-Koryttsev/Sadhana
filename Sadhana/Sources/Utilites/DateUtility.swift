@@ -23,13 +23,14 @@ class DateUtility {
 
 extension Date {
 
-    var minutes : Int {
+    //MARK: Component
+    var minute : Int {
         get {
             return Calendar.current.component(.minute, from: self)
         }
     }
 
-    var hours : Int {
+    var hour : Int {
         get {
             return Calendar.current.component(.hour, from: self)
         }
@@ -41,7 +42,14 @@ extension Date {
         }
     }
 
-    var dayDate : Date {
+    var weekDay : Int {
+        get {
+            return Calendar.current.component(.weekday, from: self)
+        }
+    }
+
+    //MARK: Trim
+    var trimmedTime : Date {
         get {
             //TODO : handle local time zone
             let calendar = Calendar.current
@@ -55,19 +63,7 @@ extension Date {
         }
     }
 
-    var weekDay : Int {
-        get {
-            return Calendar.current.component(.weekday, from: self)
-        }
-    }
-
-    var weekDayShort : String {
-        get {
-            return DateUtility.shared.weekDayShortFormatter.string(from: self)
-        }
-    }
-
-    var monthDate : Date {
+    var trimmedDayAndTime : Date {
         get {
             let calendar = Calendar.current
 
@@ -79,12 +75,20 @@ extension Date {
         }
     }
 
-    var month: String {
+    //MARK: Format
+    var weekDayShort : String {
+        get {
+            return DateUtility.shared.weekDayShortFormatter.string(from: self)
+        }
+    }
+
+    var monthMedium: String {
         get {
             return DateUtility.shared.monthMediumFormatter.string(from: self).capitalized
         }
     }
 
+    //MARK: Transform
     var yesterday: Date {
         get {
             return Calendar.current.date(byAdding: .day, value: -1, to: self)!

@@ -12,26 +12,27 @@ import RxCocoa
 import RxSwift
 
 class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
-    let viewModel: VariableFieldVM
-    var hoursView: CountView {
+    private let viewModel: TimeFieldVM
+    private var hoursView: CountView {
         get {
             return countViews.first!
         }
     }
-    var minutesView: CountView {
+    private var minutesView: CountView {
         get {
             return countViews.last!
         }
     }
 
-    init(_ viewModel: VariableFieldVM) {
+    init(_ viewModel: TimeFieldVM) {
         self.viewModel = viewModel
         super.init(fieldsCount:2)
 
-        if let value = viewModel.variable.value as? String {
-            let components = value.components(separatedBy: ":")
-            hoursView.valueField.text = components.first!
-            minutesView.valueField.text = components.last!
+        if let value = viewModel.variable.value as? Time {
+            if value.rawValue != 0 || viewModel.optional {
+                hoursView.valueField.text = value.hour.description
+                minutesView.valueField.text = value.minute.description
+            }
         }
 
         titleLabel.text = viewModel.key.localized
@@ -40,17 +41,18 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
         hoursView.valueField.deleteWhenEmpty.drive(goBack).disposed(by: disposeBag)
         hoursView.titleLabel.text = "hours".localized
 
-
         setUp(field: minutesView.valueField)
         minutesView.valueField.deleteWhenEmpty.asObservable().subscribe(onNext: {
             _ = self.hoursView.valueField.becomeFirstResponder()
         }).disposed(by: disposeBag)
 
-
         minutesView.titleLabel.text = "minutes".localized
 
-        Observable.combineLatest(hoursView.valueField.rx.textRequired.asDriver().asObservable(), minutesView.valueField.rx.textRequired.asDriver().asObservable()).map({ (hours, minutes) -> String? in
-            return hours.isEmpty && minutes.isEmpty ? "" : "\(hours):\(minutes)"
+        Observable.combineLatest(hoursView.valueField.rx.textRequired.asDriver().asObservable(), minutesView.valueField.rx.textRequired.asDriver().asObservable()).map({ (hours, minutes) -> Time? in
+            if !self.viewModel.optional {
+                return Time(hour:hours.isEmpty ? "0" : hours, minute:minutes.isEmpty ? "0" : minutes)
+            }
+            return Time(hour:hours, minute:minutes)
         })
             .bind(to: viewModel.variable)
             .disposed(by: viewModel.disposeBag)

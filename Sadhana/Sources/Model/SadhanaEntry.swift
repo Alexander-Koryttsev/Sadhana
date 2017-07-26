@@ -8,6 +8,21 @@
 
 import Foundation
 
+enum SadhanaEntryFieldKey : String {
+    case wakeUpTime = "wakeUpTime"
+    case japa = "japa_rounds"
+    case japa7_30 = "japaCount7_30"
+    case japa10 = "japaCount10"
+    case japa18 = "japaCount18"
+    case japa24 = "japaCount24"
+    case reading = "reading"
+    case kirtan = "kirtan"
+    case service = "service"
+    case yoga = "exercise"
+    case lections = "lections"
+    case bedTime = "bedTime"
+}
+
 protocol SadhanaEntry {
     var ID : Int32? { get }
     var userID : Int32 { get }
@@ -18,11 +33,11 @@ protocol SadhanaEntry {
     var japaCount18 : Int16 { get }
     var japaCount24 : Int16 { get }
     
-    var reading : Int16 { get }
+    var reading : Time { get }
     var kirtan : Bool { get }
     
-    var bedTime : String? { get }
-    var wakeUpTime : String? { get }
+    var bedTime : Time? { get }
+    var wakeUpTime : Time? { get }
     
     var exercise : Bool { get }
     var service : Bool { get }
