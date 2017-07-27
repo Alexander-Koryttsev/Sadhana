@@ -136,7 +136,7 @@ class BaseFetchedResultsVC<VM:BaseVMProtocol>: BaseTableVC<VM>, NSFetchedResults
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         //print("did change")
        // reloadData()
-
+/*
         if self.tableView.window != nil && self.oldSectionsCount + self.insertedSections.count == controller.sections?.count {
             self.tableView.beginUpdates()
             self.tableView.reloadSections(self.updatedSections, with: .none)
@@ -146,9 +146,9 @@ class BaseFetchedResultsVC<VM:BaseVMProtocol>: BaseTableVC<VM>, NSFetchedResults
                 self.sectionsDidUpdate(self.updatedSections)
             }
         }
-        else {
+        else {*/
             self.reloadData()
-        }
+      //  }
     }
 
     func sectionsDidUpdate(_ sections:IndexSet) {

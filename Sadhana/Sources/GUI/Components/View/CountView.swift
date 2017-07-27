@@ -24,20 +24,19 @@ class CountView: UIView {
         valueField.keyboardType = .asciiCapableNumberPad
         valueField.placeholder = "0"
         valueField <- [
-            Top(>=0),
+            Top(-8),
             CenterX(),
             Width(60),
             Height(44),
-            CenterY(-15).with(.medium)
             
         ]
 
         addSubview(titleLabel)
-        titleLabel.font = .sdTextStyle5Font
+        titleLabel.font = UIFont.systemFont(ofSize: 13.0, weight: UIFontWeightRegular)
         titleLabel.textColor = .sdSilver
         titleLabel <- [
             CenterX().to(valueField),
-            Top().to(valueField),
+            Top(-5).to(valueField),
             Bottom(>=0)
         ]
     }

@@ -35,13 +35,13 @@ class LocalDefaults {
         }
     }
 
-    func set(field:SadhanaEntryFieldKey, enabled:Bool) {
+    func set(field:EntryFieldKey, enabled:Bool) {
         var fields = optionFields
         fields[field.rawValue] = !enabled
         optionFields = fields
     }
 
-    func isFieldEnabled(_ field:SadhanaEntryFieldKey) -> Bool {
+    func isFieldEnabled(_ field:EntryFieldKey) -> Bool {
         return optionFields[field.rawValue] == false || optionFields[field.rawValue] == nil
     }
 

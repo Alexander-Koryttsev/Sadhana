@@ -90,21 +90,21 @@ extension NSManagedObjectContext {
         }.concat(rxSave())
     }
     
-    func rxSave(_ entries:[SadhanaEntry]) -> Single<[LocalSadhanaEntry]> {
+    func rxSave(_ entries:[Entry]) -> Single<[LocalEntry]> {
         //TODO: make thread-safe
-        let request = LocalSadhanaEntry.request()
+        let request = LocalEntry.request()
         let IDs = entries.flatMap { (entry) -> Int32 in
             return entry.ID!
         }
         request.predicate = NSPredicate(format: "id IN %@", IDs)
         request.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
-        return self.rxFetch(request).map { [weak self] (localEntries) -> [LocalSadhanaEntry] in
+        return self.rxFetch(request).map { [weak self] (localEntries) -> [LocalEntry] in
             //TODO: Check is context's queue
             var remoteEntries = entries.sorted(by: { (entry1, entry2) -> Bool in
                 return entry1.ID! <  entry2.ID!
             })
             var localEntriesMutable = localEntries
-            var updatedLocalEntries = [LocalSadhanaEntry]()
+            var updatedLocalEntries = [LocalEntry]()
             
             while remoteEntries.count > 0 {
                 let remoteEntry = remoteEntries.first!
@@ -126,7 +126,7 @@ extension NSManagedObjectContext {
                     }
                 }
                 
-                let newEntry = self!.create(LocalSadhanaEntry.self)
+                let newEntry = self!.create(LocalEntry.self)
                 newEntry.map(remoteEntry)
                 updatedLocalEntries.append(newEntry)
                 remoteEntries.removeFirst()
@@ -146,16 +146,16 @@ extension NSManagedObjectContext {
         return fetchSingle(request)
     }
     
-    func fetchSadhanaEntry(date: Date) -> LocalSadhanaEntry? {
-        let request = LocalSadhanaEntry.request()
+    func fetchEntry(date: Date) -> LocalEntry? {
+        let request = LocalEntry.request()
         //TODO: add user ID
         //TODO: debug
         request.predicate = NSPredicate(format: "date == %@", date as NSDate)
         return fetchSingle(request)
     }
 
-    func mySadhanaEntriesFRC() -> NSFetchedResultsController<LocalSadhanaEntry> {
-        let request = LocalSadhanaEntry.request()
+    func mySadhanaEntriesFRC() -> NSFetchedResultsController<LocalEntry> {
+        let request = LocalEntry.request()
         request.sortDescriptors = [NSSortDescriptor(key:"date", ascending:false)]
         return NSFetchedResultsController(fetchRequest: request, managedObjectContext: self, sectionNameKeyPath: "month", cacheName: nil)
     }
@@ -197,7 +197,24 @@ extension NSManagedObjectContext {
     }
 
     func saveHandled() {
-        do { try self.save() } catch { fatalError("Failure to save context: \(error)") }
+        do {
+            try self.save()
+
+            if self.parent != nil {
+                if Thread.isMainThread,
+                    self.parent?.concurrencyType == .mainQueueConcurrencyType {
+                    self.parent?.saveHandled()
+                }
+                else {
+                    self.parent?.performAndWait {
+                        self.parent?.saveHandled()
+                    }
+                }
+            }
+
+        } catch {
+            fatalError("Failure to save context: \(error)")
+        }
     }
     
     private func rxFetch<T:NSManagedObject>(_ request:NSFetchRequest<T>) -> Single<[T]> {

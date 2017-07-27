@@ -48,7 +48,7 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
 
         minutesView.titleLabel.text = "minutes".localized
 
-        Observable.combineLatest(hoursView.valueField.rx.textRequired.asDriver().asObservable(), minutesView.valueField.rx.textRequired.asDriver().asObservable()).map({ (hours, minutes) -> Time? in
+        Observable.combineLatest(hoursView.valueField.rx.textRequired.asDriver().asObservable().skip(1), minutesView.valueField.rx.textRequired.asDriver().asObservable().skip(1)).map({ (hours, minutes) -> Time? in
             if !self.viewModel.optional {
                 return Time(hour:hours.isEmpty ? "0" : hours, minute:minutes.isEmpty ? "0" : minutes)
             }

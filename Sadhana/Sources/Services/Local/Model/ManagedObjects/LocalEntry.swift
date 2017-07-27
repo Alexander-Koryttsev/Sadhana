@@ -1,5 +1,5 @@
 //
-//  LocalSadhanaEntry.swift
+//  LocalEntry.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 7/8/17.
@@ -9,8 +9,8 @@
 import Foundation
 import CoreData
 
-@objc(LocalSadhanaEntry)
-class LocalSadhanaEntry: NSManagedObject, SadhanaEntry, JSONConvertible {
+@objc(LocalEntry)
+class LocalEntry: NSManagedObject, Entry, JSONConvertible {
     var bedTime: Time? { get {
             return timeOptionalValue(forKey: .bedTime)
         } set {
@@ -20,7 +20,8 @@ class LocalSadhanaEntry: NSManagedObject, SadhanaEntry, JSONConvertible {
     @NSManaged public var month: Date
     @NSManaged public var dateCreated: Date
     @NSManaged public var dateUpdated: Date
-    @NSManaged public var exercise: Bool
+    @NSManaged public var dateSynched: Date
+    @NSManaged public var yoga: Bool
     @NSManaged public var id: NSNumber?
     @NSManaged public var japaCount7_30: Int16
     @NSManaged public var japaCount10: Int16
@@ -47,28 +48,26 @@ class LocalSadhanaEntry: NSManagedObject, SadhanaEntry, JSONConvertible {
             id = newValue as NSNumber?
     }   }
 
-    
-
     @discardableResult
-    func map(_ sadhanaEntry: SadhanaEntry) -> Self {
-        ID = sadhanaEntry.ID
-        dateCreated = sadhanaEntry.dateCreated
-        dateUpdated = sadhanaEntry.dateUpdated
-        userID = sadhanaEntry.userID
-        date = sadhanaEntry.date
+    func map(_ entry: Entry) -> Self {
+        ID = entry.ID
+        dateCreated = entry.dateCreated
+        dateUpdated = entry.dateUpdated
+        userID = entry.userID
+        date = entry.date
 
         month = date.trimmedDayAndTime
-        japaCount7_30 = sadhanaEntry.japaCount7_30
-        japaCount10 = sadhanaEntry.japaCount10
-        japaCount18 = sadhanaEntry.japaCount18
-        japaCount24 = sadhanaEntry.japaCount24
-        reading = sadhanaEntry.reading
-        kirtan = sadhanaEntry.kirtan
-        bedTime = sadhanaEntry.bedTime
-        wakeUpTime = sadhanaEntry.wakeUpTime
-        exercise = sadhanaEntry.exercise
-        service = sadhanaEntry.service
-        lections = sadhanaEntry.lections
+        japaCount7_30 = entry.japaCount7_30
+        japaCount10 = entry.japaCount10
+        japaCount18 = entry.japaCount18
+        japaCount24 = entry.japaCount24
+        reading = entry.reading
+        kirtan = entry.kirtan
+        bedTime = entry.bedTime
+        wakeUpTime = entry.wakeUpTime
+        yoga = entry.yoga
+        service = entry.service
+        lections = entry.lections
 
         return self
     }
@@ -87,18 +86,18 @@ class LocalSadhanaEntry: NSManagedObject, SadhanaEntry, JSONConvertible {
                 "kirtan": kirtan,
                 "opt_sleep": bedTime?.string ?? NSNull(),
                 "opt_wake_up": wakeUpTime?.string ?? NSNull(),
-                "opt_exercise": exercise,
+                "opt_exercise": yoga,
                 "opt_service": service,
                 "opt_lections": lections]
     }
     
-    static let entityName = "LocalSadhanaEntry"
+    static let entityName = "LocalEntry"
     
-    @nonobjc public class func request() -> NSFetchRequest<LocalSadhanaEntry> {
-        return NSFetchRequest<LocalSadhanaEntry>(entityName: entityName)
+    @nonobjc public class func request() -> NSFetchRequest<LocalEntry> {
+        return NSFetchRequest<LocalEntry>(entityName: entityName)
     }
 
-    func customValue(forKey key:SadhanaEntryFieldKey) -> Any? {
+    func customValue(forKey key:EntryFieldKey) -> Any? {
         let rawKey = key.rawValue
         willAccessValue(forKey: rawKey)
         let value = primitiveValue(forKey: rawKey)
@@ -106,15 +105,15 @@ class LocalSadhanaEntry: NSManagedObject, SadhanaEntry, JSONConvertible {
         return value
     }
 
-    func timeValue(forKey key:SadhanaEntryFieldKey) -> Time {
+    func timeValue(forKey key:EntryFieldKey) -> Time {
         return Time(rawValue:(customValue(forKey: key) as! NSNumber))
     }
 
-    func timeOptionalValue(forKey key:SadhanaEntryFieldKey) -> Time? {
+    func timeOptionalValue(forKey key:EntryFieldKey) -> Time? {
         return Time(rawValue:(customValue(forKey: key) as? NSNumber))
     }
 
-    func customSet<T>(value:T?, forKey key:SadhanaEntryFieldKey) {
+    func customSet<T>(value:T?, forKey key:EntryFieldKey) {
         let rawKey = key.rawValue
         willChangeValue(forKey: rawKey)
         let newValue : T? = (value != nil) ? value : nil
@@ -122,11 +121,11 @@ class LocalSadhanaEntry: NSManagedObject, SadhanaEntry, JSONConvertible {
         didChangeValue(forKey: rawKey)
     }
 
-    func set(time:Time, forKey key:SadhanaEntryFieldKey) {
+    func set(time:Time, forKey key:EntryFieldKey) {
         customSet(value: time.nsNumber, forKey: key)
     }
 
-    func set(time:Time?, forKey key:SadhanaEntryFieldKey) {
+    func set(time:Time?, forKey key:EntryFieldKey) {
         customSet(value: time?.nsNumber, forKey: key)
     }
 }

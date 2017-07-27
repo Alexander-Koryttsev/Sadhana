@@ -26,25 +26,31 @@ extension Date {
     //MARK: Component
     var minute : Int {
         get {
-            return Calendar.current.component(.minute, from: self)
+            return Calendar.local.component(.minute, from: self)
         }
     }
 
     var hour : Int {
         get {
-            return Calendar.current.component(.hour, from: self)
+            return Calendar.local.component(.hour, from: self)
         }
     }
 
     var day : Int {
         get {
-            return Calendar.current.component(.day, from: self)
+            return Calendar.local.component(.day, from: self)
         }
     }
 
     var weekDay : Int {
         get {
-            return Calendar.current.component(.weekday, from: self)
+            return Calendar.local.component(.weekday, from: self)
+        }
+    }
+
+    var weekDayIndex : Int {
+        get {
+            return Calendar.local.orderedWeekDays.index(of: weekDay)!
         }
     }
 
@@ -52,7 +58,7 @@ extension Date {
     var trimmedTime : Date {
         get {
             //TODO : handle local time zone
-            let calendar = Calendar.current
+            let calendar = Calendar.local
 
             let year = calendar.component(.year, from: self)
             let month = calendar.component(.month, from: self)
@@ -65,7 +71,7 @@ extension Date {
 
     var trimmedDayAndTime : Date {
         get {
-            let calendar = Calendar.current
+            let calendar = Calendar.local
 
             let year = calendar.component(.year, from: self)
             let month = calendar.component(.month, from: self)
@@ -91,13 +97,53 @@ extension Date {
     //MARK: Transform
     var yesterday: Date {
         get {
-            return Calendar.current.date(byAdding: .day, value: -1, to: self)!
+            return Calendar.local.date(byAdding: .day, value: -1, to: self)!
         }
     }
 
     var tomorrow: Date {
         get {
-            return Calendar.current.date(byAdding: .day, value: 1, to: self)!
+            return Calendar.local.date(byAdding: .day, value: 1, to: self)!
         }
     }
 }
+
+extension Calendar {
+    static var local : Calendar {
+        get {
+            var calendar = Calendar.current
+            calendar.locale = Locale.current
+            return calendar
+        }
+    }
+
+    //US: [0, 1, 2, 3, 4, 5, 6]
+    //UA: [1, 2, 3, 4, 5, 6, 0]
+    var orderedWeekDayIndexes : [Int] {
+        get {
+            var days = [Int]()
+            var i = firstWeekday - 1
+            for _ in (0..<7) {
+                days.append(i)
+                i = i == 6 ? 0 : i + 1
+            }
+            return days
+        }
+    }
+
+    //US: [1, 2, 3, 4, 5, 6, 7]
+    //UA: [2, 3, 4, 5, 6, 7, 1]
+    var orderedWeekDays : [Int] {
+        get {
+            return [1, 2, 3, 4, 5, 6, 7][orderedWeekDayIndexes]
+        }
+    }
+
+    var orderedWeekDaySymbols : [String] {
+        get {
+            return weekdaySymbols[orderedWeekDayIndexes]
+        }
+    }
+}
+
+

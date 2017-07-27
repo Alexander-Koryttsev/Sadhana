@@ -1,5 +1,5 @@
 //
-//  SadhanaEntry.swift
+//  Entry.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 7/7/17.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum SadhanaEntryFieldKey : String {
+enum EntryFieldKey : String {
     case wakeUpTime = "wakeUpTime"
     case japa = "japa_rounds"
     case japa7_30 = "japaCount7_30"
@@ -18,12 +18,12 @@ enum SadhanaEntryFieldKey : String {
     case reading = "reading"
     case kirtan = "kirtan"
     case service = "service"
-    case yoga = "exercise"
+    case yoga = "yoga"
     case lections = "lections"
     case bedTime = "bedTime"
 }
 
-protocol SadhanaEntry {
+protocol Entry {
     var ID : Int32? { get }
     var userID : Int32 { get }
     var date : Date { get }
@@ -39,7 +39,7 @@ protocol SadhanaEntry {
     var bedTime : Time? { get }
     var wakeUpTime : Time? { get }
     
-    var exercise : Bool { get }
+    var yoga : Bool { get }
     var service : Bool { get }
     var lections : Bool { get }
     
@@ -47,7 +47,7 @@ protocol SadhanaEntry {
     var dateUpdated : Date { get }
 }
 
-extension SadhanaEntry {
+extension Entry {
     var japaSum : Int16 {
         get {
             return japaCount7_30 + japaCount10 + japaCount18 + japaCount24

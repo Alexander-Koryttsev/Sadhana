@@ -18,16 +18,16 @@ class EntryEditingVM: BaseVM {
             return fieldsInternal
         }
     }
-    private let entry : LocalSadhanaEntry
+    private let entry : LocalEntry
 
     init(date: Date, context: NSManagedObjectContext) {
         self.date = date.trimmedTime
 
-        if let localEntry = context.fetchSadhanaEntry(date: self.date) {
+        if let localEntry = context.fetchEntry(date: self.date) {
             entry = localEntry
         }
         else {
-            entry = context.create(LocalSadhanaEntry.self)
+            entry = context.create(LocalEntry.self)
             entry.userID = Local.defaults.userID!
             entry.date = self.date
             entry.month = self.date.trimmedDayAndTime
@@ -45,7 +45,7 @@ class EntryEditingVM: BaseVM {
             self.field(forKey: .japa18),
             self.field(forKey: .japa24),
         ]
-        let japaContainer = FieldsContainerVM(SadhanaEntryFieldKey.japa.rawValue, japaFields, colors: [.sdSunflowerYellow, .sdTangerine, .sdNeonRed, .sdBrightBlue])
+        let japaContainer = FieldsContainerVM(EntryFieldKey.japa.rawValue, japaFields, colors: [.sdSunflowerYellow, .sdTangerine, .sdNeonRed, .sdBrightBlue])
         fieldsInternal.append(japaContainer)
 
         add(timeField: .reading, optional: false)
@@ -59,21 +59,21 @@ class EntryEditingVM: BaseVM {
         }
     }
 
-    private func field(forKey: SadhanaEntryFieldKey) -> ManagedFieldVM {
+    private func field(forKey: EntryFieldKey) -> ManagedFieldVM {
         return ManagedFieldVM(forKey.rawValue, entry:entry)
     }
 
-    private func timeField(forKey: SadhanaEntryFieldKey, optional: Bool) -> TimeFieldVM {
+    private func timeField(forKey: EntryFieldKey, optional: Bool) -> TimeFieldVM {
         return TimeFieldVM(forKey, entry:entry, optional: optional)
     }
 
-    private func add(field: SadhanaEntryFieldKey) {
+    private func add(field: EntryFieldKey) {
         if Local.defaults.isFieldEnabled(field) {
             fieldsInternal.append(self.field(forKey:field))
         }
     }
 
-    private func add(timeField: SadhanaEntryFieldKey, optional: Bool) {
+    private func add(timeField: EntryFieldKey, optional: Bool) {
         if Local.defaults.isFieldEnabled(timeField) {
             fieldsInternal.append(self.timeField(forKey:timeField, optional: optional))
         }
@@ -123,10 +123,10 @@ class FieldsContainerVM : FormFieldVM {
 class TimeFieldVM: VariableFieldVM {
     let key : String
     let variable : Variable<Any?>
-    private let entry : LocalSadhanaEntry
+    private let entry : LocalEntry
     let disposeBag = DisposeBag()
     let optional : Bool
-    init(_ key: SadhanaEntryFieldKey, entry: LocalSadhanaEntry, optional: Bool) {
+    init(_ key: EntryFieldKey, entry: LocalEntry, optional: Bool) {
         self.key = key.rawValue
         self.optional = optional
         variable = Variable(entry.timeOptionalValue(forKey: key))

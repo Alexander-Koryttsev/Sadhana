@@ -12,7 +12,7 @@ import EasyPeasy
 class EntryCell: UITableViewCell {
     let dateLabel = UILabel()
     let weekDayLabel = UILabel()
-    let sadhanaEntryView = SadhanaEntryView()
+    let entryView = EntryView()
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: NSStringFromClass(EntryCell.self))
@@ -20,8 +20,8 @@ class EntryCell: UITableViewCell {
         contentView.layoutMargins = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
         separatorInset = UIEdgeInsets(top: 0, left: contentView.layoutMargins.left, bottom: 0, right: 0)
 
-        contentView.addSubview(sadhanaEntryView)
-        sadhanaEntryView <- [
+        contentView.addSubview(entryView)
+        entryView <- [
             CenterY(),
             Left(60).to(contentView),
             Right().to(contentView, .rightMargin)
@@ -31,7 +31,7 @@ class EntryCell: UITableViewCell {
         dateLabel.font = UIFont.systemFont(ofSize: 16.0, weight: UIFontWeightLight)
         dateLabel <- [
             CenterY(),
-            Right(32).to(sadhanaEntryView)
+            Right(32).to(entryView)
         ]
 
         contentView.addSubview(weekDayLabel)
@@ -45,11 +45,11 @@ class EntryCell: UITableViewCell {
 
     }
 
-    func map(_ entry: SadhanaEntry, maxRoundsCount:Int16) {
+    func map(_ entry: Entry, maxRoundsCount:Int16) {
         dateLabel.text = entry.date.day.description
         weekDayLabel.text = entry.date.weekDayShort
 
-        sadhanaEntryView.map(entry, maxRoundsCount: maxRoundsCount)
+        entryView.map(entry, maxRoundsCount: maxRoundsCount)
     }
     
     required init?(coder aDecoder: NSCoder) {

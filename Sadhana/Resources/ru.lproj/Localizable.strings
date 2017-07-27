@@ -1,0 +1,36 @@
+/* 
+  Localisable.strings
+  Sadhana
+
+  Created by Alexander Koryttsev on 7/14/17.
+  Copyright © 2017 Alexander Koryttsev. All rights reserved.
+*/
+
+//General
+sadhana = "Садхана";
+today = "Сегодня";
+hours = "часов";
+minutes = "минут";
+
+//Login
+login = "Логин";
+password = "Пароль";
+signIn = "Войти";
+
+//My Graph
+myGraph = "Мой график";
+logout = "Выйти";
+
+//EntryFieldKey
+wakeUpTime = "Подъем в";
+japa_rounds = "Круги джапы";
+japaCount7_30 = "до 7:30";
+japaCount10 = "до 10";
+japaCount18 = "до 18";
+japaCount24 = "после 18";
+reading = "Чтение книг";
+kirtan = "Киртан";
+service = "Служение";
+yoga = "Йога";
+lections = "Лекции";
+bedTime = "Отбой в";

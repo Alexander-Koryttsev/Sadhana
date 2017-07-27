@@ -28,10 +28,10 @@ class CountsLayoutCell: ResponsibleCell {
         separatorInset = UIEdgeInsets()
 
         contentView.addSubview(titleLabel)
-        titleLabel.font = .sdTextStyle4Font
+        titleLabel.font = UIFont.systemFont(ofSize: 14.0, weight: UIFontWeightRegular)
         titleLabel <- [
             CenterX(),
-            Top(14),
+            Top(9),
             Height(18)
         ]
 
@@ -39,8 +39,8 @@ class CountsLayoutCell: ResponsibleCell {
         countViewsBackgroundView.backgroundColor = .sdSilver
         countViewsBackgroundView <- [
             Top(10).to(titleLabel),
-            Left(16),
-            Right(16),
+            Left(4),
+            Right(4),
             Bottom(14)
         ]
 
@@ -83,7 +83,7 @@ class CountsLayoutCell: ResponsibleCell {
     }
 
     override func height() -> CGFloat {
-        return 110
+        return 100
     }
 }
 
@@ -105,7 +105,7 @@ class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
                 if value > 0 {
                     view.valueField.text = value.description
                 }
-                view.valueField.rx.textRequired.asDriver().map({ (string) -> Int16 in
+                view.valueField.rx.textRequired.asDriver().skip(1).map({ (string) -> Int16 in
                     return Int16(string) ?? 0
                 }).drive(vm.variable).disposed(by: disposeBag)
             }

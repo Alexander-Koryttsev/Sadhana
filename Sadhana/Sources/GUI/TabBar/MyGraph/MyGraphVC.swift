@@ -15,7 +15,7 @@ import EasyPeasy
 class MyGraphVC: BaseFetchedResultsVC<MyGraphVM> {
 
     override var title:String? {
-        get { return "Мой график" }
+        get { return "myGraph".localized }
         set {}
     }
 
@@ -24,7 +24,7 @@ class MyGraphVC: BaseFetchedResultsVC<MyGraphVM> {
     var maxCounts = [Int : Int16]()
 
     override func viewDidLoad() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style:.plain, target:self, action:#selector(logOut(sender:)))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "logout".localized, style:.plain, target:self, action:#selector(logOut(sender:)))
         viewModel.frc.delegate = self;
         refreshControl = UIRefreshControl()
         setUpErrorLabel()
@@ -96,7 +96,7 @@ class MyGraphVC: BaseFetchedResultsVC<MyGraphVM> {
             return cachedCount
         }
         let maxCount = viewModel.frc.sections![section].objects?.reduce(16, { (result, entry) -> Int16 in
-            let sum = (entry as! SadhanaEntry).japaSum
+            let sum = (entry as! Entry).japaSum
             return sum > result ? sum : result
         })
         maxCounts[section] = maxCount
@@ -114,7 +114,7 @@ class MyGraphVC: BaseFetchedResultsVC<MyGraphVM> {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let section = viewModel.frc.sections?[section] else { return nil }
-        return (section.objects?.first! as! SadhanaEntry).date.monthMedium
+        return (section.objects?.first! as! Entry).date.monthMedium
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

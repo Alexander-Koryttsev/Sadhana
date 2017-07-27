@@ -1,5 +1,5 @@
 //
-//  RemoteSadhanaEntry.swift
+//  RemoteEntry.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 7/7/17.
@@ -9,7 +9,7 @@
 import Foundation
 import Mapper
 
-struct RemoteSadhanaEntry : SadhanaEntry, Mappable {
+struct RemoteEntry : Entry, Mappable {
     let ID : Int32?
     let userID : Int32
     let date : Date
@@ -25,7 +25,7 @@ struct RemoteSadhanaEntry : SadhanaEntry, Mappable {
     let bedTime : Time?
     let wakeUpTime : Time?
     
-    let exercise : Bool
+    let yoga : Bool
     let service : Bool
     let lections : Bool
     
@@ -48,7 +48,7 @@ struct RemoteSadhanaEntry : SadhanaEntry, Mappable {
         bedTime = map.optionalFrom("opt_sleep", transformation: extractTimeFromString)
         wakeUpTime = map.optionalFrom("opt_wake_up", transformation: extractTimeFromString)
 
-        try exercise = map.from("opt_exercise")
+        try yoga = map.from("opt_exercise")
         try service = map.from("opt_service")
         try lections = map.from("opt_lections")
         

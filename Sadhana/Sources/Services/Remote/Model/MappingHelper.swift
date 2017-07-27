@@ -145,10 +145,10 @@ func extractTimeFromRawValue(object: Any) throws -> Time {
     throw MapperError.convertibleError(value: object, type: Int16.self)
 }
 
-func extractTimeFromString(object: Any?) throws -> Time? {
+func extractTimeFromString(object: Any?) -> Time? {
     guard   let string = object as? String,
             let time = Time(string)
-    else { throw MapperError.convertibleError(value: object, type: Time.self) }
+    else { return nil }
 
     return time
 }

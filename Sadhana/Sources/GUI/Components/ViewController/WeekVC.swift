@@ -17,34 +17,21 @@ class WeekVC: UIViewController {
     private let circle = CircleView()
 
     let disposeBag = DisposeBag()
-    var labels : [UILabel] { get {
-        return stackView.arrangedSubviews as! [UILabel]
-    }}
+    var labels : [UILabel] {
+        get {
+            return stackView.arrangedSubviews as! [UILabel]
+        }
+    }
     let selectedDate : Variable<Date>
 
-    var selectedWeekDay : Int { get {
-        var components = Calendar.current.dateComponents(in: TimeZone.current, from: selectedDate.value)
-        return components.weekday!
-    } set {
-        var components = Calendar.current.dateComponents(in: TimeZone.current, from: selectedDate.value)
-        components.day = components.day! - components.weekday! + newValue
-        selectedDate.value = components.date!
-    }}
-
-    var firstDate : Date { get {
-        var components = Calendar.current.dateComponents(in: TimeZone.current, from: selectedDate.value)
-        components.day = components.day! - components.weekday! + 1
-        return components.date!
-    }}
-
-    var lastDate : Date { get {
-        var components = Calendar.current.dateComponents(in: TimeZone.current, from: selectedDate.value)
-        components.day = components.day! - components.weekday! + 7
-        return components.date!
-    }}
+    let firstDate : Date
+    let lastDate : Date
 
     init(_ selectedDate: Date) {
-        self.selectedDate = Variable(selectedDate.trimmedTime)
+        let trimmedSelectedDate = selectedDate.trimmedTime
+        self.selectedDate = Variable(trimmedSelectedDate)
+        firstDate = Calendar.local.date(byAdding: .day, value: -trimmedSelectedDate.weekDayIndex, to: trimmedSelectedDate)!
+        lastDate = Calendar.local.date(byAdding: .day, value: 6 - trimmedSelectedDate.weekDayIndex, to: trimmedSelectedDate)!
 
         super.init(nibName: nil, bundle: nil)
 
@@ -54,23 +41,20 @@ class WeekVC: UIViewController {
         stackView.distribution = .fillEqually
         stackView <- Edges()
 
-        var components = Calendar.current.dateComponents(in: TimeZone.current, from: self.selectedDate.value)
         let currentDate = Date().trimmedTime
-        let selectedWeekDay = components.weekday!
-        components.day = components.day! - components.weekday! + 1
 
-        for i in (1...7) {
+        for i in (0..<7) {
+            let date = Calendar.local.date(byAdding: .day, value: i, to: firstDate)!
             let label = UILabel()
-            label.text = components.day!.description
+            label.text = date.day.description
             label.highlightedTextColor = .white
             label.textAlignment = .center
             label.isUserInteractionEnabled = true
             stackView.addArrangedSubview(label)
-            let date = components.date!
 
             if date <= currentDate {
                 let gesture = UITapGestureRecognizer()
-                gesture.rx.event.map({ _ in return date }).bind(to: self.selectedDate).disposed(by: disposeBag)
+                gesture.rx.event.map({ gesture in return date }).bind(to: self.selectedDate).disposed(by: disposeBag)
                 label.addGestureRecognizer(gesture)
 
                 if date == currentDate {
@@ -81,18 +65,16 @@ class WeekVC: UIViewController {
                 label.textColor = .sdSilver
             }
 
-            if i == selectedWeekDay {
+            if i == trimmedSelectedDate.weekDayIndex {
                 label.isHighlighted = true
             }
-
-            components.day = components.day! + 1
         }
 
         stackView.insertSubview(circle, at: 0)
         circle <- [
             Size(35),
             CenterY(),
-            CenterX().to(stackView.arrangedSubviews[selectedWeekDay - 1])
+            CenterX()
         ]
 
         self.selectedDate.asDriver().drive(onNext: { [unowned self] (date) in
@@ -100,11 +82,11 @@ class WeekVC: UIViewController {
                 label.isHighlighted = false
             }
 
-            self.labels[self.selectedWeekDay - 1].isHighlighted = true
+            self.labels[self.selectedDate.value.weekDayIndex].isHighlighted = true
 
             self.circle.tintColor = date == Date().trimmedTime ? .sdTangerine : .black
             self.circle.setNeedsDisplay()
-            self.circle <- CenterX().to(self.stackView.arrangedSubviews[self.selectedWeekDay - 1])
+            self.circle <- CenterX().to(self.stackView.arrangedSubviews[self.selectedDate.value.weekDayIndex])
             self.stackView.layoutIfNeeded()
         }).disposed(by: disposeBag)
     }

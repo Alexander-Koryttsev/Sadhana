@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16F73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="LocalSadhanaEntry" representedClassName="LocalSadhanaEntry" syncable="YES">
+    <entity name="LocalEntry" representedClassName="LocalEntry" syncable="YES">
         <attribute name="bedTime" optional="YES" attributeType="Integer 16" valueTransformerName="TimeTransformer" usesScalarValueType="YES" customClassName="Time" syncable="YES"/>
         <attribute name="date" attributeType="Date" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
         <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dateSynched" optional="YES" attributeType="Date" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
         <attribute name="dateUpdated" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
-        <attribute name="exercise" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 32" usesScalarValueType="YES" indexed="YES" syncable="YES"/>
         <attribute name="japaCount7_30" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="japaCount10" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -18,6 +18,7 @@
         <attribute name="service" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="userID" attributeType="Integer 32" usesScalarValueType="YES" indexed="YES" syncable="YES"/>
         <attribute name="wakeUpTime" optional="YES" attributeType="Integer 16" valueTransformerName="TimeTransformer" usesScalarValueType="YES" customClassName="Time" syncable="YES"/>
+        <attribute name="yoga" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <entity name="LocalUser" representedClassName="LocalUser" syncable="YES">
         <attribute name="avatarURLString" optional="YES" attributeType="String" syncable="YES"/>
@@ -32,7 +33,7 @@
         <attribute name="wakeUpTimeEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <elements>
-        <element name="LocalSadhanaEntry" positionX="-63" positionY="54" width="128" height="300"/>
+        <element name="LocalEntry" positionX="160" positionY="192" width="128" height="315"/>
         <element name="LocalUser" positionX="-63" positionY="-18" width="128" height="195"/>
     </elements>
 </model>

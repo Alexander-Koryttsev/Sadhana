@@ -30,7 +30,7 @@ class JapaView: UIView {
         backgroundColor = UIColor.white
     }
 
-    func map(_ entry: SadhanaEntry, maxCount : Int16? = 16) {
+    func map(_ entry: Entry, maxCount : Int16? = 16) {
         entries.removeAll()
         if entry.japaCount7_30 > 0 {
             entries.append(JapaEntry(entry.japaCount7_30, UIColor.sdSunflowerYellow))

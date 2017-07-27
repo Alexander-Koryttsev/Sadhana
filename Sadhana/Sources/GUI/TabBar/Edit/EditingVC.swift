@@ -25,6 +25,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
 
     override func viewDidLoad() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "today".localized, style: .plain, target: nil, action: nil) //BIND
         view.backgroundColor = .white
         super.viewDidLoad()
         automaticallyAdjustsScrollViewInsets = false
@@ -39,7 +40,19 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
     }
 
     override func bindViewModel() {
+        super.bindViewModel()
         navigationItem.leftBarButtonItem?.rx.tap.asDriver().drive(viewModel.cancel).disposed(by: disposeBag)
+        navigationItem.rightBarButtonItem?.rx.tap.asDriver().drive(onNext:{ [unowned self] () in
+            let date = Date().trimmedTime
+            switch date {
+            case let date where date >= self.weekVC.firstDate && date <= self.weekVC.lastDate:
+                self.weekVC.selectedDate.value = date
+                break
+            default:
+                self.updateWeekVC(for:date)
+                break
+            }
+        }).disposed(by: disposeBag)
     }
 
     func setUpTopBar() {
@@ -65,6 +78,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationBar.shadowImage = UIImage()
         navigationBar.items = [navigationItem]
+        navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 15, weight: UIFontWeightRegular)]
         navigationBar <- [
             Top(20),
             Left(),
@@ -85,7 +99,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
             Height(12)
         ]
 
-        for symbol in DateFormatter().veryShortWeekdaySymbols {
+        for symbol in Calendar.local.orderedWeekDaySymbols {
             let label = UILabel()
             label.font = .sdTextStyle5Font
             label.text = String(symbol.characters.first!).uppercased()
@@ -177,9 +191,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         }
         else {
             let viewController = viewController as! WeekVC
-            var components = Calendar.current.dateComponents(in: TimeZone.current, from: viewController.selectedDate.value)
-            components.day = components.day! - 7
-            return WeekVC(components.date!)
+            return WeekVC(Calendar.local.date(byAdding: .weekOfYear, value: -1, to: viewController.selectedDate.value)!)
         }
 
         return nil
@@ -194,25 +206,38 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         }
         else {
             let viewController = viewController as! WeekVC
-            var components = Calendar.current.dateComponents(in: TimeZone.current, from: viewController.selectedDate.value)
-            components.day = components.day! + 7
-            let date = components.date!
-            return date.trimmedTime <= Date().trimmedTime ? WeekVC(date) : nil
+            var foundDate : Date?
+            var targetDate = Calendar.local.date(byAdding: .weekOfYear, value: 1, to: viewController.selectedDate.value)!
+            if targetDate > Date().trimmedTime {
+                for i in (1..<targetDate.weekDay) {
+                    targetDate = Calendar.local.date(byAdding: .day, value: -i, to: targetDate)!
+                    if targetDate <= Date().trimmedTime {
+                        foundDate = targetDate
+                        break
+                    }
+                }
+            }
+            else {
+                foundDate = targetDate
+            }
+            return foundDate != nil ? WeekVC(foundDate!) : nil
         }
 
         return nil
     }
 
+    func updateWeekVC(for date: Date) {
+        let selectedDate = weekVC.selectedDate.value
+        weekPageVC.setViewControllers([updateWeekVC(date)], direction: date < selectedDate ? .reverse : .forward, animated: true, completion: nil)
+    }
+
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if pageViewController == pageVC {
             switch entryEditingVC.viewModel.date {
-            case let date where date < weekVC.firstDate:
-                weekPageVC.setViewControllers([updateWeekVC(date)], direction: .reverse, animated: true, completion: nil)
+            case let date where date < weekVC.firstDate || date > weekVC.lastDate:
+                updateWeekVC(for:date)
                 break
 
-            case let date where date > weekVC.lastDate:
-                weekPageVC.setViewControllers([updateWeekVC(date)], direction: .forward, animated: true, completion: nil)
-                break
             default:
                 weekVC.selectedDate.value = entryEditingVC.viewModel.date
                 break

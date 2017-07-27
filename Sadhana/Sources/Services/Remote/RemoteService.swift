@@ -232,22 +232,22 @@ class RemoteService {
         return apiRequest(.post, "options/\(user.ID)", parameters: user.json()).completable()
     }
     
-    func loadSadhanaEntries(userID:Int32, year:Int, month:Int) -> Single <[SadhanaEntry]> {
+    func loadSadhanaEntries(userID:Int32, year:Int, month:Int) -> Single <[Entry]> {
         return apiRequest(.post, "userSadhanaEntries/\(userID)", parameters:["year": year, "month": month]).map({ (json) -> [JSON] in
             guard let entries = json["entries"] as? [JSON] else {
                 throw RemoteError.invalidData
             }
             return entries
-        }).map(array:RemoteSadhanaEntry.self).cast([SadhanaEntry].self)
+        }).map(array:RemoteEntry.self).cast([Entry].self)
     }
     
-    func send(_ sadhanaEntry: SadhanaEntry & JSONConvertible) -> Single<Int32> {
-        var path = "sadhanaEntry/\(sadhanaEntry.userID)"
-        if sadhanaEntry.ID != nil {
-            path.append("/\(sadhanaEntry.ID!)")
+    func send(_ entry: Entry & JSONConvertible) -> Single<Int32> {
+        var path = "entry/\(entry.userID)"
+        if entry.ID != nil {
+            path.append("/\(entry.ID!)")
         }
         
-        return apiRequest(.post, path, parameters: sadhanaEntry.json()).map({ (json) -> Int32 in
+        return apiRequest(.post, path, parameters: entry.json()).map({ (json) -> Int32 in
             guard let number = json["entry_id"] as? String else {
                 throw RemoteError.invalidData
             }

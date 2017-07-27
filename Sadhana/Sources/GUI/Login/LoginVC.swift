@@ -69,7 +69,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
 
     func setUpLogo() {
         formArea.addSubview(titleLabel)
-        titleLabel.text = "Садхана"
+        titleLabel.text = "sadhana".localized
         titleLabel.font = UIFont.sdTextStyle1Font()
         titleLabel.textColor = UIColor.white
         titleLabel <- [
@@ -120,7 +120,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
 
     func setUpLoginField(){
         form.addSubview(loginField)
-        loginField.placeholder = "Логин"
+        loginField.placeholder = "login".localized
         loginField.borderStyle = .none
         loginField.textAlignment = .center
         loginField.font = UIFont.sdTextStyle3Font()
@@ -149,7 +149,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         ]
 
         form.addSubview(passwordField)
-        passwordField.placeholder = "Пароль"
+        passwordField.placeholder = "password".localized
         passwordField.isSecureTextEntry = true
         passwordField.borderStyle = loginField.borderStyle
         passwordField.textAlignment = loginField.textAlignment
@@ -168,7 +168,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
 
     func setUpLoginButton() {
         form.addSubview(loginButton)
-        loginButton.setTitle("Войти", for: .normal)
+        loginButton.setTitle("signIn".localized, for: .normal)
         loginButton.backgroundColor = UIColor.sdTangerine
         loginButton.setTitleColor(UIColor.white, for: .normal)
         loginButton.setTitleColor(UIColor.white, for: .highlighted)

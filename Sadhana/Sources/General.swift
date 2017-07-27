@@ -8,13 +8,24 @@
 
 import Foundation
 
+typealias JSON = [String: Any]
+typealias JSONArray = [JSON]
+
 enum GeneralError : Error {
     case error
     case noSelf
 }
 
-typealias JSON = [String: Any]
-typealias JSONArray = [JSON]
+struct Local {
+    static let service = LocalService.shared
+    static let defaults = LocalDefaults.shared
+}
+
+struct Remote {
+    static let service = RemoteService.shared
+}
+
+
 
 func desc(_ object:Any?) -> String {
     let anyObject : AnyObject = object as AnyObject
@@ -29,16 +40,17 @@ protocol JSONConvertible {
 extension String {
     var localized: String {
         get {
-            return self //TODO: implement
+            return NSLocalizedString(self, comment: "")
         }
     }
 }
 
-struct Local {
-    static let service = LocalService.shared
-    static let defaults = LocalDefaults.shared
-}
-
-struct Remote {
-    static let service = RemoteService.shared
+extension Array {
+    subscript(_ indexes: [Int]) -> Array<Element> {
+        var array = [Element]()
+        for i in indexes {
+            array.append(self[i])
+        }
+        return array
+    }
 }

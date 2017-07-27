@@ -1,5 +1,5 @@
 //
-//  SadhanaEntryView.swift
+//  EntryView.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 7/17/17.
@@ -9,7 +9,7 @@
 import UIKit
 import EasyPeasy
 
-class SadhanaEntryView : UIView {
+class EntryView : UIView {
     let japaView = JapaView()
     let japaCountLabel = UILabel()
     let readingImageView = OnOffImageView(offImage: #imageLiteral(resourceName: "book-icon-empty"), onImage: #imageLiteral(resourceName: "book-icon-filled"))
@@ -58,7 +58,7 @@ class SadhanaEntryView : UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func map(_ entry: SadhanaEntry, maxRoundsCount:Int16) {
+    func map(_ entry: Entry, maxRoundsCount:Int16) {
         japaCountLabel.text = (entry.japaCount7_30 + entry.japaCount10 + entry.japaCount18 + entry.japaCount24).description
 
         readingImageView.isOn = entry.reading.rawValue > 0
