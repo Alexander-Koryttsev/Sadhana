@@ -13,6 +13,7 @@ import RxSwift
 class BoolFormCell: FormCell {
     private let viewModel: VariableFieldVM
     private let switcher = UISwitch()
+    let disposeBag = DisposeBag()
 
     init(_ viewModel: VariableFieldVM) {
         self.viewModel = viewModel
@@ -21,7 +22,7 @@ class BoolFormCell: FormCell {
         textLabel?.text = viewModel.key.localized
         textLabel?.font = UIFont.systemFont(ofSize: 15, weight: UIFontWeightRegular)
         switcher.isOn = viewModel.variable.value as! Bool
-        switcher.rx.isOn.asDriver().skip(1).map { (flag) -> Any? in return flag }.drive(viewModel.variable).disposed(by: viewModel.disposeBag)
+        switcher.rx.isOn.asDriver().skip(1).map { (flag) -> Any? in return flag }.drive(viewModel.variable).disposed(by: disposeBag)
         selectionStyle = .none
     }
     

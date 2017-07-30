@@ -1,5 +1,5 @@
 //
-//  LocalUser+CoreDataClass.swift
+//  ManagedUser+CoreDataClass.swift
 //  
 //
 //  Created by Alexander Koryttsev on 6/28/17.
@@ -9,8 +9,8 @@
 import Foundation
 import CoreData
 
-@objc(LocalUser)
-class LocalUser: NSManagedObject, User, JSONConvertible {
+@objc(ManagedUser)
+class ManagedUser: ManagedObject, User, JSONConvertible {
     
     @NSManaged var id: Int32
     var ID: Int32 { get {
@@ -75,10 +75,10 @@ class LocalUser: NSManagedObject, User, JSONConvertible {
                 "opt_sleep": bedTimeEnabled]
     }
     
-    static let entityName = "LocalUser"
+    static let entityName = "ManagedUser"
     
-    @nonobjc public class func request() -> NSFetchRequest<LocalUser> {
-        return NSFetchRequest<LocalUser>(entityName: entityName)
+    @nonobjc public class func request() -> NSFetchRequest<ManagedUser> {
+        return NSFetchRequest<ManagedUser>(entityName: entityName)
     }
 }
 

@@ -42,7 +42,7 @@ class LoginVM : BaseVM {
                 if self == nil { return Observable.just(false) }
                 return Remote.service.login(name: self!.login.value, password: self!.password.value)
                     .concat(Remote.service.loadCurrentUser().asObservable())
-                    .flatMap { (user) -> Observable<LocalUser> in
+                    .flatMap { (user) -> Observable<ManagedUser> in
                         return Local.service.backgroundContext.rxSave(user:user).asObservable()
                     }
                     .observeOn(MainScheduler.instance)

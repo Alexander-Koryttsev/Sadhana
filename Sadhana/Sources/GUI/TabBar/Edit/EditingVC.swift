@@ -206,21 +206,19 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         }
         else {
             let viewController = viewController as! WeekVC
-            var foundDate : Date?
+
+            if Date() < viewController.lastDate {
+                //Selected week has current date. No possible to scroll next
+                return nil
+            }
+
             var targetDate = Calendar.local.date(byAdding: .weekOfYear, value: 1, to: viewController.selectedDate.value)!
-            if targetDate > Date().trimmedTime {
-                for i in (1..<targetDate.weekDay) {
-                    targetDate = Calendar.local.date(byAdding: .day, value: -i, to: targetDate)!
-                    if targetDate <= Date().trimmedTime {
-                        foundDate = targetDate
-                        break
-                    }
-                }
+            if targetDate > Date() {
+                //Next week has current date and target date is future date, so reduce it to the current date
+                targetDate = Date()
             }
-            else {
-                foundDate = targetDate
-            }
-            return foundDate != nil ? WeekVC(foundDate!) : nil
+
+            return WeekVC(targetDate)
         }
 
         return nil

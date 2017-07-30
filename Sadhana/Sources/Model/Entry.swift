@@ -8,22 +8,39 @@
 
 import Foundation
 
-enum EntryFieldKey : String {
-    case wakeUpTime = "wakeUpTime"
+enum EntryFieldKey : String, FieldKey {
+    case wakeUpTime
     case japa = "japa_rounds"
     case japa7_30 = "japaCount7_30"
     case japa10 = "japaCount10"
     case japa18 = "japaCount18"
     case japa24 = "japaCount24"
-    case reading = "reading"
-    case kirtan = "kirtan"
-    case service = "service"
-    case yoga = "yoga"
-    case lections = "lections"
-    case bedTime = "bedTime"
+    case reading
+    case kirtan
+    case service
+    case yoga
+    case lections
+    case bedTime
 }
 
-protocol Entry {
+protocol Updatable {
+    var dateUpdated : Date { get }
+    var dateCreated : Date { get }
+}
+
+protocol Synchable : Updatable {
+    var dateSynched : Date? { get }
+}
+
+extension Synchable {
+    var shouldSynch : Bool {
+        get {
+            return dateUpdated > (dateSynched ?? dateCreated)
+        }
+    }
+}
+
+protocol Entry : Updatable {
     var ID : Int32? { get }
     var userID : Int32 { get }
     var date : Date { get }
@@ -42,9 +59,7 @@ protocol Entry {
     var yoga : Bool { get }
     var service : Bool { get }
     var lections : Bool { get }
-    
-    var dateCreated : Date { get }
-    var dateUpdated : Date { get }
+
 }
 
 extension Entry {
@@ -53,4 +68,8 @@ extension Entry {
             return japaCount7_30 + japaCount10 + japaCount18 + japaCount24
         }
     }
+}
+
+protocol FieldKey {
+    var rawValue : String {get}
 }

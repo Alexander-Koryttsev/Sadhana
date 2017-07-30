@@ -80,31 +80,31 @@ class LocalService: NSObject {
 
 
 extension NSManagedObjectContext {
-    func rxSave(user:User) -> Single<LocalUser> {
-        let request = LocalUser.request()
+    func rxSave(user:User) -> Single<ManagedUser> {
+        let request = ManagedUser.request()
         request.predicate = NSPredicate(format: "id = %d", user.ID)
         request.fetchLimit = 1
-        return rxFetch(request).map { [weak self] (localUsers) -> LocalUser in
-            let localUser = localUsers.count > 0 ? localUsers.first! : self!.create(LocalUser.self)
+        return rxFetch(request).map { [weak self] (localUsers) -> ManagedUser in
+            let localUser = localUsers.count > 0 ? localUsers.first! : self!.create(ManagedUser.self)
             return localUser.map(user)
         }.concat(rxSave())
     }
     
-    func rxSave(_ entries:[Entry]) -> Single<[LocalEntry]> {
+    func rxSave(_ entries:[Entry]) -> Single<[ManagedEntry]> {
         //TODO: make thread-safe
-        let request = LocalEntry.request()
+        let request = ManagedEntry.request()
         let IDs = entries.flatMap { (entry) -> Int32 in
             return entry.ID!
         }
         request.predicate = NSPredicate(format: "id IN %@", IDs)
         request.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
-        return self.rxFetch(request).map { [weak self] (localEntries) -> [LocalEntry] in
+        return self.rxFetch(request).map { [weak self] (localEntries) -> [ManagedEntry] in
             //TODO: Check is context's queue
             var remoteEntries = entries.sorted(by: { (entry1, entry2) -> Bool in
                 return entry1.ID! <  entry2.ID!
             })
             var localEntriesMutable = localEntries
-            var updatedLocalEntries = [LocalEntry]()
+            var updatedLocalEntries = [ManagedEntry]()
             
             while remoteEntries.count > 0 {
                 let remoteEntry = remoteEntries.first!
@@ -126,7 +126,7 @@ extension NSManagedObjectContext {
                     }
                 }
                 
-                let newEntry = self!.create(LocalEntry.self)
+                let newEntry = self!.create(ManagedEntry.self)
                 newEntry.map(remoteEntry)
                 updatedLocalEntries.append(newEntry)
                 remoteEntries.removeFirst()
@@ -136,26 +136,26 @@ extension NSManagedObjectContext {
             }.concat(rxSave())
     }
     
-    func fetchUser() -> LocalUser? {
-        return fetchSingle(LocalUser.request())
+    func fetchUser() -> ManagedUser? {
+        return fetchSingle(ManagedUser.request())
     }
     
-    func fetchUser(ID:Int32) -> LocalUser? {
-        let request = LocalUser.request()
+    func fetchUser(ID:Int32) -> ManagedUser? {
+        let request = ManagedUser.request()
         request.predicate = NSPredicate(format: "id = %d", ID)
         return fetchSingle(request)
     }
     
-    func fetchEntry(date: Date) -> LocalEntry? {
-        let request = LocalEntry.request()
+    func fetchEntry(date: Date) -> ManagedEntry? {
+        let request = ManagedEntry.request()
         //TODO: add user ID
         //TODO: debug
         request.predicate = NSPredicate(format: "date == %@", date as NSDate)
         return fetchSingle(request)
     }
 
-    func mySadhanaEntriesFRC() -> NSFetchedResultsController<LocalEntry> {
-        let request = LocalEntry.request()
+    func mySadhanaEntriesFRC() -> NSFetchedResultsController<ManagedEntry> {
+        let request = ManagedEntry.request()
         request.sortDescriptors = [NSSortDescriptor(key:"date", ascending:false)]
         return NSFetchedResultsController(fetchRequest: request, managedObjectContext: self, sectionNameKeyPath: "month", cacheName: nil)
     }
@@ -196,22 +196,37 @@ extension NSManagedObjectContext {
         }
     }
 
-    func saveHandled() {
-        do {
-            try self.save()
+    func saveRecursive() {
+        saveHanlded()
 
-            if self.parent != nil {
-                if Thread.isMainThread,
-                    self.parent?.concurrencyType == .mainQueueConcurrencyType {
-                    self.parent?.saveHandled()
-                }
-                else {
-                    self.parent?.performAndWait {
-                        self.parent?.saveHandled()
-                    }
+        if self.parent != nil {
+            if Thread.isMainThread,
+                self.parent?.concurrencyType == .mainQueueConcurrencyType {
+                self.parent?.saveRecursive()
+            }
+            else {
+                self.parent?.performAndWait {
+                    self.parent?.saveRecursive()
                 }
             }
+        }
+    }
 
+    func saveHanlded() {
+        if self.concurrencyType == .mainQueueConcurrencyType,
+            !Thread.isMainThread {
+            self.performAndWait {
+                self.saveHandledInternal()
+            }
+        }
+        else {
+           saveHandledInternal()
+        }
+    }
+
+    private func saveHandledInternal() {
+        do {
+            try self.save()
         } catch {
             fatalError("Failure to save context: \(error)")
         }

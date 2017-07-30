@@ -1,5 +1,5 @@
 //
-//  LocalEntry.swift
+//  ManagedEntry.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 7/8/17.
@@ -9,18 +9,16 @@
 import Foundation
 import CoreData
 
-@objc(LocalEntry)
-class LocalEntry: NSManagedObject, Entry, JSONConvertible {
+@objc(ManagedEntry)
+class ManagedEntry: ManagedSynchable, Entry, JSONConvertible {
+    typealias Key = EntryFieldKey
     var bedTime: Time? { get {
-            return timeOptionalValue(forKey: .bedTime)
+            return timeOptionalValue(forKey: Key.bedTime)
         } set {
-            set(time: newValue, forKey: .bedTime)
+            set(time: newValue, forKey: Key.bedTime)
         }}
     @NSManaged public var date: Date
     @NSManaged public var month: Date
-    @NSManaged public var dateCreated: Date
-    @NSManaged public var dateUpdated: Date
-    @NSManaged public var dateSynched: Date
     @NSManaged public var yoga: Bool
     @NSManaged public var id: NSNumber?
     @NSManaged public var japaCount7_30: Int16
@@ -30,16 +28,16 @@ class LocalEntry: NSManagedObject, Entry, JSONConvertible {
     @NSManaged public var kirtan: Bool
     @NSManaged public var lections: Bool
     var reading: Time { get {
-            return timeValue(forKey: .reading)
+            return timeValue(forKey: Key.reading)
         } set {
-            set(time: newValue, forKey: .reading)
+            set(time: newValue, forKey: Key.reading)
     }   }
     @NSManaged public var service: Bool
     @NSManaged public var userID: Int32
     var wakeUpTime: Time? { get {
-            return timeOptionalValue(forKey: .wakeUpTime)
+            return timeOptionalValue(forKey: Key.wakeUpTime)
         } set {
-            set(time: newValue, forKey: .wakeUpTime)
+            set(time: newValue, forKey: Key.wakeUpTime)
     }   }
 
     var ID: Int32? { get {
@@ -68,12 +66,13 @@ class LocalEntry: NSManagedObject, Entry, JSONConvertible {
         yoga = entry.yoga
         service = entry.service
         lections = entry.lections
+        dateSynched = Date()
 
         return self
     }
     
     func json() -> JSON {
-        return ["id": ID ?? NSNull(),
+        return ["entry_id": ID ?? NSNull(),
                 "created_at": dateCreated.remoteDateTimeString(),
                 "updated_at": dateUpdated.remoteDateTimeString(),
                 "user_id": userID,
@@ -91,42 +90,10 @@ class LocalEntry: NSManagedObject, Entry, JSONConvertible {
                 "opt_lections": lections]
     }
     
-    static let entityName = "LocalEntry"
+    static let entityName = "ManagedEntry"
     
-    @nonobjc public class func request() -> NSFetchRequest<LocalEntry> {
-        return NSFetchRequest<LocalEntry>(entityName: entityName)
-    }
-
-    func customValue(forKey key:EntryFieldKey) -> Any? {
-        let rawKey = key.rawValue
-        willAccessValue(forKey: rawKey)
-        let value = primitiveValue(forKey: rawKey)
-        didAccessValue(forKey: rawKey)
-        return value
-    }
-
-    func timeValue(forKey key:EntryFieldKey) -> Time {
-        return Time(rawValue:(customValue(forKey: key) as! NSNumber))
-    }
-
-    func timeOptionalValue(forKey key:EntryFieldKey) -> Time? {
-        return Time(rawValue:(customValue(forKey: key) as? NSNumber))
-    }
-
-    func customSet<T>(value:T?, forKey key:EntryFieldKey) {
-        let rawKey = key.rawValue
-        willChangeValue(forKey: rawKey)
-        let newValue : T? = (value != nil) ? value : nil
-        setPrimitiveValue(newValue, forKey: rawKey)
-        didChangeValue(forKey: rawKey)
-    }
-
-    func set(time:Time, forKey key:EntryFieldKey) {
-        customSet(value: time.nsNumber, forKey: key)
-    }
-
-    func set(time:Time?, forKey key:EntryFieldKey) {
-        customSet(value: time?.nsNumber, forKey: key)
+    @nonobjc public class func request() -> NSFetchRequest<ManagedEntry> {
+        return NSFetchRequest<ManagedEntry>(entityName: entityName)
     }
 }
 

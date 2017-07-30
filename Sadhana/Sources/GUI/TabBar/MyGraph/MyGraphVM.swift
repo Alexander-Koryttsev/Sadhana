@@ -39,7 +39,7 @@ class MyGraphVM: BaseVM {
             .filter { (running) -> Bool in return !running }
             .flatMap({ [weak self] (_) -> Observable<Bool> in
                 guard self != nil,
-                    let entry = self?.frc.sections?.last?.objects?.first as? LocalEntry else { return Observable.just(false)}
+                    let entry = self?.frc.sections?.last?.objects?.first as? ManagedEntry else { return Observable.just(false)}
                 return self!.loadEntries(month:entry.month, monthAgo:1).asBoolObservable()
             })
             .subscribe()
@@ -53,7 +53,7 @@ class MyGraphVM: BaseVM {
             .disposed(by: disposeBag)
     }
 
-    func loadEntries(month:Date? = nil, monthAgo:Int? = 0) -> Single<[LocalEntry]> {
+    func loadEntries(month:Date? = nil, monthAgo:Int? = 0) -> Single<[ManagedEntry]> {
         return Single.create { [weak self] (observer) -> Disposable in
             if self == nil {
                 observer(.error(GeneralError.noSelf))
@@ -66,7 +66,7 @@ class MyGraphVM: BaseVM {
             let context = self!.frc.managedObjectContext
 
             return Remote.service.loadSadhanaEntries(userID: Local.defaults.userID!, year: yearValue, month: monthValue)
-                .flatMap { (remoteEntries) -> Single<[LocalEntry]> in
+                .flatMap { (remoteEntries) -> Single<[ManagedEntry]> in
                     return context.rxSave(remoteEntries)
                 }
                 .track(self!.errors)
@@ -78,7 +78,7 @@ class MyGraphVM: BaseVM {
 
 /*
  Local.service.viewContext.perform {
- let entry = Local.service.viewContext.create(LocalEntry.self)
+ let entry = Local.service.viewContext.create(ManagedEntry.self)
  entry.ID = Int32(arc4random_uniform(UInt32(INT32_MAX)))
  entry.dateCreated = Date()
  entry.dateUpdated = Date()

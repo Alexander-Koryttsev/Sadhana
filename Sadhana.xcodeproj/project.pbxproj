@@ -29,7 +29,7 @@
 		9654AE9A1F1E656F00F75772 /* OnOffImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9654AE991F1E656F00F75772 /* OnOffImageView.swift */; };
 		966056B41EF2B50D00973FA4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966056A91EF2B50D00973FA4 /* AppDelegate.swift */; };
 		96655F541F21FCC0000B0D02 /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96655F531F21FCC0000B0D02 /* TextField.swift */; };
-		9667E4511F1148AC002589AE /* LocalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9667E4501F1148AC002589AE /* LocalEntry.swift */; };
+		9667E4511F1148AC002589AE /* ManagedEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9667E4501F1148AC002589AE /* ManagedEntry.swift */; };
 		967D791E1F00F10D00A961D6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D791D1F00F10C00A961D6 /* User.swift */; };
 		967D79241F00F3CD00A961D6 /* LocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79201F00F3CD00A961D6 /* LocalService.swift */; };
 		967D79251F00F3CD00A961D6 /* RemoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79231F00F3CD00A961D6 /* RemoteService.swift */; };
@@ -40,7 +40,7 @@
 		96A55B4C1F14AD6200FD3700 /* LocalDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B4B1F14AD6200FD3700 /* LocalDefaults.swift */; };
 		96A9217E1F03FC9D0056BC5B /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 96A9217C1F03FC9D0056BC5B /* Model.xcdatamodeld */; };
 		96A921891F03FF360056BC5B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A921881F03FF360056BC5B /* CoreData.framework */; };
-		96A9218C1F03FFF70056BC5B /* LocalUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A9218A1F03FFF70056BC5B /* LocalUser.swift */; };
+		96A9218C1F03FFF70056BC5B /* ManagedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A9218A1F03FFF70056BC5B /* ManagedUser.swift */; };
 		96B070861F0FDB78004C9249 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070851F0FDB78004C9249 /* Entry.swift */; };
 		96B070881F0FE5C8004C9249 /* RemoteEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070871F0FE5C8004C9249 /* RemoteEntry.swift */; };
 		96B0708A1F0FE6D3004C9249 /* MappingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B070891F0FE6D3004C9249 /* MappingHelper.swift */; };
@@ -89,7 +89,7 @@
 		966056A51EF2B50D00973FA4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		966056A91EF2B50D00973FA4 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96655F531F21FCC0000B0D02 /* TextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
-		9667E4501F1148AC002589AE /* LocalEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalEntry.swift; sourceTree = "<group>"; };
+		9667E4501F1148AC002589AE /* ManagedEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagedEntry.swift; sourceTree = "<group>"; };
 		967D791D1F00F10C00A961D6 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		967D79201F00F3CD00A961D6 /* LocalService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalService.swift; sourceTree = "<group>"; };
 		967D79231F00F3CD00A961D6 /* RemoteService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteService.swift; sourceTree = "<group>"; };
@@ -100,7 +100,7 @@
 		96A55B4B1F14AD6200FD3700 /* LocalDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDefaults.swift; sourceTree = "<group>"; };
 		96A9217D1F03FC9D0056BC5B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		96A921881F03FF360056BC5B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		96A9218A1F03FFF70056BC5B /* LocalUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalUser.swift; sourceTree = "<group>"; };
+		96A9218A1F03FFF70056BC5B /* ManagedUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagedUser.swift; sourceTree = "<group>"; };
 		96B070851F0FDB78004C9249 /* Entry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entry.swift; sourceTree = "<group>"; };
 		96B070871F0FE5C8004C9249 /* RemoteEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteEntry.swift; sourceTree = "<group>"; };
 		96B070891F0FE6D3004C9249 /* MappingHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappingHelper.swift; sourceTree = "<group>"; };
@@ -369,8 +369,8 @@
 			isa = PBXGroup;
 			children = (
 				96B9A5661F25DAAA000673B7 /* ManagedObject.swift */,
-				96A9218A1F03FFF70056BC5B /* LocalUser.swift */,
-				9667E4501F1148AC002589AE /* LocalEntry.swift */,
+				96A9218A1F03FFF70056BC5B /* ManagedUser.swift */,
+				9667E4501F1148AC002589AE /* ManagedEntry.swift */,
 			);
 			path = ManagedObjects;
 			sourceTree = "<group>";
@@ -618,7 +618,7 @@
 				960A0D541F2876C000356152 /* MyGraphVC.swift in Sources */,
 				9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */,
 				96B607FB1F1D01EF002B9AB5 /* EntryCell.swift in Sources */,
-				96A9218C1F03FFF70056BC5B /* LocalUser.swift in Sources */,
+				96A9218C1F03FFF70056BC5B /* ManagedUser.swift in Sources */,
 				960A0D4F1F2876C000356152 /* EditingVC.swift in Sources */,
 				96B9A5691F25E5D0000673B7 /* BoolFormCell.swift in Sources */,
 				9628B1161F206C5E00FAB17D /* FormVC.swift in Sources */,
@@ -640,7 +640,7 @@
 				96B607D51F1A39C5002B9AB5 /* DateUtility.swift in Sources */,
 				96B607D11F19097F002B9AB5 /* MainTabBarRouter.swift in Sources */,
 				96E976851F16463B00F6766F /* BaseVC.swift in Sources */,
-				9667E4511F1148AC002589AE /* LocalEntry.swift in Sources */,
+				9667E4511F1148AC002589AE /* ManagedEntry.swift in Sources */,
 				96A55B4A1F1291D500FD3700 /* MainTabBarVC.swift in Sources */,
 				9628B11B1F206FF900FAB17D /* TimeFormCell.swift in Sources */,
 				96E976811F1548E600F6766F /* LoginVM.swift in Sources */,

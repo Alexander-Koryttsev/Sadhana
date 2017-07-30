@@ -242,17 +242,23 @@ class RemoteService {
     }
     
     func send(_ entry: Entry & JSONConvertible) -> Single<Int32> {
-        var path = "entry/\(entry.userID)"
-        if entry.ID != nil {
-            path.append("/\(entry.ID!)")
-        }
+        let path = "sadhanaEntry/\(entry.userID)"
         
-        return apiRequest(.post, path, parameters: entry.json()).map({ (json) -> Int32 in
-            guard let number = json["entry_id"] as? String else {
+        return apiRequest(entry.ID != nil ? .put : .post, path, parameters: entry.json()).map({ (json) -> Int32 in
+
+            guard let jsonValue = json["entry_id"] else {
                 throw RemoteError.invalidData
             }
-        
-            return Int32(number)!
+
+            if jsonValue is Int32 {
+                return jsonValue as! Int32
+            }
+
+            if jsonValue is String {
+                return Int32(jsonValue as! String)!
+            }
+
+            throw RemoteError.invalidData
         })
     }
 }

@@ -18,7 +18,7 @@ class EntryEditingVM: BaseVM {
             return fieldsInternal
         }
     }
-    private let entry : LocalEntry
+    private let entry : ManagedEntry
 
     init(date: Date, context: NSManagedObjectContext) {
         self.date = date.trimmedTime
@@ -27,12 +27,12 @@ class EntryEditingVM: BaseVM {
             entry = localEntry
         }
         else {
-            entry = context.create(LocalEntry.self)
+            entry = context.create(ManagedEntry.self)
             entry.userID = Local.defaults.userID!
             entry.date = self.date
             entry.month = self.date.trimmedDayAndTime
             entry.dateCreated = Date()
-            entry.dateUpdated = Date() //TODO: move to the 'save' event
+            entry.dateUpdated = entry.dateCreated
         }
 
         super.init()
@@ -84,34 +84,29 @@ protocol FormFieldVM {
     var key : String { get }
 }
 
-protocol VariableFieldVM: FormFieldVM {
+protocol VariableFieldVM : FormFieldVM {
     var variable : Variable<Any?> { get }
-    var disposeBag : DisposeBag { get }
 }
 
 class ManagedFieldVM : VariableFieldVM {
     let key : String
     let variable : Variable<Any?>
-    private let entry : NSManagedObject
+    private let entry : ManagedUpdatable
     let disposeBag = DisposeBag()
-    init(_ key: String, entry: NSManagedObject) {
+    init(_ key: String, entry: ManagedUpdatable) {
         self.key = key
         variable = Variable(entry.value(forKey: key))
         self.entry = entry
         variable.asDriver().skip(1).drive(onNext: { (next) in
-            if next is NSNull {
-                entry.setValue(nil, forKey: key)
-            }
-            else {
-                entry.setValue(next, forKey: key)
-            }
+            entry.setValue(next is NSNull ? nil : next, forKey: key)
+            entry.dateUpdated = Date()
         }).disposed(by: disposeBag)
     }
 }
 
 class FieldsContainerVM : FormFieldVM {
     let key: String
-    let fields: [VariableFieldVM]
+    let fields: [ManagedFieldVM]
     let colors: [UIColor]?
     init(_ key: String, _ fields: [ManagedFieldVM], colors: [UIColor]? = nil) {
         self.key = key
@@ -120,32 +115,26 @@ class FieldsContainerVM : FormFieldVM {
     }
 }
 
-class TimeFieldVM: VariableFieldVM {
+class TimeFieldVM: FormFieldVM {
     let key : String
-    let variable : Variable<Any?>
-    private let entry : LocalEntry
+    let variable : Variable<Time?>
+    private let entry : ManagedUpdatable
     let disposeBag = DisposeBag()
     let optional : Bool
-    init(_ key: EntryFieldKey, entry: LocalEntry, optional: Bool) {
+    init(_ key: FieldKey, entry: ManagedUpdatable, optional: Bool) {
         self.key = key.rawValue
         self.optional = optional
         variable = Variable(entry.timeOptionalValue(forKey: key))
         self.entry = entry
         variable.asDriver().skip(1).drive(onNext: { (next) in
-            if optional {
-                entry.set(time: next as? Time, forKey: key)
-            }
-            else {
-                entry.set(time:(next as? Time ?? Time(rawValue: 0)), forKey: key)
-            }
+            entry.set(time:(next ?? (optional ? nil : Time(rawValue: 0))), forKey: key)
+            entry.dateUpdated = Date()
         }).disposed(by: disposeBag)
     }
 }
 
 /*
  add(field: .wakeUpTime  , value: entry.wakeUpTime)
-
-
  add(field: .japa        , value: entry.japaCount7_30, entry.japaCount10, entry.japaCount18, entry.japaCount24))
  add(field: .reading     , value: entry.reading)
  add(field: .kirtan      , value: entry.kirtan)

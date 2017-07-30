@@ -28,7 +28,7 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
         self.viewModel = viewModel
         super.init(fieldsCount:2)
 
-        if let value = viewModel.variable.value as? Time {
+        if let value = viewModel.variable.value {
             if value.rawValue != 0 || viewModel.optional {
                 hoursView.valueField.text = value.hour.description
                 minutesView.valueField.text = value.minute.description

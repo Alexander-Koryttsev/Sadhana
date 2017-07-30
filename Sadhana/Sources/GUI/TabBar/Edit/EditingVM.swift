@@ -26,9 +26,35 @@ class EditingVM: BaseVM {
             router.hideSadhanaEditing()
         }).disposed(by: disposeBag)
 
-        save.subscribe(onNext:{
-            self.context.saveHandled()
-        }).disposed(by: disposeBag)
+        save.skip(1).do(onNext: {
+            self.context.saveRecursive()
+        }).flatMap({ () -> Observable<Bool> in
+            var signals = [Observable<Bool>]()
+            //TODO:filter
+            //TODO:thread safe
+            for entry in self.context.registeredObjects {
+                if let entry = entry as? ManagedEntry {
+                    if entry.dateCreated == entry.dateUpdated,
+                        entry.ID == nil {
+                        self.context.delete(entry)
+                        continue
+                    }
+
+                    if entry.shouldSynch {
+                        let signal : Single<Int32> = Remote.service.send(entry).do(onNext: { (ID) in
+                            entry.ID = ID
+                            self.context.saveRecursive()
+                        })
+                        signals.append(signal
+                            .track(self.errors)
+                            .asBoolObservable())
+                    }
+                }
+            }
+
+            return Observable.merge(signals)
+        }).subscribe()
+            .disposed(by: disposeBag)
     }
 
     func viewModelForEntryEditing(before vm: EntryEditingVM) -> EntryEditingVM? {
