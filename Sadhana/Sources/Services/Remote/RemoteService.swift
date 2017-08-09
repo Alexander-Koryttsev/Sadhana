@@ -33,6 +33,7 @@ enum RemoteError : Error {
 enum InvalidRequestType : String {
     case invalidGrant = "invalid_grant"
     case notLoggedIn = "json_not_logged_in"
+    case entryExists = "sadhana_entry_exists"
     case unknown
 }
 
@@ -75,7 +76,6 @@ class RemoteService {
         codes.append(contentsOf: (400..<500))
         acceptableStatusCodes = codes
         restoreTokensFromCache()
-        tokens.access = "111"
     }
     
     func restoreTokensFromCache() -> Void {
@@ -162,27 +162,27 @@ class RemoteService {
 
                     //Additional Validation
                     guard (200..<300).contains(statusCode) else {
-
                         //TODO: test in postman when tokens are not valid (for example login, check tokens,logout, check tokens)
-                        var error = RemoteError.invalidResponse
-                        var type = InvalidRequestType.unknown
 
-                            if  let errorType = (result["error"] ?? result["code"]) as? String,
-                                let errorDescription = (result["error_description"] ?? result["message"]) as? String,
-                                let typeLet = InvalidRequestType(rawValue: errorType) {
-                                    type = typeLet
-                                    error = RemoteError.invalidRequest(type:type, description:errorDescription)
-                            }
-
-                            switch type {
-                                case .notLoggedIn, .unknown:
-                                    error = authorise ? RemoteError.tokensExpired : RemoteError.authorisationRequired
-                                break
-                                default: break
-                            }
-
-                            observer(.error(error))
+                        guard   let errorType = (result["error"] ?? result["code"]) as? String,
+                                let errorDescription = (result["error_description"] ?? result["message"]) as? String
+                        else {
+                            observer(.error(RemoteError.invalidResponse))
                             return
+                        }
+
+                        let type = InvalidRequestType(rawValue: errorType) ?? .unknown
+                        var error = RemoteError.invalidRequest(type:type, description:errorDescription)
+
+                        switch type {
+                            case .notLoggedIn:
+                                error = authorise ? RemoteError.tokensExpired : RemoteError.authorisationRequired
+                            break
+                            default: break
+                        }
+
+                        observer(.error(error))
+                        return
                     }
 
                     observer(.success(result))
@@ -243,7 +243,8 @@ class RemoteService {
     
     func send(_ entry: Entry & JSONConvertible) -> Single<Int32> {
         let path = "sadhanaEntry/\(entry.userID)"
-        
+
+        //TODO: handle entryExists error
         return apiRequest(entry.ID != nil ? .put : .post, path, parameters: entry.json()).map({ (json) -> Int32 in
 
             guard let jsonValue = json["entry_id"] else {

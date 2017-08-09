@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		30C7E711667CDBC29B92157F /* Pods_Sadhana.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B60592337E436959AB732F /* Pods_Sadhana.framework */; };
+		96086DD71F3B2FB2006C9312 /* GraphVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96086DD61F3B2FB2006C9312 /* GraphVM.swift */; };
 		960A0D421F273F5700356152 /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960A0D411F273F5700356152 /* CircleView.swift */; };
 		960A0D451F2770D000356152 /* WeekVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960A0D441F2770D000356152 /* WeekVC.swift */; };
 		960A0D4F1F2876C000356152 /* EditingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960A0D471F2876C000356152 /* EditingVC.swift */; };
@@ -64,9 +65,11 @@
 		96E976811F1548E600F6766F /* LoginVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976801F1548E600F6766F /* LoginVM.swift */; };
 		96E976851F16463B00F6766F /* BaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976841F16463B00F6766F /* BaseVC.swift */; };
 		96E9768D1F1734A000F6766F /* RxCocoa+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E9768C1F1734A000F6766F /* RxCocoa+Extensions.swift */; };
+		96FBCC171F3AE386004E26F6 /* GraphVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FBCC161F3AE386004E26F6 /* GraphVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		96086DD61F3B2FB2006C9312 /* GraphVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GraphVM.swift; path = Sadhana/Sources/GUI/Base/Graph/GraphVM.swift; sourceTree = SOURCE_ROOT; };
 		960A0D411F273F5700356152 /* CircleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
 		960A0D441F2770D000356152 /* WeekVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeekVC.swift; sourceTree = "<group>"; };
 		960A0D471F2876C000356152 /* EditingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditingVC.swift; sourceTree = "<group>"; };
@@ -128,6 +131,7 @@
 		96E9768C1F1734A000F6766F /* RxCocoa+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RxCocoa+Extensions.swift"; sourceTree = "<group>"; };
 		96F600501EC996AC006DAECE /* Sadhana.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sadhana.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96F600611EC996AC006DAECE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		96FBCC161F3AE386004E26F6 /* GraphVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GraphVC.swift; path = Sadhana/Sources/GUI/Base/Graph/GraphVC.swift; sourceTree = SOURCE_ROOT; };
 		A1A22DCDB6FD8FA97E2D8CCC /* Pods-Sadhana.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sadhana.release.xcconfig"; path = "Pods/Target Support Files/Pods-Sadhana/Pods-Sadhana.release.xcconfig"; sourceTree = "<group>"; };
 		B0B60592337E436959AB732F /* Pods_Sadhana.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Sadhana.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2023B1DDA367BF561B5CECF /* Pods-Sadhana.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sadhana.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sadhana/Pods-Sadhana.debug.xcconfig"; sourceTree = "<group>"; };
@@ -215,6 +219,8 @@
 		9654AE981F1E1AA600F75772 /* Graph */ = {
 			isa = PBXGroup;
 			children = (
+				96FBCC161F3AE386004E26F6 /* GraphVC.swift */,
+				96086DD61F3B2FB2006C9312 /* GraphVM.swift */,
 			);
 			name = Graph;
 			path = Sadhana;
@@ -618,7 +624,9 @@
 				960A0D541F2876C000356152 /* MyGraphVC.swift in Sources */,
 				9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */,
 				96B607FB1F1D01EF002B9AB5 /* EntryCell.swift in Sources */,
+				96FBCC171F3AE386004E26F6 /* GraphVC.swift in Sources */,
 				96A9218C1F03FFF70056BC5B /* ManagedUser.swift in Sources */,
+				96086DD71F3B2FB2006C9312 /* GraphVM.swift in Sources */,
 				960A0D4F1F2876C000356152 /* EditingVC.swift in Sources */,
 				96B9A5691F25E5D0000673B7 /* BoolFormCell.swift in Sources */,
 				9628B1161F206C5E00FAB17D /* FormVC.swift in Sources */,

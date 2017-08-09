@@ -9,6 +9,8 @@
 import UIKit
 import DynamicButton
 import EasyPeasy
+import RxCocoa
+import RxSwift
 
 class MainTabBarRouter : EditingRouter, WindowRouter {
     var myGraphRouter = MyGraphRouter()
@@ -25,6 +27,23 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
 
     init(window: UIWindow) {
         self.window = window
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidChange(notification:)), name: .UIKeyboardDidChangeFrame, object: nil)
+    }
+
+    @objc func keyboardWillChange(notification:NSNotification) {
+        guard let userInfo = notification.userInfo,
+            let keyboarFrame = userInfo[UIKeyboardFrameEndUserInfoKey] as? CGRect else { return }
+        let shown = keyboarFrame.origin.y < UIScreen.main.bounds.size.height
+
+        UIView.animate(withDuration: 0.3) {
+            self.plusButton <- Bottom((shown ? keyboarFrame.size.height : 0) + 5)
+            self.window.layoutIfNeeded()
+        }
+    }
+
+    @objc func keyboardDidChange(notification:NSNotification) {
+
     }
 
     func showInitialVC() {

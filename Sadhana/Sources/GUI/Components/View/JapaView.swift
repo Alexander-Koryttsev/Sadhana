@@ -46,6 +46,12 @@ class JapaView: UIView {
         }
 
         self.maxCount = maxCount!
+        setNeedsDisplay()
+    }
+
+    func clear() {
+        entries.removeAll()
+        maxCount = 16
         self.setNeedsDisplay()
     }
     

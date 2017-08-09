@@ -13,7 +13,6 @@ class EditingVM: BaseVM {
     let router : EditingRouter
     let save = PublishSubject<Void>()
     let cancel = PublishSubject<Void>()
-    let va = Variable()
 
     private let context = Local.service.newSubViewForegroundContext()
 
@@ -26,34 +25,40 @@ class EditingVM: BaseVM {
             router.hideSadhanaEditing()
         }).disposed(by: disposeBag)
 
-        save.skip(1).do(onNext: {
-            self.context.saveRecursive()
-        }).flatMap({ () -> Observable<Bool> in
+        save.subscribe(onNext:{ [weak self] () in
+            if self == nil { return }
             var signals = [Observable<Bool>]()
             //TODO:filter
             //TODO:thread safe
-            for entry in self.context.registeredObjects {
+            var entries = [ManagedEntry]()
+            for entry in self!.context.registeredObjects {
                 if let entry = entry as? ManagedEntry {
                     if entry.dateCreated == entry.dateUpdated,
                         entry.ID == nil {
-                        self.context.delete(entry)
+                        self!.context.delete(entry)
                         continue
                     }
-
-                    if entry.shouldSynch {
-                        let signal : Single<Int32> = Remote.service.send(entry).do(onNext: { (ID) in
-                            entry.ID = ID
-                            self.context.saveRecursive()
-                        })
-                        signals.append(signal
-                            .track(self.errors)
-                            .asBoolObservable())
-                    }
+                    entries.append(entry)
                 }
             }
 
-            return Observable.merge(signals)
-        }).subscribe()
+            for entry in entries {
+                if entry.shouldSynch {
+                    let strongSelf = self!
+                    let signal : Single<Int32> = Remote.service.send(entry).do(onNext: { (ID) in
+                        entry.ID = ID
+                        entry.dateSynched = Date()
+                        strongSelf.context.saveRecursive()
+                    })
+                    signals.append(signal
+                        .track(self!.errors)
+                        .asBoolObservable())
+                }
+            }
+
+            self!.context.saveRecursive()
+            _ = Observable.merge(signals).subscribe()
+        })
             .disposed(by: disposeBag)
     }
 

@@ -41,15 +41,23 @@ class EntryCell: UITableViewCell {
             Left(5).to(dateLabel),
             Bottom(2).to(dateLabel, .bottom)
         ]
-
-
     }
 
-    func map(_ entry: Entry, maxRoundsCount:Int16) {
-        dateLabel.text = entry.date.day.description
-        weekDayLabel.text = entry.date.weekDayShort
 
+
+    func map(_ entry: Entry, maxRoundsCount:Int16) {
+        set(date: entry.date)
         entryView.map(entry, maxRoundsCount: maxRoundsCount)
+    }
+
+    func clear(_ date: Date) {
+        set(date: date)
+        entryView.clear()
+    }
+
+    func set(date:Date) {
+        dateLabel.text = date.day.description
+        weekDayLabel.text = date.weekDayShort
     }
     
     required init?(coder aDecoder: NSCoder) {

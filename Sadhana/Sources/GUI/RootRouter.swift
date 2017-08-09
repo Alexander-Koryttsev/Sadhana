@@ -26,7 +26,7 @@ class RootRouter : WindowRouter {
     
     func showInitialVC() -> Void {
         if let userID = Local.defaults.userID,
-            Local.service.viewContext.fetchUser(ID: userID) != nil {
+            Local.service.viewContext.fetch(userFor: userID) != nil {
             showTabBarVC()
         } else {
             showLoginVC()

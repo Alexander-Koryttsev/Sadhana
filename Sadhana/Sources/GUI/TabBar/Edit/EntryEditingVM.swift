@@ -23,7 +23,7 @@ class EntryEditingVM: BaseVM {
     init(date: Date, context: NSManagedObjectContext) {
         self.date = date.trimmedTime
 
-        if let localEntry = context.fetchEntry(date: self.date) {
+        if let localEntry = context.fetch(entryFor: self.date) {
             entry = localEntry
         }
         else {
@@ -126,7 +126,8 @@ class TimeFieldVM: FormFieldVM {
         self.optional = optional
         variable = Variable(entry.timeOptionalValue(forKey: key))
         self.entry = entry
-        variable.asDriver().skip(1).drive(onNext: { (next) in
+        variable.asDriver().skip(2).drive(onNext: { (next) in
+            if entry.managedObjectContext == nil { return }
             entry.set(time:(next ?? (optional ? nil : Time(rawValue: 0))), forKey: key)
             entry.dateUpdated = Date()
         }).disposed(by: disposeBag)

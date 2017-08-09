@@ -12,11 +12,13 @@ import CoreData
 @objc(ManagedEntry)
 class ManagedEntry: ManagedSynchable, Entry, JSONConvertible {
     typealias Key = EntryFieldKey
-    var bedTime: Time? { get {
+    var bedTime: Time? {
+        get {
             return timeOptionalValue(forKey: Key.bedTime)
         } set {
             set(time: newValue, forKey: Key.bedTime)
-        }}
+        }
+    }
     @NSManaged public var date: Date
     @NSManaged public var month: Date
     @NSManaged public var yoga: Bool
@@ -27,24 +29,29 @@ class ManagedEntry: ManagedSynchable, Entry, JSONConvertible {
     @NSManaged public var japaCount24: Int16
     @NSManaged public var kirtan: Bool
     @NSManaged public var lections: Bool
-    var reading: Time { get {
+    var reading: Time {
+        get {
             return timeValue(forKey: Key.reading)
         } set {
             set(time: newValue, forKey: Key.reading)
-    }   }
+        }
+    }
     @NSManaged public var service: Bool
     @NSManaged public var userID: Int32
-    var wakeUpTime: Time? { get {
+    var wakeUpTime: Time? {
+        get {
             return timeOptionalValue(forKey: Key.wakeUpTime)
         } set {
             set(time: newValue, forKey: Key.wakeUpTime)
     }   }
 
-    var ID: Int32? { get {
+    var ID: Int32? {
+        get {
             return id as? Int32
         } set {
-            id = newValue as NSNumber?
-    }   }
+            id = newValue != nil ? NSNumber(value: newValue!) : nil
+        }
+    }
 
     @discardableResult
     func map(_ entry: Entry) -> Self {
@@ -90,7 +97,7 @@ class ManagedEntry: ManagedSynchable, Entry, JSONConvertible {
                 "opt_lections": lections]
     }
     
-    static let entityName = "ManagedEntry"
+    static let entityName = NSStringFromClass(ManagedEntry.self)
     
     @nonobjc public class func request() -> NSFetchRequest<ManagedEntry> {
         return NSFetchRequest<ManagedEntry>(entityName: entityName)

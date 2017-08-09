@@ -11,12 +11,11 @@ import RxSwift
 import CoreData
 import Foundation
 
-class MyGraphVM: BaseVM {
-    let frc = Local.service.viewContext.mySadhanaEntriesFRC()
+class MyGraphVM: GraphVM {
     let running = ActivityIndicator()
     let refresh = PublishSubject<Void>()
-    let endOfList = PublishSubject<Void>()
     private let router: MyGraphRouter
+    private var entries = [Date : [Date : Entry]]()
 
     init(_ router: MyGraphRouter) {
         self.router = router
@@ -24,26 +23,12 @@ class MyGraphVM: BaseVM {
         super.init()
 
         //TODO: check first fetch (table view is empty on launch
-        frc.managedObjectContext.perform { [weak self] () in
-            if self == nil {return}
-            do { try self!.frc.performFetch() }
-            catch { print(error) }
-        }
 
         let loadNewEntries = loadEntries().asBoolObservable()
         refresh.flatMap({ return loadNewEntries })
             .subscribe()
             .disposed(by: disposeBag)
 
-        endOfList.withLatestFrom(running.asObservable())
-            .filter { (running) -> Bool in return !running }
-            .flatMap({ [weak self] (_) -> Observable<Bool> in
-                guard self != nil,
-                    let entry = self?.frc.sections?.last?.objects?.first as? ManagedEntry else { return Observable.just(false)}
-                return self!.loadEntries(month:entry.month, monthAgo:1).asBoolObservable()
-            })
-            .subscribe()
-            .disposed(by: disposeBag)
 
         Observable.of(loadEntries(),
                       loadEntries(monthAgo:1),
@@ -51,6 +36,11 @@ class MyGraphVM: BaseVM {
             .merge()
             .subscribe()
             .disposed(by: disposeBag)
+    }
+
+    override func reloadData() {
+        super.reloadData()
+        entries.removeAll()
     }
 
     func loadEntries(month:Date? = nil, monthAgo:Int? = 0) -> Single<[ManagedEntry]> {
@@ -63,7 +53,7 @@ class MyGraphVM: BaseVM {
             let calendar = Calendar.local
             let yearValue = calendar.component(.year, from: month ?? Date())
             let monthValue = calendar.component(.month, from: month ?? Date()) - monthAgo!
-            let context = self!.frc.managedObjectContext
+            let context = Local.service.viewContext
 
             return Remote.service.loadSadhanaEntries(userID: Local.defaults.userID!, year: yearValue, month: monthValue)
                 .flatMap { (remoteEntries) -> Single<[ManagedEntry]> in
@@ -73,6 +63,27 @@ class MyGraphVM: BaseVM {
                 .track(self!.running)
                 .subscribe(observer)
         }
+    }
+
+    override func entry(at indexPath:IndexPath) -> (Entry?, Date) {
+        let date = self.date(at:indexPath)
+        let monthDate = date.trimmedDayAndTime
+        var month = entries[monthDate]
+        if month == nil {
+            month = [Date: Entry]()
+            Local.service.viewContext.fetch(entriesFrom: monthDate).forEach({ (entry) in
+                month![entry.date] = entry
+            })
+            entries[monthDate] = month!
+        }
+
+        return (month![date], date)
+    }
+
+    override func entries(for section:Int) -> [Entry] {
+        return entries[monthDate(for: section)]!.values.map({ (entry) -> Entry in
+            return entry
+        })
     }
 }
 

@@ -19,6 +19,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
     let weekKeysBar = UIStackView()
     let weekPageVC = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
     var weekVC = WeekVC(Date())
+    var weekVCDisposeBag = DisposeBag()
     var entryEditingVC : EntryEditingVC { get {
         return pageVC.viewControllers?.first as! EntryEditingVC
     }}
@@ -149,22 +150,6 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         }
     }
 
-    func updateWeekVC(_ date: Date) -> WeekVC {
-        weekVC = WeekVC(date)
-        bindWeekVC()
-        return weekVC
-    }
-
-    func bindWeekVC() {
-        let driver = weekVC.selectedDate.asDriver()
-        driver.drive(onNext:{ [weak self] (date) in
-            self?.weekVCDidSelect(date: date)
-            self?.refreshWeekKeys()
-        })  .disposed(by: weekVC.disposeBag)
-
-        driver.map { (date) in return date.monthMedium }.drive(rx.title).disposed(by: weekVC.disposeBag)
-    }
-
     func weekVCDidSelect(date:Date) {
         let vc = pageVC.viewControllers?.first as! EntryEditingVC
         switch date {
@@ -179,6 +164,28 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
             break
         default: break
         }
+    }
+
+    func updatedWeekVC(_ date: Date) -> WeekVC {
+        weekVC = WeekVC(date)
+        bindWeekVC()
+        return weekVC
+    }
+
+    func updateWeekVC(for date: Date) {
+        let selectedDate = weekVC.selectedDate.value
+        weekPageVC.setViewControllers([updatedWeekVC(date)], direction: date < selectedDate ? .reverse : .forward, animated: true, completion: nil)
+    }
+
+    func bindWeekVC() {
+        weekVCDisposeBag = DisposeBag()
+        let driver = weekVC.selectedDate.asDriver()
+        driver.drive(onNext:{ [weak self] (date) in
+            self?.weekVCDidSelect(date: date)
+            self?.refreshWeekKeys()
+        }).disposed(by: weekVCDisposeBag)
+
+        driver.map { (date) in return date.monthMedium }.drive(rx.title).disposed(by: weekVCDisposeBag)
     }
 
     //MARK: Page View Controller Data Source
@@ -224,9 +231,16 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         return nil
     }
 
-    func updateWeekVC(for date: Date) {
-        let selectedDate = weekVC.selectedDate.value
-        weekPageVC.setViewControllers([updateWeekVC(date)], direction: date < selectedDate ? .reverse : .forward, animated: true, completion: nil)
+    func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
+        if pageViewController == weekPageVC {
+            if let pendingWeekVC = pendingViewControllers.first as? WeekVC {
+                let addValue = pendingWeekVC.selectedDate.value > weekVC.selectedDate.value  ? 1 : -1
+                let targetDate = Calendar.local.date(byAdding: .weekOfYear, value: addValue, to: weekVC.selectedDate.value)!
+                if targetDate < Date() {
+                    pendingWeekVC.selectedDate.value = targetDate
+                }
+            }
+        }
     }
 
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {

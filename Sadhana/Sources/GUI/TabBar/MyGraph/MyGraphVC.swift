@@ -12,8 +12,7 @@ import RxSwift
 import RxCocoa
 import EasyPeasy
 
-class MyGraphVC: BaseFetchedResultsVC<MyGraphVM> {
-
+class MyGraphVC: GraphVC<MyGraphVM> {
     override var title:String? {
         get { return "myGraph".localized }
         set {}
@@ -21,11 +20,9 @@ class MyGraphVC: BaseFetchedResultsVC<MyGraphVM> {
 
     let errorLabel = UILabel()
     let errorContainer = UIView()
-    var maxCounts = [Int : Int16]()
 
     override func viewDidLoad() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "logout".localized, style:.plain, target:self, action:#selector(logOut(sender:)))
-        viewModel.frc.delegate = self;
         refreshControl = UIRefreshControl()
         setUpErrorLabel()
 
@@ -34,6 +31,11 @@ class MyGraphVC: BaseFetchedResultsVC<MyGraphVM> {
         tabBarItem = UITabBarItem(title: title, image:UIImage(named:"tab-bar-icon-my"), tag:0)
         tableView.register(EntryCell.self, forCellReuseIdentifier: NSStringFromClass(EntryCell.self))
         tableView.register(GraphHeader.self, forHeaderFooterViewReuseIdentifier: NSStringFromClass(GraphHeader.self))
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        reloadData()
     }
 
     func setUpErrorLabel() {
@@ -57,7 +59,11 @@ class MyGraphVC: BaseFetchedResultsVC<MyGraphVM> {
             })
             .drive(viewModel.refresh).disposed(by: disposeBag)
 
-        viewModel.running.asDriver()
+        viewModel.running.asDriver().do(onNext:({[weak self] (running) in
+            if !running {
+                self?.reloadData()
+            }
+        }))
             .drive(refreshControl!.rx.isRefreshing).disposed(by: disposeBag)
 
         viewModel.errorMessagesUI.asObservable()
@@ -81,63 +87,8 @@ class MyGraphVC: BaseFetchedResultsVC<MyGraphVM> {
     }
 
     override func reloadData() {
-        maxCounts.removeAll()
-        super.reloadData()
-    }
-
-    override func sectionsDidUpdate(_ sections:IndexSet) {
-        super.sectionsDidUpdate(sections)
-        maxCounts.removeAll()
-    }
-
-    func maxCount(for section:Int) -> Int16 {
-
-        if let cachedCount = maxCounts[section] {
-            return cachedCount
-        }
-        let maxCount = viewModel.frc.sections![section].objects?.reduce(16, { (result, entry) -> Int16 in
-            let sum = (entry as! Entry).japaSum
-            return sum > result ? sum : result
-        })
-        maxCounts[section] = maxCount
-        return maxCount!
-    }
-
-    //MARK: Table Data Source
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.frc.sections?.count ?? 0
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.frc.sections?[section].numberOfObjects ?? 0
-    }
-
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let section = viewModel.frc.sections?[section] else { return nil }
-        return (section.objects?.first! as! Entry).date.monthMedium
-    }
-
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: NSStringFromClass(GraphHeader.self)) as! GraphHeader
-        header.textLabel?.isHidden = true
-        header.titleLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
-        return header
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = (tableView.dequeueReusableCell(withIdentifier: NSStringFromClass(EntryCell.self)) ?? EntryCell()) as! EntryCell
-
-        let entry = viewModel.frc.object(at: indexPath)
-        cell.map(entry, maxRoundsCount:self.maxCount(for: indexPath.section))
-
-        return cell
-    }
-
-    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if  indexPath.section == (viewModel.frc.sections?.count)! - 1 &&
-            indexPath.row > (viewModel.frc.sections?.last?.numberOfObjects)! - 3 {
-            viewModel.endOfList.onNext()
-        }
+        viewModel.reloadData()
+        tableView.reloadData()
     }
 }
 

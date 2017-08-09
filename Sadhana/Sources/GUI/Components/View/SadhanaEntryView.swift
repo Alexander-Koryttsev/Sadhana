@@ -58,6 +58,14 @@ class EntryView : UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func clear() {
+        japaView.clear()
+        japaCountLabel.text = "0"
+        readingImageView.isOn = false
+        readingLabel.text = "0"
+        kirtanImageView.isOn = false
+    }
+
     func map(_ entry: Entry, maxRoundsCount:Int16) {
         japaCountLabel.text = (entry.japaCount7_30 + entry.japaCount10 + entry.japaCount18 + entry.japaCount24).description
 

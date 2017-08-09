@@ -17,7 +17,7 @@ class EntryEditingVC : BaseTableVC<EntryEditingVM> {
         automaticallyAdjustsScrollViewInsets = false
         super.viewDidLoad()
         tableView.contentInset = UIEdgeInsetsMake(128, 0, 50, 0)
-        tableView.keyboardDismissMode = .interactive
+        tableView.keyboardDismissMode = .onDrag
         tableView.tableFooterView = UIView()
         tableView.showsVerticalScrollIndicator = false
     }

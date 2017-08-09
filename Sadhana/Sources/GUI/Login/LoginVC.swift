@@ -32,7 +32,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle { get { return UIStatusBarStyle.lightContent } }
-    
+
     func setUpSubviews() {
         setUpBackground()
         setUpFormAndLogo()

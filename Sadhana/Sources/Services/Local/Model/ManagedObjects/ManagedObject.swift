@@ -19,20 +19,20 @@ class ManagedObject: NSManagedObject {
         return value
     }
 
-    func timeValue(forKey key:FieldKey) -> Time {
-        return Time(rawValue:(customValue(forKey: key) as! NSNumber))
-    }
-
-    func timeOptionalValue(forKey key:FieldKey) -> Time? {
-        return Time(rawValue:(customValue(forKey: key) as? NSNumber))
-    }
-
     func customSet<T>(value:T?, forKey key:FieldKey) {
         let rawKey = key.rawValue
         willChangeValue(forKey: rawKey)
         let newValue : T? = (value != nil) ? value : nil
         setPrimitiveValue(newValue, forKey: rawKey)
         didChangeValue(forKey: rawKey)
+    }
+
+    func timeValue(forKey key:FieldKey) -> Time {
+        return Time(rawValue:(customValue(forKey: key) as! NSNumber))
+    }
+
+    func timeOptionalValue(forKey key:FieldKey) -> Time? {
+        return Time(rawValue:(customValue(forKey: key) as? NSNumber))
     }
 
     func set(time:Time, forKey key:FieldKey) {
