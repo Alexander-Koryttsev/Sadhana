@@ -43,8 +43,6 @@ class EntryCell: UITableViewCell {
         ]
     }
 
-
-
     func map(_ entry: Entry, maxRoundsCount:Int16) {
         set(date: entry.date)
         entryView.map(entry, maxRoundsCount: maxRoundsCount)
@@ -56,8 +54,13 @@ class EntryCell: UITableViewCell {
     }
 
     func set(date:Date) {
+        let isSunday = date.weekDay == 1
+
         dateLabel.text = date.day.description
-        weekDayLabel.text = date.weekDayShort
+        dateLabel.textColor = isSunday ? .red : .black
+
+        weekDayLabel.text = date.weekDayShort.uppercased()
+        weekDayLabel.textColor = isSunday ? .sdLightPeach : .sdSilver
     }
     
     required init?(coder aDecoder: NSCoder) {

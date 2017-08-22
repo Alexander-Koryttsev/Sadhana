@@ -1,7 +1,12 @@
 PODS:
   - Alamofire (4.5.0)
+  - AlamofireImage (3.2.0):
+    - Alamofire (~> 4.1)
+  - Crashlytics (3.8.5):
+    - Fabric (~> 1.6.3)
   - DynamicButton (4.0.0)
   - EasyPeasy (1.4.2)
+  - Fabric (1.6.12)
   - ModelMapper (6.0.0)
   - RxCocoa (3.4.0):
     - RxSwift (~> 3.4)
@@ -9,20 +14,26 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.4)
+  - AlamofireImage (~> 3.2)
+  - Crashlytics
   - DynamicButton (~> 4.0)
   - EasyPeasy (~> 1.4)
+  - Fabric
   - ModelMapper (~> 6.0)
   - RxCocoa (~> 3.4)
   - RxSwift (~> 3.4)
 
 SPEC CHECKSUMS:
   Alamofire: f28cdffd29de33a7bfa022cbd63ae95a27fae140
+  AlamofireImage: 157ed682cc81d3b9db4fb90c1f12180ac552d93b
+  Crashlytics: dfbae35ef22ca189240d230ad501feea4ee85d2d
   DynamicButton: ddc1e8d79e37f2761ab64df0c02e89061b05d812
   EasyPeasy: 50e7130b61f495ce105796e438d4136e2c8d2cc0
+  Fabric: f050464eac45a2ce5a8e6e6a07e977c0df32fe28
   ModelMapper: 3596a82f26c43491f6a8d3a00bcdba6ba0e62a93
   RxCocoa: d14ef6b6029e1ddc6e966508c09289090de68ff9
   RxSwift: 3789a1af753002a14edecdb698a2424624296a9c
 
-PODFILE CHECKSUM: fc436007ae558892183b863846b85911b8197e81
+PODFILE CHECKSUM: 54c268e4e55eee2224f8306d8408a60a5bc169d8
 
 COCOAPODS: 1.2.0

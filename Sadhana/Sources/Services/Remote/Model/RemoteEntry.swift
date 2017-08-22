@@ -32,6 +32,11 @@ struct RemoteEntry : Entry, Mappable {
     let dateCreated : Date
     let dateUpdated : Date
 
+   // let karmikName : String
+   // let user : User?
+    //let remoteUser : RemoteUser?
+    let userName : String
+
     init(map: Mapper) throws {
         try ID = map.from("id", transformation: extractID)
         try userID = map.from("user_id", transformation: extractID)
@@ -54,6 +59,22 @@ struct RemoteEntry : Entry, Mappable {
         
         try dateCreated = map.from("created_at", transformation: extractDateAndTime)
         try dateUpdated = map.from("updated_at", transformation: extractDateAndTime)
+
+        userName = map.optionalFrom("spiritual_name") ??  map.optionalFrom("karmic_name") ?? ""
+    }
+}
+
+struct AllEntriesResponse : Mappable {
+    let entries : [RemoteEntry]
+    let total : Int
+    let page : Int
+    let pageSize : Int
+
+    init(map: Mapper) throws {
+        try entries = map.from("entries")
+        try total = map.from("total_found", transformation:extractInt)
+        try page = map.from("filter.page_num", transformation:extractInt)
+        try pageSize = map.from("filter.items_per_page", transformation:extractInt)
     }
 }
 

@@ -10,7 +10,7 @@ import UIKit
 import EasyPeasy
 
 class CountView: UIView {
-    let valueField = TextField()
+    let valueField = FormTextField()
     let titleLabel = UILabel()
 
     init() {

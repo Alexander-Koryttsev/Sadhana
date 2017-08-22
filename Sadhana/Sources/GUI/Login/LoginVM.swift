@@ -15,17 +15,14 @@ enum LoginErrorMessage: String {
 }
 
 class LoginVM : BaseVM {
-    let login = Variable("")
-    let password = Variable("")
+    let login = Variable(Config.defaultLogin)
+    let password = Variable(Config.defaultPassword)
     let tap = PublishSubject<Void>()
     let canSignIn: Driver<Bool>
 
     private let running = ActivityIndicator()
 
-    var activityIndicator: Driver<Bool> { get {
-            return running.asDriver()
-        }
-    }
+    let activityIndicator: Driver<Bool>
 
     override init() {
         canSignIn = Observable.combineLatest(login.asObservable(), password.asObservable(), running.asObservable()) { (loginValue, passwordValue, running) in
@@ -34,20 +31,21 @@ class LoginVM : BaseVM {
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: false)
 
+        activityIndicator = running.asDriver()
+
         super.init()
 
         tap.withLatestFrom(canSignIn)
             .filter({ (flag) -> Bool in return flag })
             .flatMap { [weak self] _ -> Observable<Bool> in
                 if self == nil { return Observable.just(false) }
-                return Remote.service.login(name: self!.login.value, password: self!.password.value)
-                    .concat(Remote.service.loadCurrentUser().asObservable())
-                    .flatMap { (user) -> Observable<ManagedUser> in
-                        return Local.service.backgroundContext.rxSave(user:user).asObservable()
+                return Main.service.login(self!.login.value, password: self!.password.value)
+                    .flatMap { (user) -> Single<[ManagedEntry]> in
+                        self?.messages.onNext("Харе Кришна, \(user.name)!\nЗагружаем Вашу садхану...")
+                        return Main.service.loadMyEntries()
                     }
                     .observeOn(MainScheduler.instance)
-                    .map({ (user) -> Bool in
-                        Local.defaults.userID = user.ID
+                    .map({ (_) -> Bool in
                         RootRouter.shared?.commitSignIn()
                         return true
                     })

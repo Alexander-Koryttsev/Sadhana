@@ -9,7 +9,6 @@
 import Foundation
 import CoreData
 import RxSwift
-
 enum LocalError : Error {
     case noData
 }
@@ -63,7 +62,7 @@ class LocalService: NSObject {
                 try FileManager.default.removeItem(at: urlLet)
                 }
                 catch {
-                    print(error)
+                    log(error)
                 }
             }
         }
@@ -121,7 +120,7 @@ extension NSManagedObjectContext {
             return try fetch(request).first
         }
         catch {
-            print(error)
+            log(error)
         }
         
         return nil
@@ -197,6 +196,12 @@ extension NSManagedObjectContext {
         return Completable.create { [weak self] (observer) -> Disposable in
             self?.perform {
                 do {
+                    if self?.persistentStoreCoordinator != nil && self!.persistentStoreCoordinator!.persistentStores.count == 0 {
+                        log("trying save without persistent stores")
+                        //TODO: create pretty error
+                        observer(.error(GeneralError.error))
+                        return
+                    }
                     try self?.save()
                     if let parent = self?.parent {
                         _ = parent.rxSave().subscribe(observer)

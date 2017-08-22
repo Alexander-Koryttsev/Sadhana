@@ -43,6 +43,12 @@ public class ActivityIndicator : SharedSequenceConvertibleType {
     private let _variable = Variable(0)
     private let _loading: SharedSequence<SharingStrategy, Bool>
 
+    var isRunning : Bool {
+        get {
+            return _variable.value > 0
+        }
+    }
+
     public init() {
         _loading = _variable.asDriver()
             .map { $0 > 0 }
@@ -75,6 +81,68 @@ public class ActivityIndicator : SharedSequenceConvertibleType {
     }
 }
 
+class IndexedActivityIndicator : SharedSequenceConvertibleType {
+    typealias E = (Bool, Int)
+    typealias SharingStrategy = DriverSharingStrategy
+
+    private let lock = NSRecursiveLock()
+    private var indexSet = IndexSet()
+    private let loadingSubject = PublishSubject<E>()
+    private let loading: SharedSequence<SharingStrategy, E>
+
+    var isRunning : Bool {
+        get {
+            return indexSet.count > 0
+        }
+    }
+
+    init() {
+        loading = loadingSubject.asDriver(onErrorJustReturn: (false, 0))
+    }
+
+    fileprivate func trackActivityOfObservable<O: ObservableConvertibleType>(_ source: O, index: Int) -> Observable<O.E> {
+        return Observable.using({ () -> ActivityToken<O.E> in
+            self.increment(index)
+            return ActivityToken(source: source.asObservable(), disposeAction:{
+                self.decrement(index)
+            })
+        }) { t in
+            return t.asObservable()
+        }
+    }
+
+    private func increment(_ index: Int) {
+        lock.lock()
+        indexSet.insert(index)
+        loadingSubject.onNext((true, index))
+        lock.unlock()
+    }
+
+    private func decrement(_ index: Int) {
+        lock.lock()
+        indexSet.remove(index)
+        loadingSubject.onNext((false, index))
+        lock.unlock()
+    }
+
+    func has(index: Int) -> Bool {
+        return indexSet.contains(index)
+    }
+
+    func asSharedSequence() -> SharedSequence<SharingStrategy, E> {
+        return loading
+    }
+
+    func asDriver(for index:Int) -> Driver<Bool> {
+        return loading.filter { (running, indexInternal) -> Bool in
+            return index == indexInternal
+        }.map { (running, _) -> Bool in
+            return running
+        }
+    }
+}
+
+
 extension ObservableConvertibleType {
     public func track(_ activity: ActivityIndicator) -> Observable<E> {
         return activity.trackActivityOfObservable(self)
@@ -89,6 +157,10 @@ extension ObservableConvertibleType {
 
 extension PrimitiveSequence where Trait == SingleTrait {
     public func track(_ activity: ActivityIndicator) -> Single<E> {
-        return activity.trackActivityOfObservable(self.asObservable()).asSingle()
+        return activity.trackActivityOfObservable(self).asSingle()
+    }
+
+    func track(_ activity: IndexedActivityIndicator, index:Int) -> Single<E> {
+        return activity.trackActivityOfObservable(self, index: index).asSingle()
     }
 }

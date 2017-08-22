@@ -1,0 +1,5 @@
+#include "../../../Pods/Target Support Files/Pods-Sadhana/Pods-Sadhana.dev-release.xcconfig"
+#include "Sadhana.xcconfig"
+#include "Dev.xcconfig"
+#include "Release.xcconfig"
+#include "Merge.xcconfig"

@@ -120,6 +120,18 @@ func extractBool(value:Any?) throws -> Bool {
     return false
 }
 
+func extractInt(value: Any) throws -> Int {
+    if let object = value as? Int {
+        return Int(object)
+    }
+    if let object = value as? String {
+        if let object1 = Int(object) {
+            return object1
+        }
+    }
+    throw MapperError.convertibleError(value: value, type: Int.self)
+}
+
 func extractID(object: Any?) throws -> Int32 {
     guard let string = object as? String else {
         throw MapperError.convertibleError(value: object, type: String.self)

@@ -10,6 +10,7 @@ import UIKit
 import RxCocoa
 import RxSwift
 import EasyPeasy
+import Crashlytics
 
 class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewControllerDataSource {
 
@@ -18,11 +19,22 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
     let navigationBar = UINavigationBar()
     let weekKeysBar = UIStackView()
     let weekPageVC = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
-    var weekVC = WeekVC(Date())
+    var weekVC : WeekVC
     var weekVCDisposeBag = DisposeBag()
-    var entryEditingVC : EntryEditingVC { get {
-        return pageVC.viewControllers?.first as! EntryEditingVC
-    }}
+    var entryEditingVC : EntryEditingVC {
+        get {
+            return pageVC.viewControllers?.first as! EntryEditingVC
+        }
+    }
+
+    override init(_ viewModel: VM) {
+        weekVC = WeekVC(viewModel.initialDate)
+        super.init(viewModel)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
@@ -43,14 +55,15 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
     override func bindViewModel() {
         super.bindViewModel()
         navigationItem.leftBarButtonItem?.rx.tap.asDriver().drive(viewModel.cancel).disposed(by: disposeBag)
-        navigationItem.rightBarButtonItem?.rx.tap.asDriver().drive(onNext:{ [unowned self] () in
+        navigationItem.rightBarButtonItem?.rx.tap.asDriver().drive(onNext:{ [weak self] () in
+            if self == nil { return }
             let date = Date().trimmedTime
             switch date {
-            case let date where date >= self.weekVC.firstDate && date <= self.weekVC.lastDate:
-                self.weekVC.selectedDate.value = date
+            case let date where date >= self!.weekVC.firstDate && date <= self!.weekVC.lastDate:
+                self!.weekVC.selectedDate.value = date
                 break
             default:
-                self.updateWeekVC(for:date)
+                self!.updateWeekVC(for:date)
                 break
             }
         }).disposed(by: disposeBag)
@@ -145,7 +158,8 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         var date = weekVC.firstDate
         weekKeysBar.arrangedSubviews.forEach { (view) in
             let label = view as! UILabel
-            label.textColor = date <= Date() ? .black : .sdSilver
+            let isSunday = date.weekDay == 1
+            label.textColor = date <= Date() ? (isSunday ? .red : .black) : (isSunday ? .sdLightPeach : .sdSilver)
             date = date.tomorrow
         }
     }
@@ -154,12 +168,12 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         let vc = pageVC.viewControllers?.first as! EntryEditingVC
         switch date {
         case let date where date < vc.viewModel.date:
-            pageVC.setViewControllers([EntryEditingVC(viewModel.viewModelForEntryEditing(date)!)]
+            pageVC.setViewControllers([EntryEditingVC(viewModel.viewModelForEntryEditing(for:date)!)]
                 , direction:.reverse, animated: true, completion: nil)
             break
 
         case let date where date > vc.viewModel.date:
-            pageVC.setViewControllers([EntryEditingVC(viewModel.viewModelForEntryEditing(date)!)]
+            pageVC.setViewControllers([EntryEditingVC(viewModel.viewModelForEntryEditing(for:date)!)]
                 , direction:.forward, animated: true, completion: nil)
             break
         default: break
@@ -186,6 +200,13 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         }).disposed(by: weekVCDisposeBag)
 
         driver.map { (date) in return date.monthMedium }.drive(rx.title).disposed(by: weekVCDisposeBag)
+    }
+
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        pageVC.viewControllers?.forEach({ (viewController) in
+            viewController.setEditing(false, animated: true)
+        })
     }
 
     //MARK: Page View Controller Data Source
@@ -254,6 +275,8 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
                 weekVC.selectedDate.value = entryEditingVC.viewModel.date
                 break
             }
+
+            Answers.logContentView(withName: "Editing", contentType: "Entry", contentId: entryEditingVC.viewModel.date.remoteDateString(), customAttributes: nil)
         }
         else {
             weekVC = weekPageVC.viewControllers?.first as! WeekVC

@@ -10,28 +10,56 @@ import Foundation
 
 class LocalDefaults {
     static let shared = LocalDefaults()
-    
-    private static let keyPrefix = "LocalDefaults"
-    private let userIDKey = "\(keyPrefix)UserID"
-    private let optionFieldsKey = "\(keyPrefix)OptionFields"
+
+    enum Key : String {
+        case prefix = "LocalDefaults"
+        case tokens
+        case entriesUpdatedDate
+        case userID
+        case optionFields
+
+        var string : String {
+            get {
+                return Key.prefix.rawValue.appending(rawValue.capitalized)
+            }
+        }
+    }
+
+    private let keyPrefix = "LocalDefaults"
     
     var userID: Int32? {
         get {
-            return Int32(UserDefaults.standard.integer(forKey: userIDKey))
+            return Int32(integer(for: .userID))
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: userIDKey)
-            UserDefaults.standard.synchronize()
+            set(newValue, for:.userID)
         }
     }
 
     var optionFields : [String : Bool] {
         get {
-            return UserDefaults.standard.dictionary(forKey: optionFieldsKey) as? [String : Bool] ?? [String : Bool]()
+            return dictionary(for:.optionFields) as? [String : Bool] ?? [String : Bool]()
         }
         set {
-            UserDefaults.standard.setValue(newValue, forKey: optionFieldsKey)
-            UserDefaults.standard.synchronize()
+            set(newValue, for: .optionFields)
+        }
+    }
+
+    var tokens : JSON? {
+        get {
+            return dictionary(for: .tokens)
+        }
+        set {
+            set(newValue, for: .tokens)
+        }
+    }
+
+    var entriesUpdatedDate : Date? {
+        get {
+            return value(for: .entriesUpdatedDate) as? Date
+        }
+        set {
+            set(newValue, for: .entriesUpdatedDate)
         }
     }
 
@@ -45,12 +73,45 @@ class LocalDefaults {
         return optionFields[field.rawValue] == false || optionFields[field.rawValue] == nil
     }
 
-
-
     func reset() {
         for key in UserDefaults.standard.dictionaryRepresentation().keys {
             UserDefaults.standard.removeObject(forKey: key)
         }
         UserDefaults.resetStandardUserDefaults()
+    }
+
+    private func string(for key:Key) -> String? {
+        return UserDefaults.standard.string(forKey: key.string)
+    }
+
+    private func bool(for key:Key) -> Bool {
+        return UserDefaults.standard.bool(forKey: key.string)
+    }
+
+    private func integer(for key:Key) -> Int {
+        return UserDefaults.standard.integer(forKey: key.string)
+    }
+
+    private func dictionary(for key:Key) -> [String : Any]? {
+        return UserDefaults.standard.dictionary(forKey: key.string)
+    }
+
+    private func value(for key:Key) -> Any? {
+        return UserDefaults.standard.value(forKey: key.string)
+    }
+
+    private func remove(for key:Key) {
+        UserDefaults.standard.removeObject(forKey: key.string)
+        UserDefaults.standard.synchronize()
+    }
+
+    private func set(_ value:Any?, for key:Key) {
+        if value != nil {
+            UserDefaults.standard.set(value, forKey: key.string)
+        }
+        else {
+            UserDefaults.standard.removeObject(forKey: key.string)
+        }
+        UserDefaults.standard.synchronize()
     }
 }

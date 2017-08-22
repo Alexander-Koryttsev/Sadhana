@@ -40,7 +40,7 @@ extension Synchable {
     }
 }
 
-protocol Entry : Updatable {
+protocol Entry : Updatable, JSONConvertible {
     var ID : Int32? { get }
     var userID : Int32 { get }
     var date : Date { get }
@@ -59,7 +59,6 @@ protocol Entry : Updatable {
     var yoga : Bool { get }
     var service : Bool { get }
     var lections : Bool { get }
-
 }
 
 extension Entry {
@@ -68,8 +67,31 @@ extension Entry {
             return japaCount7_30 + japaCount10 + japaCount18 + japaCount24
         }
     }
+
+    var json : JSON {
+        get {
+            return ["entry_id": ID ?? NSNull(),
+                    "created_at": dateCreated.remoteDateTimeString(),
+                    "updated_at": dateUpdated.remoteDateTimeString(),
+                    "user_id": userID,
+                    "entrydate": date.remoteDateString(),
+                    "jcount_730": japaCount7_30,
+                    "jcount_1000": japaCount10,
+                    "jcount_1800": japaCount18,
+                    "jcount_after": japaCount24,
+                    "reading": reading.rawValue,
+                    "kirtan": kirtan,
+                    "opt_sleep": bedTime?.string ?? NSNull(),
+                    "opt_wake_up": wakeUpTime?.string ?? NSNull(),
+                    "opt_exercise": yoga,
+                    "opt_service": service,
+                    "opt_lections": lections]
+        }
+    }
 }
 
 protocol FieldKey {
     var rawValue : String {get}
 }
+
+

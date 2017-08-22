@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 @objc(ManagedUser)
-class ManagedUser: ManagedObject, User, JSONConvertible {
+class ManagedUser: ManagedObject, User {
     
     @NSManaged var id: Int32
     var ID: Int32 { get {
@@ -58,21 +58,6 @@ class ManagedUser: ManagedObject, User, JSONConvertible {
         bedTimeEnabled = user.bedTimeEnabled
         
         return self
-    }
-    
-    func json() -> JSON {
-        return ["userid": ID,
-                "user_name": name,
-                "avatar_url": avatarURLString ?? "",
-            
-                "cfg_public": isPublic,
-                "cfg_showmoresixteen": showMore16,
-            
-                "opt_wake": wakeUpTimeEnabled,
-                "opt_service": serviceEnabled,
-                "opt_exercise": exerciseEnabled,
-                "opt_lections": lectionsEnabled,
-                "opt_sleep": bedTimeEnabled]
     }
     
     static let entityName = "ManagedUser"

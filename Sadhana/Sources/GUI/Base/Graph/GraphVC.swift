@@ -18,6 +18,11 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func reloadData() {
+        viewModel.reloadData()
+        super.reloadData()
+    }
+
 
     //MARK: Table Data Source
     override func numberOfSections(in tableView: UITableView) -> Int {

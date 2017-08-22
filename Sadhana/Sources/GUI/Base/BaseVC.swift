@@ -11,7 +11,7 @@ import CoreData
 import RxSwift
 import Foundation
 
-class BaseVC<VM:BaseVMProtocol>: UIViewController, BaseVCProtocol {
+class BaseVC<VM:ViewModel>: UIViewController, ViewController {
     let viewModel:VM
     
     init(_ viewModel:VM) {
@@ -33,11 +33,11 @@ class BaseVC<VM:BaseVMProtocol>: UIViewController, BaseVCProtocol {
     }
     
     func bindViewModel() -> Void {
-        
+        baseBindViewModel()
     }
 }
 
-class BaseTableVC<VM:BaseVMProtocol>: UITableViewController, BaseVCProtocol {
+class BaseTableVC<VM:ViewModel>: UITableViewController, ViewController {
     let viewModel:VM
     
     init(_ viewModel:VM, style:UITableViewStyle = .plain) {
@@ -63,11 +63,11 @@ class BaseTableVC<VM:BaseVMProtocol>: UITableViewController, BaseVCProtocol {
     }
 
     func bindViewModel() -> Void {
-
+        baseBindViewModel()
     }
 }
 
-class BaseTabBarVC<VM:BaseVMProtocol>: UITabBarController, BaseVCProtocol {
+class BaseTabBarVC<VM:ViewModel>: UITabBarController, ViewController {
     let viewModel:VM
 
     init(_ viewModel:VM) {
@@ -89,11 +89,11 @@ class BaseTabBarVC<VM:BaseVMProtocol>: UITabBarController, BaseVCProtocol {
     }
 
     func bindViewModel() -> Void {
-        
+        baseBindViewModel()
     }
 }
 
-class BaseFetchedResultsVC<VM:BaseVMProtocol>: BaseTableVC<VM>, NSFetchedResultsControllerDelegate {
+class BaseFetchedResultsVC<VM:ViewModel>: BaseTableVC<VM>, NSFetchedResultsControllerDelegate {
 
     var updatedSections = IndexSet()
     var insertedSections = IndexSet()
@@ -102,7 +102,7 @@ class BaseFetchedResultsVC<VM:BaseVMProtocol>: BaseTableVC<VM>, NSFetchedResults
 /*
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?,
                     for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        print("change(\(type.rawValue)) rows")
+        log("change(\(type.rawValue)) rows")
         switch type {
         case .insert:   tableView.insertRows(at: [newIndexPath!], with: .none); break
         case .delete:   tableView.deleteRows(at: [indexPath!], with: .none)   ; break
@@ -116,25 +116,25 @@ class BaseFetchedResultsVC<VM:BaseVMProtocol>: BaseTableVC<VM>, NSFetchedResults
 
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo,
                     atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        //print("change(\(type.rawValue)) section \(sectionIndex)")
+        //log("change(\(type.rawValue)) section \(sectionIndex)")
         switch type {
         case .insert:  /* tableView.insertSections(IndexSet(integer:sectionIndex), with: .none);*/ insertedSections.insert(sectionIndex); break
        // case .delete:   tableView.deleteSections(IndexSet(integer:sectionIndex), with: .none); break
-        //case .move:     print("what should I do with move section?")                         ; break
+        //case .move:     log("what should I do with move section?")                         ; break
         case .update:   /*tableView.reloadSections(IndexSet(integer:sectionIndex), with: .none);*/ updatedSections.insert(sectionIndex); break
         default: break
         }
     }
 
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-       // print("will change (now sections \(tableView.numberOfSections))")
+       // log("will change (now sections \(tableView.numberOfSections))")
         oldSectionsCount = tableView.numberOfSections
         updatedSections.removeAll()
         insertedSections.removeAll()
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        //print("did change")
+        //log("did change")
        // reloadData()
 /*
         if self.tableView.window != nil && self.oldSectionsCount + self.insertedSections.count == controller.sections?.count {
@@ -156,16 +156,74 @@ class BaseFetchedResultsVC<VM:BaseVMProtocol>: BaseTableVC<VM>, NSFetchedResults
     }
 }
 
-protocol BaseVCProtocol {
-    associatedtype VM:BaseVMProtocol
+protocol ViewController {
+    associatedtype VM:ViewModel
     var viewModel:VM { get }
 }
 
-extension BaseVCProtocol {
-    var disposeBag:DisposeBag { get {
-        return self.viewModel.disposeBag
+extension ViewController where Self : UIViewController {
+    var disposeBag:DisposeBag {
+        get {
+            return self.viewModel.disposeBag
         }
     }
 
+    fileprivate final func baseBindViewModel() {
+        viewModel.alerts.subscribe(onNext: { [weak self] (alert) in
+
+            alert.add(completion: { 
+                RootRouter.shared?.setPlusButton(hidden:false, animated:true)
+            })
+
+            self?.present(alert.uiAlertController, animated: true)
+            RootRouter.shared?.setPlusButton(hidden:true, animated:true)
+        }).disposed(by: disposeBag)
+    }
+}
+
+
+class Alert {
+    var title : String?
+    var message : String?
+    var style = UIAlertControllerStyle.actionSheet
+    private var actions = [Action]()
+    private var completions = [Block]()
+
+    var uiAlertController : UIAlertController {
+        get {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: style)
+            for action in actions {
+                alert.addAction(action.uiAlertAction(completions: completions))
+            }
+            return alert
+        }
+    }
+
+    func add(action title: String, style: UIAlertActionStyle? = .default, handler: Block?) {
+        actions.append(Action(title: title, style: style!, handler: handler))
+    }
+
+    func addCancelAction() {
+        add(action:"cancel".localized, style: .cancel, handler: nil)
+    }
+
+    func add(completion: @escaping Block) {
+        completions.append(completion)
+    }
+
+    struct Action {
+        var title : String
+        var style = UIAlertActionStyle.default
+        var handler : Block?
+
+        func uiAlertAction(completions:[Block]) -> UIAlertAction {
+            return UIAlertAction(title: title, style: style, handler: { (_) in
+                self.handler?()
+                for completion in completions {
+                    completion()
+                }
+            })
+        }
+    }
 }
 

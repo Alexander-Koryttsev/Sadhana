@@ -37,31 +37,26 @@ enum InvalidRequestType : String {
     case unknown
 }
 
-struct URLs {
-    static let base = "https://vaishnavaseva.net"
-    static let api = "vs-api/v2/sadhana"
-    static let authToken = "?oauth=token"
-    static let default_avatar = "wp-content/themes/salient-child/img/default_avatar.gif"
-}
-
-struct UserDefaultsKey {
-    static let prefix = "RemoteService"
-    static let tokens = "\(prefix)Tokens"
-}
-
 class RemoteService {   
     static let shared = RemoteService()
-    let clientID = "IXndKqmEoXPTwu46f7nmTcoJ2CfIS6"
-    let clientSecret = "1A4oOPOatd8j6EOaL3i9pblOUnqa6j"
+    private let clientID = "IXndKqmEoXPTwu46f7nmTcoJ2CfIS6"
+    private let clientSecret = "1A4oOPOatd8j6EOaL3i9pblOUnqa6j"
     
-    var tokens = Tokens()
+    private var tokens = Tokens()
     struct Tokens {
         var access : String?
         var refresh : String?
         var type : String?
     }
+
+    struct URLs {
+        static let host = "\(Config.baseHostPrefix)vaishnavaseva.net"
+        static let api = "vs-api/v2/sadhana"
+        static let authToken = "?oauth=token"
+        static let default_avatar = "wp-content/themes/salient-child/img/default_avatar.gif"
+    }
     
-    var authorizationHeaders : [String : String]? {
+    private var authorizationHeaders : [String : String]? {
         get {
             guard let tokenType = tokens.type, let accessToken = tokens.access else {
                 return nil
@@ -69,22 +64,41 @@ class RemoteService {
             return ["Authorization" : "\(tokenType) \(accessToken)"];
         }
     }
-    let acceptableStatusCodes:Array<Int>
+    private let acceptableStatusCodes:Array<Int>
+    private let manager : Alamofire.SessionManager
+    private let running = ActivityIndicator()
     
     init() {
         var codes = Array(200..<300)
         codes.append(contentsOf: (400..<500))
         acceptableStatusCodes = codes
+
+        // Create the server trust policies
+        #if DEV
+        let serverTrustPolicies: [String: ServerTrustPolicy] = [
+            URLs.host: .disableEvaluation,
+            ]
+        #else
+            let serverTrustPolicies = [String:ServerTrustPolicy]()
+        #endif
+
+        // Create custom manager
+        let configuration = URLSessionConfiguration.default
+        configuration.httpAdditionalHeaders = Alamofire.SessionManager.defaultHTTPHeaders
+        manager = Alamofire.SessionManager(
+            configuration: URLSessionConfiguration.default,
+            serverTrustPolicyManager: ServerTrustPolicyManager(policies: serverTrustPolicies)
+        )
+
         restoreTokensFromCache()
+        log("host: \(URLs.host)")
+
+        _ = running.asDriver().drive(UIApplication.shared.rx.isNetworkActivityIndicatorVisible)
     }
     
     func restoreTokensFromCache() -> Void {
-        guard let cachedTokens = UserDefaults.standard.object(forKey: UserDefaultsKey.tokens) as? JSON else { return }
+        guard let cachedTokens = Local.defaults.tokens else { return }
         map(tokens: cachedTokens)
-    }
-    
-    func cache(tokens: JSON) -> Void {
-        UserDefaults.standard.set(tokens, forKey: UserDefaultsKey.tokens)
     }
     
     func map(tokens: JSON) -> Void {
@@ -96,7 +110,7 @@ class RemoteService {
     
     func mapAndCache(tokens: JSON) -> Void {
         map(tokens: tokens)
-        cache(tokens: tokens)
+        Local.defaults.tokens = tokens
     }
     
     func refreshTokens() -> Completable {
@@ -134,18 +148,18 @@ class RemoteService {
                 return Disposables.create {} 
             }
             
-            let request = Alamofire.request("\(URLs.base)/\(path)", method: method, parameters: parameters, encoding: JSONEncoding.default, headers: authorise ? self.authorizationHeaders : nil)
+            let request = self.manager.request("https://\(URLs.host)/\(path)", method: method, parameters: parameters, encoding: JSONEncoding.default, headers: authorise ? self.authorizationHeaders : nil)
             
-            print("\n\t\t\t\t\t--- \(method) \(path) ---\n\nHead: \(desc(request.request?.allHTTPHeaderFields))\n\nParamteters: \(desc(parameters))")
+            log("\n\t\t\t\t\t--- \(method) \(path) ---\n\nHead: \(desc(request.request?.allHTTPHeaderFields))\n\nParamteters: \(desc(parameters))")
             request .validate(statusCode: self.acceptableStatusCodes)
                     .validate(contentType: ["application/json"])
                     .responseJSON(completionHandler: { (response) in
-                print("\nResponse\n\(response)\n")
+                log("\nResponse (\(path))\n\(response)\n")
                 switch response.result {
                 case .success(let value):
 
                     let statusCode = response.response!.statusCode
-                    print("Status Code:\(statusCode)")
+                    log("Status Code:\(statusCode)")
 
                     var result:JSON
 
@@ -194,7 +208,7 @@ class RemoteService {
             return Disposables.create {
                 request.cancel()
             }
-        }
+        }.track(running)
     }
     
     func apiRequest(_ method: Alamofire.HTTPMethod,
@@ -209,7 +223,7 @@ class RemoteService {
                 
                 switch remoteError {
                 case .noTokens: return Single<JSON>.error(RemoteError.notLoggedIn)
-                case .tokensExpired: return request.after(self.refreshTokens()).catchError({ (handler) -> PrimitiveSequence<SingleTrait, JSON> in
+                case .tokensExpired: return request.after(self.refreshTokens()).catchError({ (handler) -> Single<JSON> in
                     let returningError = Single<JSON>.error(handler)
                     guard let remoteError = handler as? RemoteError else { return returningError }
                     switch remoteError {
@@ -228,24 +242,32 @@ class RemoteService {
     }
     
     @discardableResult
-    func send(_ user: User & JSONConvertible) -> Completable {
-        return apiRequest(.post, "options/\(user.ID)", parameters: user.json()).completable()
+    func send(_ user: User) -> Completable {
+        return apiRequest(.post, "options/\(user.ID)", parameters: user.json).completable()
     }
-    
-    func loadSadhanaEntries(userID:Int32, year:Int, month:Int) -> Single <[Entry]> {
-        return apiRequest(.post, "userSadhanaEntries/\(userID)", parameters:["year": year, "month": month]).map({ (json) -> [JSON] in
+
+    func loadEntries(for userID:Int32, lastUpdatedDate:Date?) -> Single <[Entry]> {
+        return apiRequest(.post, "userSadhanaEntries/\(userID)", parameters:["modified_since": lastUpdatedDate?.remoteDateTimeString() ?? ""]).map({ (json) -> [JSON] in
             guard let entries = json["entries"] as? [JSON] else {
                 throw RemoteError.invalidData
             }
             return entries
         }).map(array:RemoteEntry.self).cast([Entry].self)
     }
-    
-    func send(_ entry: Entry & JSONConvertible) -> Single<Int32> {
+
+    func loadAllEntries(country:String = "all", city:String = "", searchString:String = "", page:Int = 0, pageSize:Int = 50) -> Single<AllEntriesResponse> {
+        return apiRequest(.post, "allSadhanaEntries", parameters: ["country": country,
+                                                                   "city": city,
+                                                                   "search_term": searchString,
+                                                                   "page_num": page,
+                                                                   "items_per_page": pageSize]).map(object: AllEntriesResponse.self)
+    }
+
+    func send(_ entry: Entry) -> Single<Int32> {
         let path = "sadhanaEntry/\(entry.userID)"
 
         //TODO: handle entryExists error
-        return apiRequest(entry.ID != nil ? .put : .post, path, parameters: entry.json()).map({ (json) -> Int32 in
+        return apiRequest(entry.ID != nil ? .put : .post, path, parameters: entry.json).map({ (json) -> Int32 in
 
             guard let jsonValue = json["entry_id"] else {
                 throw RemoteError.invalidData

@@ -19,8 +19,8 @@ class GraphVM : BaseVM {
         }
     }
 
-    override init() {
-        super.init()
+    func reloadData() {
+        dates.removeAll()
         var month = [Date]()
         var calendar = Calendar.current
         calendar.timeZone = TimeZone.create()
@@ -37,9 +37,6 @@ class GraphVM : BaseVM {
 
             stop = dates.count == 24
         });
-    }
-
-    func reloadData() {
         maxCounts.removeAll()
     }
 

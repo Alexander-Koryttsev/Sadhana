@@ -66,8 +66,14 @@ class EntryEditingVC : BaseTableVC<EntryEditingVM> {
 
                 if let currentResponsibleCell = currentCell as? ResponsibleCell {
                     if let previousResponsibleCell = previousResponsibleCell {
-                        previousResponsibleCell.resignActive.bind(to: currentResponsibleCell.becomeActive).disposed(by: disposeBag)
-                        currentResponsibleCell.goBack.bind(to: previousResponsibleCell.becomeActive).disposed(by: disposeBag)
+
+                        previousResponsibleCell.resignActive.filter({ (isNext) -> Bool in
+                            return isNext
+                        }).bind(to: currentResponsibleCell.becomeActive).disposed(by: disposeBag)
+
+                        currentResponsibleCell.resignActive.filter({(isNext) -> Bool in
+                            return !isNext
+                        }).bind(to: previousResponsibleCell.becomeActive).disposed(by: disposeBag)
                     }
                     previousResponsibleCell = currentResponsibleCell
 
@@ -79,15 +85,26 @@ class EntryEditingVC : BaseTableVC<EntryEditingVM> {
         }
 
         if let firstResponsibleCell = firstResponsibleCell {
-            firstResponsibleCell.goBack.subscribe(onNext:{ [weak self] () in
-                self?.tableView.endEditing(true)
+            firstResponsibleCell.resignActive.subscribe(onNext:{ [weak self] (isNext) in
+                if !isNext {
+                    self?.tableView.endEditing(true)
+                }
             }).disposed(by: disposeBag)
         }
 
         if let lastResponsibleCell = previousResponsibleCell {
-            lastResponsibleCell.resignActive.subscribe(onNext:{ [weak self] () in
-                self?.tableView.endEditing(true)
+            lastResponsibleCell.resignActive.subscribe(onNext:{ [weak self] (isNext) in
+                if isNext {
+                    self?.tableView.endEditing(true)
+                }
             }).disposed(by: disposeBag)
+        }
+    }
+
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        if !editing {
+            tableView.endEditing(true)
         }
     }
 }

@@ -51,6 +51,8 @@ class WeekVC: UIViewController {
             label.textAlignment = .center
             label.isUserInteractionEnabled = true
             stackView.addArrangedSubview(label)
+            let isSunday = date.weekDay == 1
+            //label.textColor = date <= Date() ? (isSunday ? .red : .black) : (isSunday ? .sdLightPeach : .sdSilver)
 
             if date <= currentDate {
                 let gesture = UITapGestureRecognizer()
@@ -60,9 +62,12 @@ class WeekVC: UIViewController {
                 if date == currentDate {
                     label.textColor = .sdTangerine
                 }
+                else {
+                    label.textColor = isSunday ? .red : .black
+                }
             }
             else {
-                label.textColor = .sdSilver
+                label.textColor = isSunday ? .sdLightPeach : .sdSilver
             }
 
             if i == trimmedSelectedDate.weekDayIndex {

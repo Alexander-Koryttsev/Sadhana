@@ -14,7 +14,8 @@ import RxSwift
 
 class MainTabBarRouter : EditingRouter, WindowRouter {
     var myGraphRouter = MyGraphRouter()
-    var tabBarVC : MainTabBarVC?
+    let otherGraphListRouter = OtherGraphListRouter()
+    weak var tabBarVC : MainTabBarVC?
     let window : UIWindow
     let plusButton = DynamicButton(style: .plus)
     var isEditing = false {
@@ -29,6 +30,11 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
         self.window = window
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidChange(notification:)), name: .UIKeyboardDidChangeFrame, object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        plusButton.removeTarget(nil, action: nil, for: .allEvents)
     }
 
     @objc func keyboardWillChange(notification:NSNotification) {
@@ -48,10 +54,11 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
 
     func showInitialVC() {
         myGraphRouter.parent = self
-        tabBarVC = MainTabBarVC(MainTabBarVM(self))
-        tabBarVC!.setViewControllers([myGraphRouter.initialVC()], animated: false)
-        setRootViewController(tabBarVC!)
+        let tabBarVC = MainTabBarVC(MainTabBarVM(self))
+        tabBarVC.setViewControllers([myGraphRouter.initialVC(), otherGraphListRouter.initialVC], animated: false)
+        setRootViewController(tabBarVC)
         setUpPlusButton()
+        self.tabBarVC = tabBarVC
     }
 
     func reset() {
@@ -63,15 +70,15 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
     }
 
     func showSadhanaEditing(date: Date) {
-        let vm = EditingVM(self)
+        let vm = EditingVM(self, date:date)
         plusButton.rx.tap.bind(to:vm.save).disposed(by: vm.disposeBag)
-        //TODO: cancel warning
         let vc = EditingVC(vm)
         tabBarVC?.present(vc, animated: true, completion: nil)
         isEditing = true
     }
 
     func hideSadhanaEditing() {
+        tabBarVC?.presentedViewController?.setEditing(false, animated: true)
         tabBarVC?.dismiss(animated: true, completion: nil)
         isEditing = false
     }
@@ -83,11 +90,12 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
     private func setUpPlusButton() {
         plusButton.strokeColor = .white
         plusButton.backgroundColor = .sdTangerine
-        let inset = CGFloat(10)
+        let inset = CGFloat(12)
         let size = CGFloat(40)
         plusButton.clipsToBounds = true
         plusButton.layer.cornerRadius = size/2
         plusButton.contentEdgeInsets = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
+        plusButton.alpha = 1
         window.addSubview(plusButton)
         plusButton <- [
             CenterX(),

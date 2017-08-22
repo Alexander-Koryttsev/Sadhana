@@ -34,14 +34,28 @@ class RootRouter : WindowRouter {
     }
     
     func commitSignIn() -> Void {
-        showTabBarVC()
+        self.showTabBarVC()
     }
 
     func logOut(errorMessage: String? = nil) {
         //TODO: show progress
-        showLoginVC(errorMessage: errorMessage)
+        self.showLoginVC(errorMessage: errorMessage)
+
         Local.defaults.reset()
         Local.service.dropDatabase {}
+    }
+
+    func setPlusButton(hidden:Bool, animated:Bool) {
+        let animations = { [unowned self] () in
+            self.mainTabBarRouter.plusButton.alpha = hidden ? 0 : 1
+        }
+
+        if animated {
+            UIView.animate(withDuration: 0.25, animations: animations)
+        }
+        else {
+            animations()
+        }
     }
     
     private func showLoginVC(errorMessage: String? = nil) -> Void {

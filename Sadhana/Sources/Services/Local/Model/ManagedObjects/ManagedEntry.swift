@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 
 @objc(ManagedEntry)
-class ManagedEntry: ManagedSynchable, Entry, JSONConvertible {
+class ManagedEntry: ManagedSynchable, Entry {
     typealias Key = EntryFieldKey
     var bedTime: Time? {
         get {
@@ -53,6 +53,8 @@ class ManagedEntry: ManagedSynchable, Entry, JSONConvertible {
         }
     }
 
+    var user : User?
+
     @discardableResult
     func map(_ entry: Entry) -> Self {
         ID = entry.ID
@@ -76,25 +78,6 @@ class ManagedEntry: ManagedSynchable, Entry, JSONConvertible {
         dateSynched = Date()
 
         return self
-    }
-    
-    func json() -> JSON {
-        return ["entry_id": ID ?? NSNull(),
-                "created_at": dateCreated.remoteDateTimeString(),
-                "updated_at": dateUpdated.remoteDateTimeString(),
-                "user_id": userID,
-                "date": date.remoteDateString(),
-                "jcount_730": japaCount7_30,
-                "jcount_1000": japaCount10,
-                "jcount_1800": japaCount18,
-                "jcount_after": japaCount24,
-                "reading": reading.rawValue,
-                "kirtan": kirtan,
-                "opt_sleep": bedTime?.string ?? NSNull(),
-                "opt_wake_up": wakeUpTime?.string ?? NSNull(),
-                "opt_exercise": yoga,
-                "opt_service": service,
-                "opt_lections": lections]
     }
     
     static let entityName = NSStringFromClass(ManagedEntry.self)

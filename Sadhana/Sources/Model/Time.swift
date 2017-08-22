@@ -15,9 +15,21 @@ struct Time {
         }
     }
 
+    var hourString: String {
+        get {
+            return String(format:"%02d", hour)
+        }
+    }
+
     var minute: Int16 {
         get {
             return rawValue % 60
+        }
+    }
+
+    var minuteString: String {
+        get {
+            return String(format:"%02d", minute)
         }
     }
 
@@ -62,11 +74,22 @@ struct Time {
     }
 
     init?(hour:String, minute:String) {
-        guard   let hourInt = Int16(hour),
-                let minuteInt = Int16(minute)
+
+        var hourInt = Int16(hour)
+        var minuteInt = Int16(minute)
+
+        if hourInt == nil && minuteInt != nil {
+            hourInt = 0
+        }
+        else if hourInt != nil && minuteInt == nil {
+            minuteInt = 0
+        }
+
+        guard   let hourIntLet = hourInt,
+                let minuteIntLet = minuteInt
         else { return nil }
 
-        self.init(hour: hourInt, minute: minuteInt)
+        self.init(hour: hourIntLet, minute: minuteIntLet)
     }
 
     init(_ time:Time) {

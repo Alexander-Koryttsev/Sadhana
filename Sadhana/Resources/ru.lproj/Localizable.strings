@@ -7,6 +7,9 @@
 */
 
 //General
+ok = "OК";
+cancel = "Отмена";
+discardChanges = "Стереть изменения";
 sadhana = "Садхана";
 today = "Сегодня";
 hours = "часов";
@@ -34,3 +37,8 @@ service = "Служение";
 yoga = "Йога";
 lections = "Лекции";
 bedTime = "Отбой в";
+
+//Other Graph
+otherGraph = "Все графики";
+all = "Все";
+favorites = "Избранные";

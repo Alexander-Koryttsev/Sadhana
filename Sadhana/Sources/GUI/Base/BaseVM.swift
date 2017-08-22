@@ -9,10 +9,17 @@
 import RxCocoa
 import RxSwift
 
-class BaseVM: BaseVMProtocol {
+class BaseVM: ViewModel {
     private let errorMessages = PublishSubject<String>()
     var errorMessagesUI: Driver<String> { get { return errorMessages.asDriver(onErrorJustReturn: "") } }
     let errors = PublishSubject<Error>()
+    let messages = PublishSubject<String>()
+    var messagesUI : Driver<String> {
+        get {
+            return messages.asDriver(onErrorJustReturn: "")
+        }
+    }
+    let alerts = PublishSubject<Alert>()
     let disposeBag = DisposeBag()
 
     init() {
@@ -38,8 +45,9 @@ class BaseVM: BaseVMProtocol {
     }
 }
 
-protocol BaseVMProtocol {
+protocol ViewModel {
     var disposeBag : DisposeBag { get }
+    var alerts : PublishSubject<Alert> { get }
 }
 
 extension ObservableType {
@@ -52,6 +60,11 @@ extension ObservableType {
 
 extension PrimitiveSequence where Trait == SingleTrait {
     func track(_ errors:PublishSubject<Error>) -> Single<PrimitiveSequence.E> {
+        return self.do(onError:{(error) in
+            errors.onNext(error)
+        })
+    }
+    func track(errors:PublishSubject<Error>) -> Single<PrimitiveSequence.E> {
         return self.do(onError:{(error) in
             errors.onNext(error)
         })

@@ -14,28 +14,39 @@ import Foundation
 class MyGraphVM: GraphVM {
     let running = ActivityIndicator()
     let refresh = PublishSubject<Void>()
+    let select = PublishSubject<IndexPath>()
+    let logOut = PublishSubject<Void>()
     private let router: MyGraphRouter
     private var entries = [Date : [Date : Entry]]()
 
+    private let updateSectionInternal = PublishSubject<Int>()
+    let updateSection : Driver<Int>
+
     init(_ router: MyGraphRouter) {
         self.router = router
+        updateSection = updateSectionInternal.asDriver(onErrorJustReturn: 0)
 
         super.init()
 
-        //TODO: check first fetch (table view is empty on launch
-
-        let loadNewEntries = loadEntries().asBoolObservable()
+        let loadNewEntries = loadMyEntries().asDriver(onErrorJustReturn: [])
         refresh.flatMap({ return loadNewEntries })
             .subscribe()
             .disposed(by: disposeBag)
 
+        select.subscribe(onNext:{ [weak self] (indexPath) in
+            if self == nil { return }
+            self!.router.showSadhanaEditing(date: self!.date(at: indexPath))
+        }).disposed(by: disposeBag)
 
-        Observable.of(loadEntries(),
-                      loadEntries(monthAgo:1),
-                      loadEntries(monthAgo:2))
-            .merge()
-            .subscribe()
-            .disposed(by: disposeBag)
+        logOut.asDriver(onErrorJustReturn: ()).map {_ -> Alert in
+            let alert = Alert()
+            alert.add(action:"logout".localized, style: .destructive, handler: {
+                RootRouter.shared?.logOut()
+            })
+
+            alert.addCancelAction()
+            return alert
+        }.drive(alerts).disposed(by: disposeBag)
     }
 
     override func reloadData() {
@@ -43,81 +54,44 @@ class MyGraphVM: GraphVM {
         entries.removeAll()
     }
 
-    func loadEntries(month:Date? = nil, monthAgo:Int? = 0) -> Single<[ManagedEntry]> {
+    func loadMyEntries() -> Single<[ManagedEntry]> {
         return Single.create { [weak self] (observer) -> Disposable in
             if self == nil {
                 observer(.error(GeneralError.noSelf))
                 return Disposables.create{}
             }
 
-            let calendar = Calendar.local
-            let yearValue = calendar.component(.year, from: month ?? Date())
-            let monthValue = calendar.component(.month, from: month ?? Date()) - monthAgo!
-            let context = Local.service.viewContext
-
-            return Remote.service.loadSadhanaEntries(userID: Local.defaults.userID!, year: yearValue, month: monthValue)
-                .flatMap { (remoteEntries) -> Single<[ManagedEntry]> in
-                    return context.rxSave(remoteEntries)
-                }
+            return Main.service.loadMyEntries()
+                .do(onNext: {[weak self] (_) in
+                    self?.reloadData()
+                })
                 .track(self!.errors)
                 .track(self!.running)
                 .subscribe(observer)
         }
     }
 
-    override func entry(at indexPath:IndexPath) -> (Entry?, Date) {
-        let date = self.date(at:indexPath)
-        let monthDate = date.trimmedDayAndTime
+    func entries(for monthDate:Date) -> [Date : Entry] {
         var month = entries[monthDate]
         if month == nil {
             month = [Date: Entry]()
             Local.service.viewContext.fetch(entriesFrom: monthDate).forEach({ (entry) in
                 month![entry.date] = entry
             })
+
             entries[monthDate] = month!
         }
+        return month!
+    }
 
-        return (month![date], date)
+    override func entry(at indexPath:IndexPath) -> (Entry?, Date) {
+        let date = self.date(at:indexPath)
+        var month = entries(for: date.trimmedDayAndTime)
+
+        return (month[date], date)
     }
 
     override func entries(for section:Int) -> [Entry] {
-        return entries[monthDate(for: section)]!.values.map({ (entry) -> Entry in
-            return entry
-        })
+        return Array(entries(for:monthDate(for: section)).values)
     }
 }
-
-/*
- Local.service.viewContext.perform {
- let entry = Local.service.viewContext.create(ManagedEntry.self)
- entry.ID = Int32(arc4random_uniform(UInt32(INT32_MAX)))
- entry.dateCreated = Date()
- entry.dateUpdated = Date()
- entry.userID = Local.defaults.userID!
- entry.date = Date()
-
- entry.month = DateUtilities.monthFrom(date: Date())
- entry.japaCount7_30 = Int16(arc4random_uniform(16))
- entry.japaCount10 = Int16(arc4random_uniform(16))
- entry.japaCount18 = Int16(arc4random_uniform(16))
- entry.japaCount24 = Int16(arc4random_uniform(16))
- entry.reading = 0
- entry.kirtan = false
- entry.bedTime = nil
- entry.wakeUpTime = nil
- entry.exercise = false
- entry.service = true
- entry.lections = false
-
- do {
- try Local.service.viewContext.save()
- observer(.completed)
- }
- catch {
- observer(.error(error))
- }
- }
-
- return Disposables.create{}
-
- }*/

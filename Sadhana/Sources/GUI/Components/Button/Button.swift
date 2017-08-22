@@ -24,25 +24,21 @@ class Button: UIButton {
             self.updateBackgroundColor()
         }
     }
-/*
-    override var isSelected: Bool // default is NO may be used by some subclasses or by application
-
-    override var isHighlighted: Bool // default is NO. this gets set/cleared automatically when touch enters/exits during tracking and cleared on up
-*/
 
     init() {
         super.init(frame:CGRect())
+        updateBackgroundColor()
     }
 
     func updateBackgroundColor() {
         if state.contains(.disabled) {
-            backgroundColor = UIColor.sdSilver
+            backgroundColor = .sdSilver
         }
         else if state.contains(.highlighted) {
-            backgroundColor = UIColor.sdBrightBlue
+            backgroundColor = .sdButterscotch
         }
         else {
-            backgroundColor = UIColor.sdTangerine
+            backgroundColor = .sdTangerine
         }
     }
     
