@@ -26,9 +26,35 @@ extension Reactive where Base: UITextField {
             textField.text = value
         }
         )
-    }
-    
+    }    
 }
+
+extension Reactive where Base: UISearchBar {
+    /// Reactive wrapper for `text` property.
+    public var textRequired: ControlProperty<String> {
+        return valueRequired
+    }
+
+    /// Reactive wrapper for `text` property.
+    public var valueRequired: ControlProperty<String> {
+        let source: Observable<String> = Observable.deferred { [weak searchBar = self.base as UISearchBar] () -> Observable<String> in
+            let text = searchBar?.text ?? ""
+
+            return (searchBar?.rx.delegate.methodInvoked(#selector(UISearchBarDelegate.searchBar(_:textDidChange:))) ?? Observable.empty())
+                .map { a in
+                    return a[1] as? String ?? ""
+                }
+                .startWith(text)
+        }
+
+        let bindingObserver = UIBindingObserver(UIElement: self.base) { (searchBar, text: String) in
+            searchBar.text = text
+        }
+
+        return ControlProperty(values: source, valueSink: bindingObserver)
+    }
+}
+
 
 extension UIControl {
     static func valuePublic<T, ControlType: UIControl>(_ control: ControlType, getter:  @escaping (ControlType) -> T, setter: @escaping (ControlType, T) -> ()) -> ControlProperty<T> {
@@ -46,5 +72,20 @@ extension UIControl {
         return ControlProperty(values: values, valueSink: UIBindingObserver(UIElement: control) { control, value in
             setter(control, value)
         })
+    }
+}
+
+
+extension Reactive where Base: UIRefreshControl {
+    var beginRefreshing: UIBindingObserver<Base, Void> {
+        return UIBindingObserver(UIElement: self.base) { refreshControl, _ in
+            refreshControl.beginRefreshing()
+        }
+    }
+
+    var endRefreshing: UIBindingObserver<Base, Void> {
+        return UIBindingObserver(UIElement: self.base) { refreshControl, _ in
+            refreshControl.endRefreshing()
+        }
     }
 }

@@ -11,49 +11,47 @@ import RxCocoa
 
 class GraphVM : BaseVM {
 
-    private var dates = [[Date]]()
+    let refresh = PublishSubject<Void>()
+    
     private var maxCounts = [Int : Int16]()
+    var entries = [Date : [Date : Entry]]()
+
     var numberOfSections : Int {
         get {
-            return dates.count
+            return Common.shared.calendarDates.count
         }
     }
 
     func reloadData() {
-        dates.removeAll()
-        var month = [Date]()
-        var calendar = Calendar.current
-        calendar.timeZone = TimeZone.create()
-        calendar.enumerateDates(startingAfter: Date(), matching: DateComponents(hour:0, minute:0), matchingPolicy: .strict, direction: .backward, using: { (date, exactMatch, stop) in
-
-            guard let date = date else { return }
-            month.append(date)
-
-            if calendar.component(.day, from: date) == 1,
-                month.count > 0 {
-                dates.append(month)
-                month.removeAll()
-            }
-
-            stop = dates.count == 24
-        });
         maxCounts.removeAll()
     }
 
     func numberOfRows(in section:Int) -> Int {
-        return dates[section].count
+        return Common.shared.calendarDates[section].count
     }
 
     func title(for section:Int) -> String {
-        return dates[section].first!.monthMedium
+        return Common.shared.calendarDates[section].first!.monthMedium
     }
 
     func monthDate(for section:Int) -> Date {
-        return dates[section].first!.trimmedDayAndTime
+        return Common.shared.calendarDates[section].first!.trimmedDayAndTime
+    }
+
+    func section(for monthDate:Date) -> Int {
+        var index = 0
+        for section in Common.shared.calendarDates {
+            if section.first!.trimmedDayAndTime == monthDate {
+                return index
+            }
+            index += 1
+        }
+
+        return index
     }
 
     func date(at indexPath:IndexPath) -> Date {
-        return dates[indexPath.section][indexPath.row]
+        return Common.shared.calendarDates[indexPath.section][indexPath.row]
     }
 
     func entry(at indexPath:IndexPath) -> (Entry?, Date) {
@@ -61,8 +59,12 @@ class GraphVM : BaseVM {
         return (nil, date)
     }
 
+    func entries(for monthDate:Date) -> [Date : Entry] {
+        return entries[monthDate] ?? [:]
+    }
+
     func entries(for section:Int) -> [Entry] {
-        return []
+        return Array(entries(for:monthDate(for: section)).values)
     }
 
     func maxCount(for section:Int) -> Int16 {

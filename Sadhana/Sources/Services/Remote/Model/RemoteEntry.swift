@@ -32,9 +32,6 @@ struct RemoteEntry : Entry, Mappable {
     let dateCreated : Date
     let dateUpdated : Date
 
-   // let karmikName : String
-   // let user : User?
-    //let remoteUser : RemoteUser?
     let userName : String
 
     init(map: Mapper) throws {
@@ -60,7 +57,7 @@ struct RemoteEntry : Entry, Mappable {
         try dateCreated = map.from("created_at", transformation: extractDateAndTime)
         try dateUpdated = map.from("updated_at", transformation: extractDateAndTime)
 
-        userName = map.optionalFrom("spiritual_name") ??  map.optionalFrom("karmic_name") ?? ""
+        userName = map.optionalFrom("spiritual_name") ??  map.optionalFrom("karmic_name") ?? map.optionalFrom("user_nicename") ?? ""
     }
 }
 

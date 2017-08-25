@@ -34,7 +34,7 @@ class OtherGraphListContainerVC : UIViewController {
 
     override var title:String? {
         get {
-            return "otherGraph".localized
+            return currentVC.title
         }
         set {}
     }
@@ -45,7 +45,7 @@ class OtherGraphListContainerVC : UIViewController {
         segmentedControl.selectedSegmentIndex = 0
         currentVC = viewControllers.first!
         super.init(nibName: nil, bundle: nil)
-        tabBarItem = UITabBarItem(title: title, image:#imageLiteral(resourceName: "tab-bar-icon-all"), tag:0)
+        tabBarItem = UITabBarItem(title: "otherGraph".localized, image:#imageLiteral(resourceName: "tab-bar-icon-all"), tag:0)
     }
 
     override func viewDidLoad() {

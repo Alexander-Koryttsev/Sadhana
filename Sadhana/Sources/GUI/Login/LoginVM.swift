@@ -41,6 +41,7 @@ class LoginVM : BaseVM {
                 if self == nil { return Observable.just(false) }
                 return Main.service.login(self!.login.value, password: self!.password.value)
                     .flatMap { (user) -> Single<[ManagedEntry]> in
+                        //TODO: localize!
                         self?.messages.onNext("Харе Кришна, \(user.name)!\nЗагружаем Вашу садхану...")
                         return Main.service.loadMyEntries()
                     }

@@ -14,6 +14,8 @@ class AllGraphListVM : GraphListVM {
     let firstPageRunning : Driver<Bool>
     let pageRunning = IndexedActivityIndicator()
     let refresh = PublishSubject<Void>()
+    let refreshDriver : Driver<Void>
+    let search = Variable("")
     let select = PublishSubject<IndexPath>()
     let pageDidUpdate = PublishSubject<Int>()
     let dataDidReload = PublishSubject<Void>()
@@ -30,18 +32,23 @@ class AllGraphListVM : GraphListVM {
     init(_ router:OtherGraphListRouter) {
         self.router = router
         firstPageRunning = pageRunning.asDriver(for:0)
+        refreshDriver = refresh.asDriver(onErrorJustReturn: ())
         super.init()
 
-        refresh.subscribe(onNext: { [unowned self] () in
-            return Remote.service.loadAllEntries()
-                .track(self.pageRunning, index:0)
-                .track(self.errors)
+        let combined = Driver.combineLatest(refreshDriver, search.asDriver().debounce(0.5)) { _,_ in }
+        combined.drive(onNext: { [unowned self] in
+            self.load(page: 0)
                 .subscribe(onSuccess: { [unowned self] (response) in
                     self.pages.removeAll()
                     self.pages[response.page] = response.entries
-                    self.lastResponse = response
                     self.dataDidReload.onNext()
             }).disposed(by: self.disposeBag)
+        }).disposed(by: disposeBag)
+
+        select.subscribe(onNext:{ [unowned self] (indexPath) in
+            if let entry = self.entry(at: indexPath) {
+                router.showGraphOfUser(with: entry.userID)
+            }
         }).disposed(by: disposeBag)
     }
 
@@ -54,15 +61,14 @@ class AllGraphListVM : GraphListVM {
         }
 
         if section == (pagesCount - 1) {
-            return pagesCount * response.pageSize - response.total
+            return response.total - (pagesCount - 1) * response.pageSize
         }
 
         return response.pageSize
     }
 
     func load(page:Int) -> Single<AllEntriesResponse> {
-        return Remote.service.loadAllEntries(page:page).do(onNext: {[unowned self] (response) in
-            self.pages[response.page] = response.entries
+        return Remote.service.loadAllEntries(searchString:search.value, page:page).do(onNext: {[unowned self] (response) in
             self.lastResponse = response
         })  .track(pageRunning, index:page)
             .track(self.errors)
@@ -85,6 +91,7 @@ class AllGraphListVM : GraphListVM {
                 load(page: nextPageIndex)
                     .subscribeOn(MainScheduler.instance)
                     .subscribe(onSuccess: { [unowned self] (_) in
+                        self.pages[response.page] = response.entries
                         self.pageDidUpdate.onNext(nextPageIndex)
                     }).disposed(by: disposeBag)
             }

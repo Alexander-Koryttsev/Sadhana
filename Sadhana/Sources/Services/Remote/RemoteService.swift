@@ -91,7 +91,7 @@ class RemoteService {
         )
 
         restoreTokensFromCache()
-        log("host: \(URLs.host)")
+        remoteLog("host: \(URLs.host)")
 
         _ = running.asDriver().drive(UIApplication.shared.rx.isNetworkActivityIndicatorVisible)
     }
@@ -150,16 +150,16 @@ class RemoteService {
             
             let request = self.manager.request("https://\(URLs.host)/\(path)", method: method, parameters: parameters, encoding: JSONEncoding.default, headers: authorise ? self.authorizationHeaders : nil)
             
-            log("\n\t\t\t\t\t--- \(method) \(path) ---\n\nHead: \(desc(request.request?.allHTTPHeaderFields))\n\nParamteters: \(desc(parameters))")
+            remoteLog("\n\t\t\t\t\t--- \(method) \(path) ---\n\nHead: \(desc(request.request?.allHTTPHeaderFields))\n\nParamteters: \(desc(parameters))")
             request .validate(statusCode: self.acceptableStatusCodes)
                     .validate(contentType: ["application/json"])
                     .responseJSON(completionHandler: { (response) in
-                log("\nResponse (\(path))\n\(response)\n")
+                remoteLog("\nResponse (\(path))\n\(response)\n")
                 switch response.result {
                 case .success(let value):
 
                     let statusCode = response.response!.statusCode
-                    log("Status Code:\(statusCode)")
+                    remoteLog("Status Code:\(statusCode)")
 
                     var result:JSON
 
@@ -246,8 +246,18 @@ class RemoteService {
         return apiRequest(.post, "options/\(user.ID)", parameters: user.json).completable()
     }
 
-    func loadEntries(for userID:Int32, lastUpdatedDate:Date?) -> Single <[Entry]> {
-        return apiRequest(.post, "userSadhanaEntries/\(userID)", parameters:["modified_since": lastUpdatedDate?.remoteDateTimeString() ?? ""]).map({ (json) -> [JSON] in
+    func loadEntries(for userID:Int32, lastUpdatedDate:Date? = nil, month:Date? = nil) -> Single <[Entry]> {
+
+        var parameters = [String: Any]()
+        if let lastUpdatedDate = lastUpdatedDate {
+            parameters["modified_since"] = lastUpdatedDate.remoteDateTimeString()
+        }
+        else {
+            parameters["year"] = month?.year
+            parameters["month"] = month?.month
+        }
+
+        return apiRequest(.post, "userSadhanaEntries/\(userID)", parameters:parameters).map({ (json) -> [JSON] in
             guard let entries = json["entries"] as? [JSON] else {
                 throw RemoteError.invalidData
             }

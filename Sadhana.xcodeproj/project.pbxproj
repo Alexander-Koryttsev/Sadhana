@@ -21,6 +21,7 @@
 		9612BD821F0130A700336A1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 966056A31EF2B50D00973FA4 /* Assets.xcassets */; };
 		9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9612BD881F02BD3400336A1B /* RxSwift+Extensions.swift */; };
 		961D389D1F24750000E73E21 /* CountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961D389C1F24750000E73E21 /* CountView.swift */; };
+		964C27CF1F4C9BFB0006593C /* OtherGraphVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C27CE1F4C9BFB0006593C /* OtherGraphVC.swift */; };
 		964C82901F17D5A200A41D8A /* NavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C828F1F17D5A200A41D8A /* NavigationVC.swift */; };
 		9652C9931F45D8160065458B /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9652C9921F45D8160065458B /* KeyboardManager.swift */; };
 		9652C99F1F46D4360065458B /* FormVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9652C99A1F46D4360065458B /* FormVC.swift */; };
@@ -49,6 +50,7 @@
 		96A196CB1F4AFCE800AAB635 /* OtherGraphListRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196CA1F4AFCE800AAB635 /* OtherGraphListRouter.swift */; };
 		96A196CD1F4AFE1B00AAB635 /* OtherGraphListContainerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196CC1F4AFE1B00AAB635 /* OtherGraphListContainerVC.swift */; };
 		96A196D11F4C1CDD00AAB635 /* GraphCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196D01F4C1CDD00AAB635 /* GraphCell.swift */; };
+		96A196F11F4C921100AAB635 /* OtherGraphVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196F01F4C921100AAB635 /* OtherGraphVM.swift */; };
 		96A55B481F12919300FD3700 /* RootRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B471F12919300FD3700 /* RootRouter.swift */; };
 		96A55B4A1F1291D500FD3700 /* MainTabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B491F1291D500FD3700 /* MainTabBarVC.swift */; };
 		96A55B4C1F14AD6200FD3700 /* LocalDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B4B1F14AD6200FD3700 /* LocalDefaults.swift */; };
@@ -97,6 +99,7 @@
 		9612BD881F02BD3400336A1B /* RxSwift+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RxSwift+Extensions.swift"; sourceTree = "<group>"; };
 		9612BD8A1F02BE4400336A1B /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
 		961D389C1F24750000E73E21 /* CountView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CountView.swift; path = ../../Components/View/CountView.swift; sourceTree = "<group>"; };
+		964C27CE1F4C9BFB0006593C /* OtherGraphVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherGraphVC.swift; sourceTree = "<group>"; };
 		964C828F1F17D5A200A41D8A /* NavigationVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationVC.swift; sourceTree = "<group>"; };
 		9652C9911F45AC5C0065458B /* Merge.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Merge.xcconfig; sourceTree = "<group>"; };
 		9652C9921F45D8160065458B /* KeyboardManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardManager.swift; sourceTree = "<group>"; };
@@ -138,6 +141,7 @@
 		96A196CA1F4AFCE800AAB635 /* OtherGraphListRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherGraphListRouter.swift; sourceTree = "<group>"; };
 		96A196CC1F4AFE1B00AAB635 /* OtherGraphListContainerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherGraphListContainerVC.swift; sourceTree = "<group>"; };
 		96A196D01F4C1CDD00AAB635 /* GraphCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphCell.swift; sourceTree = "<group>"; };
+		96A196F01F4C921100AAB635 /* OtherGraphVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherGraphVM.swift; sourceTree = "<group>"; };
 		96A55B471F12919300FD3700 /* RootRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootRouter.swift; sourceTree = "<group>"; };
 		96A55B491F1291D500FD3700 /* MainTabBarVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarVC.swift; sourceTree = "<group>"; };
 		96A55B4B1F14AD6200FD3700 /* LocalDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDefaults.swift; sourceTree = "<group>"; };
@@ -431,6 +435,8 @@
 			children = (
 				96A196BE1F4AFB7C00AAB635 /* AllGraphListVC.swift */,
 				96A196C01F4AFB8D00AAB635 /* AllGraphListVM.swift */,
+				964C27CE1F4C9BFB0006593C /* OtherGraphVC.swift */,
+				96A196F01F4C921100AAB635 /* OtherGraphVM.swift */,
 			);
 			path = All;
 			sourceTree = "<group>";
@@ -762,10 +768,12 @@
 				967D79271F00F3E100A961D6 /* RemoteUser.swift in Sources */,
 				9654AE9A1F1E656F00F75772 /* OnOffImageView.swift in Sources */,
 				96B0708A1F0FE6D3004C9249 /* MappingHelper.swift in Sources */,
+				964C27CF1F4C9BFB0006593C /* OtherGraphVC.swift in Sources */,
 				960A0D541F2876C000356152 /* MyGraphVC.swift in Sources */,
 				9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */,
 				96B607FB1F1D01EF002B9AB5 /* EntryCell.swift in Sources */,
 				96FBCC171F3AE386004E26F6 /* GraphVC.swift in Sources */,
+				96A196F11F4C921100AAB635 /* OtherGraphVM.swift in Sources */,
 				96A9218C1F03FFF70056BC5B /* ManagedUser.swift in Sources */,
 				96086DD71F3B2FB2006C9312 /* GraphVM.swift in Sources */,
 				960A0D4F1F2876C000356152 /* EditingVC.swift in Sources */,

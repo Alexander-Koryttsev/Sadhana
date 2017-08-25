@@ -48,6 +48,35 @@ struct Main {
     static let service = MainService.shared
 }
 
+class Common {
+    static let shared = Common()
+    private var dates = [[Date]]()
+    var calendarDates : [[Date]] {
+        get {
+            if dates.count == 0 || dates.first!.first! < Date().trimmedTime {
+                dates.removeAll()
+                var month = [Date]()
+                var calendar = Calendar.current
+                calendar.timeZone = TimeZone.create()
+                calendar.enumerateDates(startingAfter: Date(), matching: DateComponents(hour:0, minute:0), matchingPolicy: .strict, direction: .backward, using: { (date, exactMatch, stop) in
+
+                    guard let date = date else { return }
+                    month.append(date)
+
+                    if calendar.component(.day, from: date) == 1,
+                        month.count > 0 {
+                        dates.append(month)
+                        month.removeAll()
+                    }
+                    
+                    stop = dates.count == 24
+                });
+            }
+            return dates
+        }
+    }
+}
+
 protocol JSONConvertible {
     var json : JSON { get }
 }
@@ -100,6 +129,13 @@ func screenWidthSecific<T>(w320:T, w375:T?, w414:T?) -> T {
 
 func log(_ items: Any..., separator: String = " ", terminator: String = "\n") {
     #if LOG
+        let stringItem = items.map {"\($0)"} .joined(separator: separator)
+        print(stringItem, terminator: terminator)
+    #endif
+}
+
+func remoteLog(_ items: Any..., separator: String = " ", terminator: String = "\n") {
+    #if REMOTE_LOG && LOG
         let stringItem = items.map {"\($0)"} .joined(separator: separator)
         print(stringItem, terminator: terminator)
     #endif

@@ -37,9 +37,8 @@ class GraphCell : UITableViewCell {
 
         contentView.addSubview(entryView)
         entryView <- [
-            Top().to(nameLabel),
             Right().to(nameLabel, .right),
-            Bottom(),
+            Bottom(2).to(avatarImageView, .bottom),
             Left().to(nameLabel, .left)
         ]
     }
@@ -49,7 +48,7 @@ class GraphCell : UITableViewCell {
     }
 
     func map(entry:Entry, name:String, avatarURL:URL) {
-        entryView.map(entry, maxRoundsCount: 16)
+        entryView.map(entry, maxRoundsCount: max(16, entry.japaSum))
         nameLabel.text = name
         avatarImageView.af_setImage(withURL: avatarURL, filter:avatarFilter)
     }

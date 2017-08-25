@@ -28,6 +28,7 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
 
     init(window: UIWindow) {
         self.window = window
+        otherGraphListRouter.parent = self
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidChange(notification:)), name: .UIKeyboardDidChangeFrame, object: nil)
     }
@@ -85,6 +86,10 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
 
     @objc private func togglePlusButton(sender:DynamicButton) {
         isEditing ? hideSadhanaEditing() : showSadhanaEditing()
+    }
+
+    func showMyGraph() {
+        tabBarVC?.selectedIndex = 0
     }
 
     private func setUpPlusButton() {

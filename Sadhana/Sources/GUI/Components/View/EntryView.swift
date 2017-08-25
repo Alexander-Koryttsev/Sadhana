@@ -23,7 +23,9 @@ class EntryView : UIView {
         addSubview(kirtanImageView)
         kirtanImageView <- [
             CenterY(),
-            Right()
+            Right(),
+            Top(>=0),
+            Bottom(>=0)
         ]
 
         addSubview(readingImageView)
@@ -41,10 +43,8 @@ class EntryView : UIView {
 
         addSubview(japaView)
         japaView <- [
-            Top(),
+            CenterY(),
             Left(),
-            Height(22),
-            Bottom(),
             Right(32).to(readingImageView)
         ]
 

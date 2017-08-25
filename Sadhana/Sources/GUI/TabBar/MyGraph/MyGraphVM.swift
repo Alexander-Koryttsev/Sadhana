@@ -13,11 +13,9 @@ import Foundation
 
 class MyGraphVM: GraphVM {
     let running = ActivityIndicator()
-    let refresh = PublishSubject<Void>()
     let select = PublishSubject<IndexPath>()
     let logOut = PublishSubject<Void>()
     private let router: MyGraphRouter
-    private var entries = [Date : [Date : Entry]]()
 
     private let updateSectionInternal = PublishSubject<Int>()
     let updateSection : Driver<Int>
@@ -33,9 +31,8 @@ class MyGraphVM: GraphVM {
             .subscribe()
             .disposed(by: disposeBag)
 
-        select.subscribe(onNext:{ [weak self] (indexPath) in
-            if self == nil { return }
-            self!.router.showSadhanaEditing(date: self!.date(at: indexPath))
+        select.subscribe(onNext:{ [unowned self] (indexPath) in
+            self.router.showSadhanaEditing(date: self.date(at: indexPath))
         }).disposed(by: disposeBag)
 
         logOut.asDriver(onErrorJustReturn: ()).map {_ -> Alert in
@@ -55,23 +52,18 @@ class MyGraphVM: GraphVM {
     }
 
     func loadMyEntries() -> Single<[ManagedEntry]> {
-        return Single.create { [weak self] (observer) -> Disposable in
-            if self == nil {
-                observer(.error(GeneralError.noSelf))
-                return Disposables.create{}
-            }
-
+        return Single.create { [unowned self] (observer) -> Disposable in
             return Main.service.loadMyEntries()
                 .do(onNext: {[weak self] (_) in
                     self?.reloadData()
                 })
-                .track(self!.errors)
-                .track(self!.running)
+                .track(self.errors)
+                .track(self.running)
                 .subscribe(observer)
         }
     }
 
-    func entries(for monthDate:Date) -> [Date : Entry] {
+    override func entries(for monthDate:Date) -> [Date : Entry] {
         var month = entries[monthDate]
         if month == nil {
             month = [Date: Entry]()
@@ -89,9 +81,5 @@ class MyGraphVM: GraphVM {
         var month = entries(for: date.trimmedDayAndTime)
 
         return (month[date], date)
-    }
-
-    override func entries(for section:Int) -> [Entry] {
-        return Array(entries(for:monthDate(for: section)).values)
     }
 }

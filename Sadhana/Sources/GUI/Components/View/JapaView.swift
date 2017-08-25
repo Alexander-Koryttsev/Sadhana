@@ -47,12 +47,25 @@ class JapaView: UIView {
 
         self.maxCount = maxCount!
         setNeedsDisplay()
+
     }
 
     func clear() {
         entries.removeAll()
         maxCount = 16
         self.setNeedsDisplay()
+    }
+
+    override class var requiresConstraintBasedLayout: Bool {
+        get {
+            return true
+        }
+    }
+
+    override var intrinsicContentSize: CGSize {
+        get {
+            return CGSize(width: UIViewNoIntrinsicMetric, height: 22)
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

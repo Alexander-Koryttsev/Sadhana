@@ -54,6 +54,18 @@ extension Date {
         }
     }
 
+    var month : Int {
+        get {
+            return Calendar.local.component(.month, from: self)
+        }
+    }
+
+    var year : Int {
+        get {
+            return Calendar.local.component(.year, from: self)
+        }
+    }
+
     //MARK: Trim
     var trimmedTime : Date {
         get {

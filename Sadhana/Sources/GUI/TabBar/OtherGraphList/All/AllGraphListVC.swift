@@ -9,8 +9,13 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import EasyPeasy
 
 class AllGraphListVC: GraphListVC<AllGraphListVM> {
+
+    let searchBar = UISearchBar()
+    let searchBarHeight : CGFloat = 46.0
+    var firstRun = true
 
     override var title:String? {
         get {
@@ -24,20 +29,56 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
         super.viewDidLoad()
         tableView.register(GraphCell.self, forCellReuseIdentifier: "Cell")
         tableView.rowHeight = 64
+        tableView.keyboardDismissMode = .onDrag
+
+        let searchContainer = UIView(frame:CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:searchBarHeight))
+        searchContainer.addSubview(searchBar)
+        searchBar.searchBarStyle = .minimal
+        searchBar.searchTextPositionAdjustment = UIOffsetMake(10.0, 0.0)
+        searchBar <- [
+            Left(2),
+            Bottom(),
+            Right(2),
+            Top(2)
+        ]
+        tableView.tableHeaderView = searchContainer
         viewModel.refresh.onNext()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if firstRun {
+            tableView.contentOffset = CGPoint(x:0, y: (searchBarHeight - (navigationController?.navigationBar.bounds.size.height)! - UIApplication.shared.statusBarFrame.size.height))
+
+            let searchField : UITextField = searchBar.value(forKey: "_searchField") as! UITextField
+            searchField.layer.masksToBounds = true
+            searchField.layer.cornerRadius = searchField.bounds.size.height / 2.0
+            searchField.borderStyle = .none
+            searchField.backgroundColor = .sdPaleGrey
+            firstRun = false
+        }
+
     }
 
     override func bindViewModel() {
         super.bindViewModel()
+        let dataDidReloadDriver = viewModel.dataDidReload.asDriver(onErrorJustReturn: ())
 
         refreshControl?.rx.controlEvent(.valueChanged).asDriver().drive(viewModel.refresh).disposed(by: disposeBag)
-        viewModel.firstPageRunning.drive(refreshControl!.rx.isRefreshing).disposed(by: disposeBag)
 
-        viewModel.dataDidReload.asDriver(onErrorJustReturn: ()).drive(onNext: { [unowned self] () in
+        dataDidReloadDriver.filter({ [unowned self] () -> Bool in
+            return self.refreshControl!.isRefreshing
+        }).drive(refreshControl!.rx.endRefreshing).disposed(by: disposeBag)
+
+        viewModel.refreshDriver.drive(refreshControl!.rx.beginRefreshing).disposed(by: disposeBag)
+
+        dataDidReloadDriver.drive(onNext: { [unowned self] () in
             self.reloadData()
         }).disposed(by: disposeBag)
 
@@ -51,6 +92,10 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
                 self.tableView.endUpdates()
             }
         }).disposed(by: disposeBag)
+
+        tableView.rx.itemSelected.asDriver().drive(viewModel.select).disposed(by: disposeBag)
+
+        searchBar.rx.textRequired.asDriver().drive(viewModel.search).disposed(by: disposeBag)
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
