@@ -15,6 +15,7 @@ class EditingVM: BaseVM {
     let save = PublishSubject<Void>()
     let cancel = PublishSubject<Void>()
     let initialDate : Date
+    let openingDate = Date()
 
     private let context = Local.service.newSubViewForegroundContext()
 
@@ -22,7 +23,8 @@ class EditingVM: BaseVM {
         get {
             for entry in context.registeredObjects {
                 if let entry = entry as? ManagedEntry {
-                    if entry.shouldSynch {
+                    if entry.dateUpdated > openingDate,
+                        entry.shouldSynch {
                         return true
                     }
                 }
@@ -94,9 +96,12 @@ class EditingVM: BaseVM {
             self!.context.saveRecursive()
             _ = Observable.merge(signals).subscribe()
 
-            Answers.logCustomEvent(withName: "Save sadhana", customAttributes: ["Entries" : entries.map({ (entry) -> String in
-                return entry.date.remoteDateString()
-            })])
+            var attributes = [String:String]()
+            entries.forEach({ (entry) in
+                attributes[entry.date.remoteDateString()] = (entry.ID != nil) ? entry.ID!.description : ""
+            })
+            
+            Answers.logCustomEvent(withName: "Save Entries", customAttributes: attributes)
         })
             .disposed(by: disposeBag)
     }

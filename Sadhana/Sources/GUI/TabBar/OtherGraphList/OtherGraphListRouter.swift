@@ -23,12 +23,12 @@ class OtherGraphListRouter {
         }
     }
 
-    func showGraphOfUser(with ID:Int32) {
+    func showGraphOfUser(with ID:Int32, name:String) {
         if ID == Local.defaults.userID {
             parent?.showMyGraph()
         }
         else {
-            let vm = OtherGraphVM(ID)
+            let vm = OtherGraphVM(ID, name: name)
             let vc = OtherGraphVC(vm)
             navigationVC.pushViewController(vc, animated: true)
         }

@@ -33,6 +33,7 @@ struct RemoteEntry : Entry, Mappable {
     let dateUpdated : Date
 
     let userName : String
+    let avatarURL : URL?
 
     init(map: Mapper) throws {
         try ID = map.from("id", transformation: extractID)
@@ -57,7 +58,19 @@ struct RemoteEntry : Entry, Mappable {
         try dateCreated = map.from("created_at", transformation: extractDateAndTime)
         try dateUpdated = map.from("updated_at", transformation: extractDateAndTime)
 
-        userName = map.optionalFrom("spiritual_name") ??  map.optionalFrom("karmic_name") ?? map.optionalFrom("user_nicename") ?? ""
+        
+        var userNameLocal = map.optionalFrom("spiritual_name") as String?
+        
+        if userNameLocal == nil || userNameLocal!.isEmpty {
+            userNameLocal = map.optionalFrom("karmic_name")
+        }
+        if userNameLocal == nil || userNameLocal!.isEmpty {
+            userNameLocal = map.optionalFrom("user_nicename")
+        }
+        
+        userName = userNameLocal ?? ""
+        
+        avatarURL = map.optionalFrom("avatarUrl")
     }
 }
 

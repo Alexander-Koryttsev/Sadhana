@@ -21,6 +21,7 @@ class AllGraphListVM : GraphListVM {
     let dataDidReload = PublishSubject<Void>()
     private var lastResponse : AllEntriesResponse?
     private var pages = [Int : [RemoteEntry]]()
+    private var loadingPages = IndexSet()
     var pagesCount : Int {
         get {
             return lastResponse != nil ? Int(ceil(Float(lastResponse!.total)/Float(lastResponse!.pageSize))) : 0
@@ -35,7 +36,7 @@ class AllGraphListVM : GraphListVM {
         refreshDriver = refresh.asDriver(onErrorJustReturn: ())
         super.init()
 
-        let combined = Driver.combineLatest(refreshDriver, search.asDriver().debounce(0.5)) { _,_ in }
+        let combined = Driver.combineLatest(refreshDriver, search.asDriver().debounce(0.5).skip(1)) { _,_ in }
         combined.drive(onNext: { [unowned self] in
             self.load(page: 0)
                 .subscribe(onSuccess: { [unowned self] (response) in
@@ -47,7 +48,7 @@ class AllGraphListVM : GraphListVM {
 
         select.subscribe(onNext:{ [unowned self] (indexPath) in
             if let entry = self.entry(at: indexPath) {
-                router.showGraphOfUser(with: entry.userID)
+                router.showGraphOfUser(with: entry.userID, name: entry.userName)
             }
         }).disposed(by: disposeBag)
     }
@@ -86,13 +87,17 @@ class AllGraphListVM : GraphListVM {
             pageIndex < (pagesCount - 1) {
             let nextPageIndex = pageIndex + 1
 
-            if cachedPage(at: nextPageIndex).count == 0,
-                !self.pageRunning.has(index: nextPageIndex) {
+            if cachedPage(at: nextPageIndex).count == 0 &&
+                !self.pageRunning.has(index: nextPageIndex) &&
+                !self.loadingPages.contains(nextPageIndex) {
+                self.loadingPages.insert(nextPageIndex)
+                
                 load(page: nextPageIndex)
                     .subscribeOn(MainScheduler.instance)
-                    .subscribe(onSuccess: { [unowned self] (_) in
-                        self.pages[response.page] = response.entries
-                        self.pageDidUpdate.onNext(nextPageIndex)
+                    .subscribe(onSuccess: { [unowned self] (newResponse) in
+                        self.pages[newResponse.page] = newResponse.entries
+                        self.pageDidUpdate.onNext(newResponse.page)
+                        self.loadingPages.remove(newResponse.page)
                     }).disposed(by: disposeBag)
             }
         }

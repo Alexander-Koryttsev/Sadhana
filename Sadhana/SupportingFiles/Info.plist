@@ -17,7 +17,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>2</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -29,13 +29,13 @@
 				<dict/>
 				<key>KitName</key>
 				<string>Crashlytics</string>
-            </dict>
-            <dict>
-                <key>KitInfo</key>
-                <dict/>
-                <key>KitName</key>
-                <string>Answers</string>
-            </dict>
+			</dict>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Answers</string>
+			</dict>
 		</array>
 	</dict>
 	<key>LSApplicationCategoryType</key>
@@ -46,6 +46,16 @@
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>vaishnavaseva.net</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
 	</dict>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>

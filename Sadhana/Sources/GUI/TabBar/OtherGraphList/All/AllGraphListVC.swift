@@ -10,6 +10,7 @@ import UIKit
 import RxCocoa
 import RxSwift
 import EasyPeasy
+import Crashlytics
 
 class AllGraphListVC: GraphListVC<AllGraphListVM> {
 
@@ -47,7 +48,6 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -63,7 +63,10 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
             searchField.backgroundColor = .sdPaleGrey
             firstRun = false
         }
-
+        
+        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { (_) in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
+        
+        Answers.logContentView(withName: "All Graph List", contentType: nil, contentId: nil, customAttributes: nil)
     }
 
     override func bindViewModel() {
@@ -83,14 +86,9 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
         }).disposed(by: disposeBag)
 
         viewModel.pageDidUpdate.asDriver(onErrorJustReturn: 0).drive(onNext: { [unowned self] (section) in
-            let visibleSections = self.tableView.indexPathsForVisibleRows?.map { $0.section }
-
-            if let sections = visibleSections,
-                sections.contains(section) {
-                self.tableView.beginUpdates()
-                self.tableView.reloadSections(IndexSet(integer:section), with: .fade)
-                self.tableView.endUpdates()
-            }
+            self.tableView.beginUpdates()
+            self.tableView.reloadSections(IndexSet(integer:section), with: .none)
+            self.tableView.endUpdates()
         }).disposed(by: disposeBag)
 
         tableView.rx.itemSelected.asDriver().drive(viewModel.select).disposed(by: disposeBag)
@@ -109,7 +107,7 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for:indexPath) as! GraphCell
         if let entry = viewModel.entry(at: indexPath) {
-            cell.map(entry: entry, name: entry.userName, avatarURL: URL(string: "http://vaishnava.wpengine.netdna-cdn.com/wp-content/uploads/2014/01/cropped-jagannath.jpg")!)
+            cell.map(entry: entry, name: entry.userName, avatarURL:entry.avatarURL)
         }
         else {
             cell.clear()

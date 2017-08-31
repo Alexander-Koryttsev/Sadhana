@@ -9,7 +9,7 @@
 import RxCocoa
 import RxSwift
 
-class BaseVM: ViewModel {
+class BaseVM {
     private let errorMessages = PublishSubject<String>()
     var errorMessagesUI: Driver<String> { get { return errorMessages.asDriver(onErrorJustReturn: "") } }
     let errors = PublishSubject<Error>()
@@ -21,6 +21,7 @@ class BaseVM: ViewModel {
     }
     let alerts = PublishSubject<Alert>()
     let disposeBag = DisposeBag()
+    var disappearBag = DisposeBag()
 
     init() {
         errors.subscribeOn(MainScheduler.instance)
@@ -43,11 +44,6 @@ class BaseVM: ViewModel {
             break
         }
     }
-}
-
-protocol ViewModel {
-    var disposeBag : DisposeBag { get }
-    var alerts : PublishSubject<Alert> { get }
 }
 
 extension ObservableType {

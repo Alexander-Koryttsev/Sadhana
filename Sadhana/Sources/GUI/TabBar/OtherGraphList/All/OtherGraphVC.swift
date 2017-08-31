@@ -16,6 +16,7 @@ class OtherGraphVC : GraphVC<OtherGraphVM> {
     override func viewDidLoad() {
         refreshControl = UIRefreshControl()
         super.viewDidLoad()
+        tableView.allowsSelection = false
         viewModel.refresh.onNext()
     }
 
@@ -42,6 +43,8 @@ class OtherGraphVC : GraphVC<OtherGraphVM> {
                 self.tableView.endUpdates()
             }
         }).disposed(by: disposeBag)
+        
+        title = viewModel.userName
     }
 
 }

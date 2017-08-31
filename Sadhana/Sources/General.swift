@@ -10,10 +10,10 @@ import UIKit
 
 struct Config {
     #if DEV
-        static let baseHostPrefix = "dev."
+        static let host = "dev.vaishnavaseva.net"
         static let disableServerCertficate = true
     #else
-        static let baseHostPrefix = ""
+        static let host = "vaishnavaseva.net"
         static let disableServerCertficate = false
     #endif
 
@@ -42,6 +42,24 @@ struct Local {
 
 struct Remote {
     static let service = RemoteService.shared
+    
+    enum URL : String {
+        static let prefix = "https://\(Config.host)/"
+        
+        case api = "vs-api/v2/sadhana"
+        case authToken = "?oauth=token"
+        case defaultAvatar = "wp-content/themes/socialize-child/img/default_avatar.png"
+        
+        var fullString : String {
+            get {
+                return "\(URL.prefix)\(rawValue)"
+            }
+        }
+        
+        var urlValue : Foundation.URL {
+            return Foundation.URL(string:fullString)!
+        }
+    }
 }
 
 struct Main {

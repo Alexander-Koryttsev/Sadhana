@@ -11,7 +11,7 @@ import CoreData
 import RxSwift
 import Foundation
 
-class BaseVC<VM:ViewModel>: UIViewController, ViewController {
+class BaseVC<VM:BaseVM>: UIViewController, ViewController {
     let viewModel:VM
     
     init(_ viewModel:VM) {
@@ -32,12 +32,17 @@ class BaseVC<VM:ViewModel>: UIViewController, ViewController {
         bindViewModel()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        baseViewDidDisappear()
+    }
+    
     func bindViewModel() -> Void {
         baseBindViewModel()
     }
 }
 
-class BaseTableVC<VM:ViewModel>: UITableViewController, ViewController {
+class BaseTableVC<VM:BaseVM>: UITableViewController, ViewController {
     let viewModel:VM
     
     init(_ viewModel:VM, style:UITableViewStyle = .plain) {
@@ -57,6 +62,11 @@ class BaseTableVC<VM:ViewModel>: UITableViewController, ViewController {
         super.viewDidLoad()
         bindViewModel()
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        baseViewDidDisappear()
+    }
 
     func reloadData() {
         self.tableView.reloadData()
@@ -67,7 +77,7 @@ class BaseTableVC<VM:ViewModel>: UITableViewController, ViewController {
     }
 }
 
-class BaseTabBarVC<VM:ViewModel>: UITabBarController, ViewController {
+class BaseTabBarVC<VM:BaseVM>: UITabBarController, ViewController {
     let viewModel:VM
 
     init(_ viewModel:VM) {
@@ -87,13 +97,18 @@ class BaseTabBarVC<VM:ViewModel>: UITabBarController, ViewController {
         super.viewDidLoad()
         bindViewModel()
     }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        baseViewDidDisappear()
+    }
 
     func bindViewModel() -> Void {
         baseBindViewModel()
     }
 }
 
-class BaseFetchedResultsVC<VM:ViewModel>: BaseTableVC<VM>, NSFetchedResultsControllerDelegate {
+class BaseFetchedResultsVC<VM:BaseVM>: BaseTableVC<VM>, NSFetchedResultsControllerDelegate {
 
     var updatedSections = IndexSet()
     var insertedSections = IndexSet()
@@ -157,14 +172,14 @@ class BaseFetchedResultsVC<VM:ViewModel>: BaseTableVC<VM>, NSFetchedResultsContr
 }
 
 protocol ViewController {
-    associatedtype VM:ViewModel
+    associatedtype VM:BaseVM
     var viewModel:VM { get }
 }
 
 extension ViewController where Self : UIViewController {
     var disposeBag:DisposeBag {
         get {
-            return self.viewModel.disposeBag
+            return viewModel.disposeBag
         }
     }
 
@@ -178,6 +193,10 @@ extension ViewController where Self : UIViewController {
             self?.present(alert.uiAlertController, animated: true)
             RootRouter.shared?.setPlusButton(hidden:true, animated:true)
         }).disposed(by: disposeBag)
+    }
+    
+    fileprivate final func baseViewDidDisappear() {
+        viewModel.disappearBag = DisposeBag()
     }
 }
 

@@ -9,6 +9,8 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import Crashlytics
+import EasyPeasy
 
 class FavoriteGraphListVC : GraphListVC<FavoriteGraphListVM> {
     override var title:String? {
@@ -16,5 +18,25 @@ class FavoriteGraphListVC : GraphListVC<FavoriteGraphListVM> {
             return "favorites".localized
         }
         set {}
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        Answers.logContentView(withName: "Favorite Graph List", contentType: nil, contentId: nil, customAttributes: nil)
+        
+        let label = UILabel()
+        label.text = "Избранные графики садханы не проявлены. Давайте вместе молиться Кришне чтобы они проявились. 🙏"
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        
+        let container = UIView()
+        container.backgroundColor = .white
+        container.addSubview(label)
+        
+        label <- Edges(10)
+        
+        tableView.superview!.addSubview(container)
+        container <- Edges()
     }
 }

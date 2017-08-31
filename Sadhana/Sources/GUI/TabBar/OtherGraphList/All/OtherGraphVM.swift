@@ -15,13 +15,16 @@ class OtherGraphVM : GraphVM {
     let pageRunning = IndexedActivityIndicator()
     let pageDidUpdate = PublishSubject<Int>()
     let dataDidReload = PublishSubject<Void>()
+    let userName : String
 
     let userID : Int32
 
-    init(_ userID : Int32) {
+    init(_ userID : Int32, name: String) {
         self.userID = userID
         firstPageRunning = pageRunning.asDriver(for:0)
+        userName = name
         super.init()
+        
 
         //TODO: refactor using load() method
         refresh.subscribe(onNext: { [unowned self] () in

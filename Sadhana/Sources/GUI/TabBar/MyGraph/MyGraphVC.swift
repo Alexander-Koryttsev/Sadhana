@@ -14,6 +14,7 @@ import EasyPeasy
 import Crashlytics
 
 class MyGraphVC: GraphVC<MyGraphVM> {
+    
     override var title:String? {
         get { return "myGraph".localized }
         set {}
@@ -35,9 +36,11 @@ class MyGraphVC: GraphVC<MyGraphVM> {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { (_) in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
+        
         Answers.logContentView(withName: "My Graph", contentType: nil, contentId: nil, customAttributes: nil)
     }
-
+    
     override func reloadData() {
         viewModel.reloadData()
         super.reloadData()
