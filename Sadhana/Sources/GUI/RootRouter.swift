@@ -10,6 +10,7 @@ import UIKit
 import RxSwift
 import DynamicButton
 import EasyPeasy
+import Crashlytics
 
 class RootRouter : WindowRouter {
 
@@ -37,9 +38,9 @@ class RootRouter : WindowRouter {
         self.showTabBarVC()
     }
 
-    func logOut(errorMessage: String? = nil) {
+    func logOut(error: Error? = nil) {
         //TODO: show progress
-        self.showLoginVC(errorMessage: errorMessage)
+        self.showLoginVC(error: error)
 
         Local.defaults.reset()
         Local.service.dropDatabase {}
@@ -58,12 +59,12 @@ class RootRouter : WindowRouter {
         }
     }
     
-    private func showLoginVC(errorMessage: String? = nil) -> Void {
+    private func showLoginVC(error: Error? = nil) -> Void {
         mainTabBarRouter.reset()
         let vm = LoginVM()
         setRootViewController(LoginVC(vm))
-        if let errorMessage = errorMessage {
-            vm.handle(error: NSError(domain: "", code: 0, userInfo: [NSLocalizedDescriptionKey: errorMessage]))
+        if let error = error {
+            vm.errors.onNext(error)
         }
     }
 

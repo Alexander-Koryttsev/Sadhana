@@ -38,7 +38,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
 
     override func viewDidLoad() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "today".localized, style: .plain, target: nil, action: nil) //BIND
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "today".localized, style: .plain, target: nil, action: nil)
         view.backgroundColor = .white
         super.viewDidLoad()
         automaticallyAdjustsScrollViewInsets = false
@@ -55,17 +55,17 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
     override func bindViewModel() {
         super.bindViewModel()
         navigationItem.leftBarButtonItem?.rx.tap.asDriver().drive(viewModel.cancel).disposed(by: disposeBag)
-        navigationItem.rightBarButtonItem?.rx.tap.asDriver().drive(onNext:{ [weak self] () in
-            if self == nil { return }
+        navigationItem.rightBarButtonItem?.rx.tap.asDriver().drive(onNext:{ [unowned self] () in
             let date = Date().trimmedTime
             switch date {
-            case let date where date >= self!.weekVC.firstDate && date <= self!.weekVC.lastDate:
-                self!.weekVC.selectedDate.value = date
+            case let date where date >= self.weekVC.firstDate && date <= self.weekVC.lastDate:
+                self.weekVC.selectedDate.value = date
                 break
             default:
-                self!.updateWeekVC(for:date)
+                self.updateWeekVC(for:date)
                 break
             }
+            Answers.logCustomEvent(withName: "Today", customAttributes: nil)
         }).disposed(by: disposeBag)
     }
 

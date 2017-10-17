@@ -53,9 +53,7 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
             })
             .drive(viewModel.refresh).disposed(by: disposeBag)
 
-        viewModel.errorMessagesUI.asObservable()
-            .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { [weak self] (message) in
+        viewModel.errorMessages.drive(onNext: { [weak self] (message) in
                 self?.errorLabel.text = message
                 //TODO: fix layout bug
                 //TODO: move to the extension

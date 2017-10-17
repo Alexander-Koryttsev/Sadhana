@@ -11,6 +11,7 @@ import EasyPeasy
 import AudioToolbox
 import RxCocoa
 import RxSwift
+import Crashlytics
 
 class KeyboardManager {
     static let shared = KeyboardManager()
@@ -32,10 +33,12 @@ class KeyboardManager {
 
         _ = backButton.rx.tap.asDriver().drive(onNext:{
             AudioServicesPlaySystemSound(1155)
+            Answers.logCustomEvent(withName: "Keyboard Back", customAttributes: nil)
         })
 
         _ = nextButton.rx.tap.asDriver().drive(onNext:{
             AudioServicesPlaySystemSound(1123)
+            Answers.logCustomEvent(withName: "Keyboard Next", customAttributes: nil)
         })
 
         NotificationCenter.default.addObserver(self, selector: #selector(KeyboardManager.keyboardDidShow(_:)), name: .UIKeyboardDidShow, object: nil)

@@ -11,10 +11,8 @@ import UIKit
 struct Config {
     #if DEV
         static let host = "dev.vaishnavaseva.net"
-        static let disableServerCertficate = true
     #else
         static let host = "vaishnavaseva.net"
-        static let disableServerCertficate = false
     #endif
 
     #if DEBUG
@@ -36,12 +34,12 @@ enum GeneralError : Error {
 }
 
 struct Local {
-    static let service = LocalService.shared
-    static let defaults = LocalDefaults.shared
+    static let service = LocalService{}
+    static let defaults = LocalDefaults()
 }
 
 struct Remote {
-    static let service = RemoteService.shared
+    static let service = RemoteService()
     
     enum URL : String {
         static let prefix = "https://\(Config.host)/"
@@ -59,6 +57,10 @@ struct Remote {
         var urlValue : Foundation.URL {
             return Foundation.URL(string:fullString)!
         }
+        
+        var path : String {
+            return rawValue
+        }
     }
 }
 
@@ -73,6 +75,9 @@ class Common {
         get {
             if dates.count == 0 || dates.first!.first! < Date().trimmedTime {
                 dates.removeAll()
+                let info = ProcessInfo.processInfo
+                let begin = info.systemUptime
+                // do something
                 var month = [Date]()
                 var calendar = Calendar.current
                 calendar.timeZone = TimeZone.create()
@@ -89,6 +94,8 @@ class Common {
                     
                     stop = dates.count == 24
                 });
+                let diff = (info.systemUptime - begin)
+                log("diff is \(diff)")
             }
             return dates
         }
@@ -135,7 +142,7 @@ func desc(_ object:Any?) -> String {
     return string
 }
 
-func screenWidthSecific<T>(w320:T, w375:T?, w414:T?) -> T {
+func screenWidthSpecific<T>(w320:T, w375:T?, w414:T?) -> T {
     switch UIScreen.main.bounds.size.width {
         case 320: return w320
         case 375: return w375 ?? w320
@@ -153,7 +160,7 @@ func log(_ items: Any..., separator: String = " ", terminator: String = "\n") {
 }
 
 func remoteLog(_ items: Any..., separator: String = " ", terminator: String = "\n") {
-    #if REMOTE_LOG && LOG
+    #if REMOTE_LOG
         let stringItem = items.map {"\($0)"} .joined(separator: separator)
         print(stringItem, terminator: terminator)
     #endif

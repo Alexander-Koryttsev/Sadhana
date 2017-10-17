@@ -36,7 +36,7 @@ class MyGraphVC: GraphVC<MyGraphVM> {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { (_) in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
+        //NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { (_) in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
         
         Answers.logContentView(withName: "My Graph", contentType: nil, contentId: nil, customAttributes: nil)
     }
@@ -49,7 +49,6 @@ class MyGraphVC: GraphVC<MyGraphVM> {
     override func bindViewModel() {
         super.bindViewModel()
         
-
         viewModel.running.asDriver().do(onNext:({[weak self] (running) in
             if !running {
                 self?.tableView.reloadData()

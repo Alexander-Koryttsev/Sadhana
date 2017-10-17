@@ -14,8 +14,6 @@ enum LocalError : Error {
 }
 
 class LocalService: NSObject {
-    
-    static let shared = LocalService {}
     var viewContext : NSManagedObjectContext {
         get {
             return persistentContainer.viewContext;

@@ -61,8 +61,8 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         let sevaLogo = UIImageView(screenSized:"v-seva-logo")
         view.addSubview(sevaLogo)
         sevaLogo <- [
-            Right(screenWidthSecific(w320: 12, w375: 14, w414: 21)),
-            Bottom(screenWidthSecific(w320: 12, w375: 14, w414: 21))
+            Right(screenWidthSpecific(w320: 12, w375: 14, w414: 21)),
+            Bottom(screenWidthSpecific(w320: 12, w375: 14, w414: 21))
         ]
 
         view.addSubview(darkBackground)
@@ -279,8 +279,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
             return flag ? 1.0 : 0.0
         }).drive(loginButton.titleLabel!.rx.alpha).disposed(by: disposeBag)
 
-        viewModel.errorMessagesUI
-            .drive(errorLabel.rx.text).disposed(by: disposeBag)
+        viewModel.errorMessages.drive(errorLabel.rx.text).disposed(by: disposeBag)
 
         viewModel.errors.asObservable()
             .observeOn(MainScheduler.instance)

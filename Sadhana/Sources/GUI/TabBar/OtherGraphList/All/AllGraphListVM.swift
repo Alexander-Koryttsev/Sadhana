@@ -9,6 +9,7 @@
 import Foundation
 import RxCocoa
 import RxSwift
+import Crashlytics
 
 class AllGraphListVM : GraphListVM {
     let firstPageRunning : Driver<Bool>
@@ -35,8 +36,12 @@ class AllGraphListVM : GraphListVM {
         firstPageRunning = pageRunning.asDriver(for:0)
         refreshDriver = refresh.asDriver(onErrorJustReturn: ())
         super.init()
+        
+        let searchDriver = search.asDriver().debounce(0.5).skip(1).do(onNext: {(string) in
+            Answers.logSearch(withQuery: string, customAttributes: nil)
+        })
 
-        let combined = Driver.combineLatest(refreshDriver, search.asDriver().debounce(0.5).skip(1)) { _,_ in }
+        let combined = Driver.combineLatest(refreshDriver, searchDriver) { _,_ in }
         combined.drive(onNext: { [unowned self] in
             self.load(page: 0)
                 .subscribe(onSuccess: { [unowned self] (response) in

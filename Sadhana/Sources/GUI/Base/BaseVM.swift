@@ -10,39 +10,33 @@ import RxCocoa
 import RxSwift
 
 class BaseVM {
-    private let errorMessages = PublishSubject<String>()
-    var errorMessagesUI: Driver<String> { get { return errorMessages.asDriver(onErrorJustReturn: "") } }
+    let errorMessages : Driver<String>
     let errors = PublishSubject<Error>()
     let messages = PublishSubject<String>()
-    var messagesUI : Driver<String> {
-        get {
-            return messages.asDriver(onErrorJustReturn: "")
-        }
-    }
+    var messagesUI : Driver<String>
     let alerts = PublishSubject<Alert>()
     let disposeBag = DisposeBag()
     var disappearBag = DisposeBag()
 
     init() {
-        errors.subscribeOn(MainScheduler.instance)
-            .subscribe(onNext:{[weak self] (error) in
-                self?.handle(error:error)
-            })
-            .disposed(by: disposeBag)
-    }
-
-    func handle(error:Error) {
-        switch error {
-            case RemoteError.notLoggedIn:
-                RootRouter.shared?.logOut(errorMessage:"Your session is expired")
-                break
-            case RemoteError.invalidRequest(_, let description):
-                self.errorMessages.onNext(description)
-                break
-            default:
-                self.errorMessages.onNext(error.localizedDescription)
-            break
-        }
+        messagesUI = messages.asDriver(onErrorJustReturn: "")
+        
+        errorMessages = errors.asDriver(onErrorJustReturn: GeneralError.error)
+            .map({ (error) -> String in
+                switch error {
+                case RemoteError.notLoggedIn:
+                    //TODO: localize
+                    let message = "Your session is expired"
+                    RootRouter.shared?.logOut(error:error)
+                    return message
+                case RemoteError.invalidRequest(_, let description):
+                    return description
+                default:
+                    return error.localizedDescription
+                }
+            }).asSharedSequence()
+        
+        errorMessages.drive().disposed(by: disposeBag)
     }
 }
 

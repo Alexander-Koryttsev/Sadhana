@@ -17,6 +17,7 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
     let searchBar = UISearchBar()
     let searchBarHeight : CGFloat = 46.0
     var firstRun = true
+    var observer : NSObjectProtocol?
 
     override var title:String? {
         get {
@@ -63,10 +64,19 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
             searchField.backgroundColor = .sdPaleGrey
             firstRun = false
         }
-        
-        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { (_) in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
+       // observer = NotificationCenter.default.addObserver(forName: .UIApplicationWillEnterForeground, object: nil, queue: nil) { [weak self] (_) in
+        //    self?.viewModel.refresh.onNext()
+        //}
+        //NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { (_) in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
         
         Answers.logContentView(withName: "All Graph List", contentType: nil, contentId: nil, customAttributes: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+       // NotificationCenter.default.removeObserver(observer!)
+       // observer = nil
     }
 
     override func bindViewModel() {
@@ -106,12 +116,12 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for:indexPath) as! GraphCell
-        if let entry = viewModel.entry(at: indexPath) {
-            cell.map(entry: entry, name: entry.userName, avatarURL:entry.avatarURL)
-        }
-        else {
-            cell.clear()
-        }
+       // if let entry = viewModel.entry(at: indexPath) {
+            //cell.map(entry: entry, name: entry.userName, avatarURL:entry.avatarURL)
+    //    }
+     //   else {
+           // cell.clear()
+      //  }
 
         return cell
     }

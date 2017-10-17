@@ -9,8 +9,6 @@
 import Foundation
 
 class LocalDefaults {
-    static let shared = LocalDefaults()
-
     enum Key : String {
         case prefix = "LocalDefaults"
         case tokens

@@ -39,8 +39,7 @@ enum InvalidRequestType : String {
     case unknown
 }
 
-class RemoteService {   
-    static let shared = RemoteService()
+class RemoteService {
     private let clientID = "IXndKqmEoXPTwu46f7nmTcoJ2CfIS6"
     private let clientSecret = "1A4oOPOatd8j6EOaL3i9pblOUnqa6j"
     
@@ -110,7 +109,7 @@ class RemoteService {
     
     func refreshTokens() -> Completable {
         guard let tokenRefresh = tokens.refresh  else { return Completable.error(RemoteError.noRefreshToken) }
-        return baseRequest(.post, Remote.URL.authToken.rawValue, parameters:
+        return baseRequest(.post, Remote.URL.authToken.path, parameters:
             ["grant_type" : GrantType.refreshToken.rawValue,
              "refresh_token" : tokenRefresh,
              "client_id" : clientID,
@@ -121,7 +120,7 @@ class RemoteService {
 
     func login(name:String, password:String) -> Completable {
 
-        return baseRequest(.post, Remote.URL.authToken.rawValue, parameters:
+        return baseRequest(.post, Remote.URL.authToken.path, parameters:
             ["grant_type" : GrantType.password.rawValue,
              "client_id" : clientID,
              "client_secret" : clientSecret,
@@ -210,7 +209,7 @@ class RemoteService {
                     _ path: String,
                     parameters: [String: Any]? = nil) -> Single<JSON> {
 
-            let request = baseRequest(method, "\(Remote.URL.api.rawValue)/\(path)", parameters: parameters, authorise: true)
+            let request = baseRequest(method, "\(Remote.URL.api.path)/\(path)", parameters: parameters, authorise: true)
             
             return request.catchError { (handler: Error) -> Single<JSON> in
                 let returningError = Single<JSON>.error(handler)

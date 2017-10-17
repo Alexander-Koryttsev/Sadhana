@@ -31,6 +31,8 @@ class MainService {
             .do(onNext:{ (user) in
                 Local.defaults.userID = user.ID
                 Answers.logLogin(withMethod: nil, success: true, customAttributes: ["Name": user.name, "ID": user.ID])
+            }, onError:{ (error) in
+                Answers.logLogin(withMethod: nil, success: false, customAttributes: ["Error": error.localizedDescription])
             })
     }
 }

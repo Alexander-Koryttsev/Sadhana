@@ -37,12 +37,11 @@ class LoginVM : BaseVM {
 
         tap.withLatestFrom(canSignIn)
             .filter({ (flag) -> Bool in return flag })
-            .flatMap { [weak self] _ -> Observable<Bool> in
-                if self == nil { return Observable.just(false) }
-                return Main.service.login(self!.login.value, password: self!.password.value)
-                    .flatMap { (user) -> Single<[ManagedEntry]> in
+            .flatMap { [unowned self] _ -> Observable<Bool> in
+                return Main.service.login(self.login.value, password: self.password.value)
+                    .flatMap { [unowned self] (user) -> Single<[ManagedEntry]> in
                         //TODO: localize!
-                        self?.messages.onNext("Харе Кришна, \(user.name)!\nЗагружаем Вашу садхану...")
+                        self.messages.onNext("Харе Кришна, \(user.name)!\nЗагружаем Вашу садхану...")
                         return Main.service.loadMyEntries()
                     }
                     .observeOn(MainScheduler.instance)
@@ -50,8 +49,8 @@ class LoginVM : BaseVM {
                         RootRouter.shared?.commitSignIn()
                         return true
                     })
-                    .track(self!.errors)
-                    .track(self!.running)
+                    .track(self.errors)
+                    .track(self.running)
                     .catchErrorJustReturn(false)
             }
             .subscribe()
