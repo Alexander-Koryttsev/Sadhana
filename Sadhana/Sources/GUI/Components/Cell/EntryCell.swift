@@ -28,14 +28,14 @@ class EntryCell: UITableViewCell {
         ]
 
         contentView.addSubview(dateLabel)
-        dateLabel.font = UIFont.systemFont(ofSize: 16.0, weight: UIFontWeightLight)
+        dateLabel.font = UIFont.systemFont(ofSize: 16.0, weight: UIFont.Weight.light)
         dateLabel <- [
             CenterY(),
             Right(32).to(entryView)
         ]
 
         contentView.addSubview(weekDayLabel)
-        weekDayLabel.font = UIFont.systemFont(ofSize: 10.0, weight: UIFontWeightBold)
+        weekDayLabel.font = UIFont.systemFont(ofSize: 10.0, weight: UIFont.Weight.bold)
         weekDayLabel.textColor = UIColor.sdSilver
         weekDayLabel <- [
             Left(5).to(dateLabel),

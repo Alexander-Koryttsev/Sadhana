@@ -39,7 +39,7 @@ class OtherGraphVM : GraphVM {
                         monthDict[entry.date] = entry
                     })
                     self.entries[Date().trimmedDayAndTime] = monthDict
-                    self.dataDidReload.onNext()
+                    self.dataDidReload.onNext(())
             }).disposed(by: self.disposeBag)
         }).disposed(by: disposeBag)
     }

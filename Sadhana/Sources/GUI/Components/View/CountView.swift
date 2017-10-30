@@ -32,7 +32,7 @@ class CountView: UIView {
         ]
 
         addSubview(titleLabel)
-        titleLabel.font = UIFont.systemFont(ofSize: 13.0, weight: UIFontWeightRegular)
+        titleLabel.font = UIFont.systemFont(ofSize: 13.0, weight: UIFont.Weight.regular)
         titleLabel.textColor = .sdSilver
         titleLabel <- [
             CenterX().to(valueField),

@@ -226,7 +226,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         })
     }
 
-    func keyboardWillChange(notification:NSNotification) {
+    @objc func keyboardWillChange(notification:NSNotification) {
         guard let userInfo = notification.userInfo,
             let keyboarFrame = userInfo[UIKeyboardFrameEndUserInfoKey] as? CGRect else { return }
         let shown = keyboarFrame.origin.y < UIScreen.main.bounds.size.height
@@ -244,7 +244,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
             return false
         }
         if textField == passwordField {
-            viewModel.tap.onNext()
+            viewModel.tap.onNext(())
         }
         return true
     }

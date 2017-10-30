@@ -76,6 +76,7 @@ class LocalDefaults {
             UserDefaults.standard.removeObject(forKey: key)
         }
         UserDefaults.resetStandardUserDefaults()
+        UserDefaults.standard.synchronize()
     }
 
     private func string(for key:Key) -> String? {

@@ -17,7 +17,7 @@ class OtherGraphVC : GraphVC<OtherGraphVM> {
         refreshControl = UIRefreshControl()
         super.viewDidLoad()
         tableView.allowsSelection = false
-        viewModel.refresh.onNext()
+        viewModel.refresh.onNext(())
     }
 
     override func viewDidAppear(_ animated: Bool) {

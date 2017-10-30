@@ -47,7 +47,7 @@ class AllGraphListVM : GraphListVM {
                 .subscribe(onSuccess: { [unowned self] (response) in
                     self.pages.removeAll()
                     self.pages[response.page] = response.entries
-                    self.dataDidReload.onNext()
+                    self.dataDidReload.onNext(())
             }).disposed(by: self.disposeBag)
         }).disposed(by: disposeBag)
 

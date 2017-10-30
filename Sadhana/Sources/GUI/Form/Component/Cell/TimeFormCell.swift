@@ -12,7 +12,7 @@ import RxCocoa
 import RxSwift
 
 class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
-    private let viewModel: TimeFieldVM
+    private let viewModel: VariableField<Time?>
     private var hoursView: CountView {
         get {
             return countViews.first!
@@ -24,12 +24,12 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
         }
     }
 
-    init(_ viewModel: TimeFieldVM) {
+    init(_ viewModel: VariableField<Time?>) {
         self.viewModel = viewModel
         super.init(fieldsCount:2)
 
         if let value = viewModel.variable.value {
-            if value.rawValue != 0 || viewModel.optional {
+            if value.rawValue > 0 {
                 hoursView.valueField.text = value.hourString
                 minutesView.valueField.text = value.minuteString
             }
@@ -43,25 +43,16 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
         setUp(field: minutesView.valueField)
         minutesView.titleLabel.text = "minutes".localized
 
-        Observable.combineLatest(hoursView.valueField.rx.textRequired.asDriver().asObservable(), minutesView.valueField.rx.textRequired.asDriver().asObservable()).map({ [weak self] (hours, minutes) -> Time? in
-            if self == nil { return nil }
-            if !self!.viewModel.optional {
-                return Time(hour:hours.isEmpty ? "0" : hours, minute:minutes.isEmpty ? "0" : minutes)
-            }
+        Observable.combineLatest(hoursView.valueField.rx.textRequired.asDriver().asObservable(), minutesView.valueField.rx.textRequired.asDriver().asObservable()).map({(hours, minutes) -> Time? in
             return Time(hour:hours, minute:minutes)
         })  .bind(to: viewModel.variable)
-            .disposed(by: viewModel.disposeBag)
+            .disposed(by: disposeBag)
     }
 
     func setUp(field:UITextField) {
         field.delegate = self
         field.placeholder = "00"
     }
-/*
-    override func becomeFirstResponder() -> Bool {
-        let field = (hoursView.valueField.text?.isEmpty ?? true) ? hoursView.valueField : minutesView.valueField
-        return field.becomeFirstResponder()
-    }*/
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let textField = textField as! FormTextField

@@ -44,7 +44,7 @@ class EditingVM: BaseVM {
 
             if self!.hasChanges {
                 let alert = Alert()
-                alert.add(action:"discardChanges".localized, style: .destructive, handler: { [weak self] (action) in
+                alert.add(action:"discardChanges".localized, style: .destructive, handler: { [weak self] () in
                     self?.router.hideSadhanaEditing()
                     Answers.logCustomEvent(withName: "Discard changes", customAttributes: nil)
                 })

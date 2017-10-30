@@ -183,7 +183,7 @@ extension ViewController where Self : UIViewController {
         }
     }
 
-    fileprivate final func baseBindViewModel() {
+    fileprivate func baseBindViewModel() {
         viewModel.alerts.subscribe(onNext: { [weak self] (alert) in
 
             alert.add(completion: { 
@@ -195,7 +195,7 @@ extension ViewController where Self : UIViewController {
         }).disposed(by: disposeBag)
     }
     
-    fileprivate final func baseViewDidDisappear() {
+    fileprivate func baseViewDidDisappear() {
         viewModel.disappearBag = DisposeBag()
     }
 }

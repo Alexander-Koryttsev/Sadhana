@@ -54,6 +54,8 @@
 		96A55B481F12919300FD3700 /* RootRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B471F12919300FD3700 /* RootRouter.swift */; };
 		96A55B4A1F1291D500FD3700 /* MainTabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B491F1291D500FD3700 /* MainTabBarVC.swift */; };
 		96A55B4C1F14AD6200FD3700 /* LocalDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B4B1F14AD6200FD3700 /* LocalDefaults.swift */; };
+		96A874241F865B1E0097E432 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A874231F865B1E0097E432 /* SettingsVC.swift */; };
+		96A874261F865B270097E432 /* SettingsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A874251F865B270097E432 /* SettingsVM.swift */; };
 		96A9217E1F03FC9D0056BC5B /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 96A9217C1F03FC9D0056BC5B /* Model.xcdatamodeld */; };
 		96A921891F03FF360056BC5B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A921881F03FF360056BC5B /* CoreData.framework */; };
 		96A9218C1F03FFF70056BC5B /* ManagedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A9218A1F03FFF70056BC5B /* ManagedUser.swift */; };
@@ -145,6 +147,8 @@
 		96A55B471F12919300FD3700 /* RootRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootRouter.swift; sourceTree = "<group>"; };
 		96A55B491F1291D500FD3700 /* MainTabBarVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarVC.swift; sourceTree = "<group>"; };
 		96A55B4B1F14AD6200FD3700 /* LocalDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDefaults.swift; sourceTree = "<group>"; };
+		96A874231F865B1E0097E432 /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
+		96A874251F865B270097E432 /* SettingsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVM.swift; sourceTree = "<group>"; };
 		96A9217D1F03FC9D0056BC5B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		96A921881F03FF360056BC5B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		96A9218A1F03FFF70056BC5B /* ManagedUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagedUser.swift; sourceTree = "<group>"; };
@@ -227,6 +231,7 @@
 		960A0D4B1F2876C000356152 /* MyGraph */ = {
 			isa = PBXGroup;
 			children = (
+				96A874221F865B110097E432 /* Settings */,
 				960A0D4C1F2876C000356152 /* MyGraphRouter.swift */,
 				960A0D4D1F2876C000356152 /* MyGraphVC.swift */,
 				960A0D4E1F2876C000356152 /* MyGraphVM.swift */,
@@ -491,6 +496,15 @@
 			path = TabBar;
 			sourceTree = "<group>";
 		};
+		96A874221F865B110097E432 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				96A874231F865B1E0097E432 /* SettingsVC.swift */,
+				96A874251F865B270097E432 /* SettingsVM.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		96A9217B1F03FC880056BC5B /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -634,12 +648,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Alexander Koryttsev";
 				TargetAttributes = {
 					96F6004F1EC996AC006DAECE = {
 						CreatedOnToolsVersion = 8.3.2;
 						DevelopmentTeam = 48MD2JEP44;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -762,6 +777,7 @@
 				96B070861F0FDB78004C9249 /* Entry.swift in Sources */,
 				960A0D511F2876C000356152 /* EntryEditingVC.swift in Sources */,
 				96A196C71F4AFBB800AAB635 /* GraphListVC.swift in Sources */,
+				96A874241F865B1E0097E432 /* SettingsVC.swift in Sources */,
 				96B9A5671F25DAAA000673B7 /* ManagedObject.swift in Sources */,
 				96A196CD1F4AFE1B00AAB635 /* OtherGraphListContainerVC.swift in Sources */,
 				960A0D501F2876C000356152 /* EditingVM.swift in Sources */,
@@ -780,6 +796,7 @@
 				96B607DC1F1BB92A002B9AB5 /* UIColor+SDAdditions.swift in Sources */,
 				967D791E1F00F10D00A961D6 /* User.swift in Sources */,
 				96A196BF1F4AFB7C00AAB635 /* AllGraphListVC.swift in Sources */,
+				96A874261F865B270097E432 /* SettingsVM.swift in Sources */,
 				96B607F91F1D01DE002B9AB5 /* EntryView.swift in Sources */,
 				967D79241F00F3CD00A961D6 /* LocalService.swift in Sources */,
 				96B607C41F18E7A1002B9AB5 /* ActivityIndicator.swift in Sources */,
@@ -848,7 +865,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -856,7 +875,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -897,7 +920,8 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Sadhana/SupportingFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = "Dev-Debug";
 		};
@@ -912,7 +936,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -920,7 +946,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -954,7 +984,8 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Sadhana/SupportingFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = "Dev-Release";
 		};
@@ -969,7 +1000,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -977,7 +1010,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1019,7 +1056,9 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -1027,7 +1066,11 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1061,7 +1104,8 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Sadhana/SupportingFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = "Prod-Debug";
 		};
@@ -1076,7 +1120,8 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Sadhana/SupportingFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = "Prod-Release";
 		};

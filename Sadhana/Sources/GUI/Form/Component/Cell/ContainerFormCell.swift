@@ -28,7 +28,7 @@ class CountsLayoutCell: ResponsibleCell {
         separatorInset = UIEdgeInsets()
 
         contentView.addSubview(titleLabel)
-        titleLabel.font = UIFont.systemFont(ofSize: 14.0, weight: UIFontWeightRegular)
+        titleLabel.font = UIFont.systemFont(ofSize: 14.0, weight: UIFont.Weight.regular)
         titleLabel <- [
             CenterX(),
             Top(9),
@@ -122,9 +122,9 @@ class CountsLayoutCell: ResponsibleCell {
 }
 
 class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
-    private let viewModel: FieldsContainerVM
+    private let viewModel: FieldsContainer<Int16>
 
-    init(_ viewModel: FieldsContainerVM) {
+    init(_ viewModel: FieldsContainer<Int16>) {
         self.viewModel = viewModel
         super.init(fieldsCount:viewModel.fields.count)
 
@@ -133,15 +133,13 @@ class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
         for (vm, view) in zip(viewModel.fields, countViews) {
             view.titleLabel.text = vm.key.localized
             view.valueField.delegate = self
-
-            if let value = vm.variable.value as? Int16 {
-                if value > 0 {
-                    view.valueField.text = value.description
-                }
-                view.valueField.rx.textRequired.asDriver().skip(1).map({ (string) -> Int16 in
-                    return Int16(string) ?? 0
-                }).drive(vm.variable).disposed(by: disposeBag)
+            let value = vm.variable.value
+            if value > 0 {
+                view.valueField.text = value.description
             }
+            view.valueField.rx.textRequired.asDriver().skip(1).map({ (string) -> Int16 in
+                return Int16(string) ?? 0
+            }).drive(vm.variable).disposed(by: disposeBag)
         }
     }
 

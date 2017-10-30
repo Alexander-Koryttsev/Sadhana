@@ -13,8 +13,8 @@ import CoreData
 class EntryEditingVM: BaseVM {
 
     let date : Date
-    private var fieldsInternal = [FormFieldVM]()
-    var fields : [FormFieldVM] { get {
+    private var fieldsInternal = [FormField]()
+    var fields : [FormField] { get {
             return fieldsInternal
         }
     }
@@ -40,108 +40,77 @@ class EntryEditingVM: BaseVM {
         add(timeField: .wakeUpTime, optional: true)
 
         let japaFields = [
-            self.field(forKey: .japa7_30),
-            self.field(forKey: .japa10),
-            self.field(forKey: .japa18),
-            self.field(forKey: .japa24),
+            self.field(for: .japa7_30, type:Int16.self),
+            self.field(for: .japa10, type:Int16.self),
+            self.field(for: .japa18, type:Int16.self),
+            self.field(for: .japa24, type:Int16.self),
         ]
-        let japaContainer = FieldsContainerVM(EntryFieldKey.japa.rawValue, japaFields, colors: [.sdSunflowerYellow, .sdTangerine, .sdNeonRed, .sdBrightBlue])
+        let japaContainer = FieldsContainer(EntryFieldKey.japa.rawValue, japaFields, colors: [.sdSunflowerYellow, .sdTangerine, .sdNeonRed, .sdBrightBlue])
         fieldsInternal.append(japaContainer)
 
         add(timeField: .reading, optional: false)
-        add(field: .kirtan)
-        add(field: .service)
-        add(field: .yoga)
-        add(field: .lections)
+        add(field: .kirtan, type:Bool.self)
+        add(field: .service, type:Bool.self)
+        add(field: .yoga, type:Bool.self)
+        add(field: .lections, type:Bool.self)
 
         if self.date != Date().trimmedTime {
             add(timeField: .bedTime, optional: true)
         }
     }
 
-    private func field(forKey: EntryFieldKey) -> ManagedFieldVM {
-        return ManagedFieldVM(forKey.rawValue, entry:entry)
-    }
-
-    private func timeField(forKey: EntryFieldKey, optional: Bool) -> TimeFieldVM {
-        return TimeFieldVM(forKey, entry:entry, optional: optional)
-    }
-
-    private func add(field: EntryFieldKey) {
+    private func add<T>(field: EntryFieldKey, type:T.Type) {
         if Local.defaults.isFieldEnabled(field) {
-            fieldsInternal.append(self.field(forKey:field))
+            fieldsInternal.append(self.field(for:field, type: T.self))
         }
     }
 
-    private func add(timeField: EntryFieldKey, optional: Bool) {
+    private func add(timeField: EntryFieldKey, optional:Bool) {
         if Local.defaults.isFieldEnabled(timeField) {
-            fieldsInternal.append(self.timeField(forKey:timeField, optional: optional))
+
+            let variable = Variable(entry.timeOptionalValue(forKey: timeField))
+            variable.asDriver().skip(2).drive(onNext: { [unowned entry] (next) in
+                if entry.managedObjectContext == nil { return }
+                entry.set(time: next ?? (optional ? nil : Time(rawValue: "0")), forKey: timeField)
+                entry.dateUpdated = Date()
+            }).disposed(by: disposeBag)
+
+            fieldsInternal.append(VariableField<Time?>(variable, for: timeField.rawValue))
         }
+    }
+
+    private func field<T>(for key: EntryFieldKey, type:T.Type) -> VariableField<T> {
+        let variable = Variable(entry.value(forKey: key.rawValue) as! T)
+        variable.asDriver().skip(1).drive(onNext: { [unowned entry] (next) in
+            entry.setValue(next is NSNull ? nil : next, forKey: key.rawValue)
+            entry.dateUpdated = Date()
+        }).disposed(by: disposeBag)
+
+        return VariableField<T>(variable, for: key.rawValue)
     }
 }
 
-protocol FormFieldVM {
+protocol FormField {
     var key : String { get }
 }
 
-protocol VariableFieldVM : FormFieldVM {
-    var variable : Variable<Any?> { get }
-}
-
-class ManagedFieldVM : VariableFieldVM {
+class VariableField<T> : FormField {
     let key : String
-    let variable : Variable<Any?>
-    private let entry : ManagedUpdatable
-    let disposeBag = DisposeBag()
-    init(_ key: String, entry: ManagedUpdatable) {
+    let variable : Variable<T>
+    init(_ variable : Variable<T>, for key : String) {
+        self.variable = variable
         self.key = key
-        variable = Variable(entry.value(forKey: key))
-        self.entry = entry
-        variable.asDriver().skip(1).drive(onNext: { (next) in
-            entry.setValue(next is NSNull ? nil : next, forKey: key)
-            entry.dateUpdated = Date()
-        }).disposed(by: disposeBag)
     }
 }
 
-class FieldsContainerVM : FormFieldVM {
+class FieldsContainer<T> : FormField {
     let key: String
-    let fields: [ManagedFieldVM]
+    let fields: [VariableField<T>]
     let colors: [UIColor]?
-    init(_ key: String, _ fields: [ManagedFieldVM], colors: [UIColor]? = nil) {
+    init(_ key: String, _ fields: [VariableField<T>], colors: [UIColor]? = nil) {
         self.key = key
         self.fields = fields
         self.colors = colors
     }
 }
-
-class TimeFieldVM: FormFieldVM {
-    let key : String
-    let variable : Variable<Time?>
-    private let entry : ManagedUpdatable
-    let disposeBag = DisposeBag()
-    let optional : Bool
-    init(_ key: FieldKey, entry: ManagedUpdatable, optional: Bool) {
-        self.key = key.rawValue
-        self.optional = optional
-        variable = Variable(entry.timeOptionalValue(forKey: key))
-        self.entry = entry
-        variable.asDriver().skip(2).drive(onNext: { (next) in
-            if entry.managedObjectContext == nil { return }
-            entry.set(time:(next ?? (optional ? nil : Time(rawValue: 0))), forKey: key)
-            entry.dateUpdated = Date()
-        }).disposed(by: disposeBag)
-    }
-}
-
-/*
- add(field: .wakeUpTime  , value: entry.wakeUpTime)
- add(field: .japa        , value: entry.japaCount7_30, entry.japaCount10, entry.japaCount18, entry.japaCount24))
- add(field: .reading     , value: entry.reading)
- add(field: .kirtan      , value: entry.kirtan)
- add(field: .service     , value: entry.service)
- add(field: .yoga        , value: entry.exercise)
- add(field: .lections    , value: entry.lections)
- add(field: .bedTime     , value: entry.bedTime)
- */
 

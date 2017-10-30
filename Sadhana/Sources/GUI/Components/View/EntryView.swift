@@ -35,7 +35,7 @@ class EntryView : UIView {
         ]
 
         addSubview(readingLabel)
-        readingLabel.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightRegular)
+        readingLabel.font = UIFont.systemFont(ofSize: 12.0, weight: UIFont.Weight.regular)
         readingLabel <- [
             CenterY(),
             Left(4).to(readingImageView)
@@ -49,7 +49,7 @@ class EntryView : UIView {
         ]
 
         self.addSubview(japaCountLabel)
-        japaCountLabel.font = UIFont.systemFont(ofSize: 12.0, weight: UIFontWeightRegular)
+        japaCountLabel.font = UIFont.systemFont(ofSize: 12.0, weight: UIFont.Weight.regular)
         japaCountLabel <- [
             CenterY(),
             Left(5).to(japaView)

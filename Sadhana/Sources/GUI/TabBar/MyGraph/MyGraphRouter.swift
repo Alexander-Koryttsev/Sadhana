@@ -22,4 +22,8 @@ class MyGraphRouter : EditingRouter {
     func hideSadhanaEditing() {
         self.parent?.hideSadhanaEditing()
     }
+
+    func showSettings() {
+
+    }
 }

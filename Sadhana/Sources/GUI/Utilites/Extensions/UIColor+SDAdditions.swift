@@ -73,27 +73,27 @@ extension UIColor {
 
 extension UIFont {
     class func sdTextStyle1Font() -> UIFont {
-        return UIFont.systemFont(ofSize: 33.0, weight: UIFontWeightLight)
+        return UIFont.systemFont(ofSize: 33.0, weight: UIFont.Weight.light)
     }
 
     class var sdTextStyle1_1Font: UIFont {
-        return UIFont.systemFont(ofSize: 25.0, weight: UIFontWeightRegular)
+        return UIFont.systemFont(ofSize: 25.0, weight: UIFont.Weight.regular)
     }
 
     class func sdTextStyle2Font() -> UIFont {
-        return UIFont.systemFont(ofSize: 20.0, weight: UIFontWeightMedium)
+        return UIFont.systemFont(ofSize: 20.0, weight: UIFont.Weight.medium)
     }
 
     class func sdTextStyle3Font() -> UIFont {
-        return UIFont.systemFont(ofSize: 17.0, weight: UIFontWeightRegular)
+        return UIFont.systemFont(ofSize: 17.0, weight: UIFont.Weight.regular)
     }
 
     class var sdTextStyle4Font: UIFont {
-        return UIFont.systemFont(ofSize: 14.0, weight: UIFontWeightRegular)
+        return UIFont.systemFont(ofSize: 14.0, weight: UIFont.Weight.regular)
     }
 
     class var sdTextStyle5Font: UIFont {
-        return UIFont.systemFont(ofSize: 10.0, weight: UIFontWeightRegular)
+        return UIFont.systemFont(ofSize: 10.0, weight: UIFont.Weight.regular)
     }
 
 

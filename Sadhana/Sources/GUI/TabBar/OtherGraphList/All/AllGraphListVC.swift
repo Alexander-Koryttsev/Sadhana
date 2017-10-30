@@ -44,7 +44,7 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
             Top(2)
         ]
         tableView.tableHeaderView = searchContainer
-        viewModel.refresh.onNext()
+        viewModel.refresh.onNext(())
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -116,12 +116,12 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for:indexPath) as! GraphCell
-       // if let entry = viewModel.entry(at: indexPath) {
-            //cell.map(entry: entry, name: entry.userName, avatarURL:entry.avatarURL)
-    //    }
-     //   else {
-           // cell.clear()
-      //  }
+        if let entry = viewModel.entry(at: indexPath) {
+            cell.map(entry: entry, name: entry.userName, avatarURL:entry.avatarURL)
+        }
+        else {
+            cell.clear()
+        }
 
         return cell
     }

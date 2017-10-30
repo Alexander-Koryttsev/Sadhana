@@ -34,7 +34,7 @@ class GraphCell : UITableViewCell {
             Left(10).to(avatarImageView),
             Right(10)
         ]
-        nameLabel.setContentCompressionResistancePriority(UILayoutPriorityRequired, for: .vertical)
+        nameLabel.setContentCompressionResistancePriority(UILayoutPriority.required, for: .vertical)
 
         contentView.addSubview(entryView)
         entryView <- [

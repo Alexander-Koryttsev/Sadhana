@@ -12,7 +12,6 @@ import RxCocoa
 import EasyPeasy
 
 class FormCell : UITableViewCell {
-
     func height() -> CGFloat {
         return 44
     }

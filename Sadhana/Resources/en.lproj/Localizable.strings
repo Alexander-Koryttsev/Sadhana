@@ -37,3 +37,8 @@ service = "Service";
 yoga = "Yoga";
 lections = "Lections";
 bedTime = "Bed time";
+
+//Other Graph
+otherGraph = "Other Graphs";
+all = "All";
+favorites = "Favorites";

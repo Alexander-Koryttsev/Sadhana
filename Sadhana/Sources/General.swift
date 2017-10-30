@@ -28,6 +28,9 @@ typealias JSON = [String: Any]
 typealias JSONArray = [JSON]
 typealias Block = () -> Void
 
+protocol OptionalProtocol {}
+extension Optional : OptionalProtocol {}
+
 enum GeneralError : Error {
     case error
     case noSelf
