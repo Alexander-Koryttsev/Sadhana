@@ -24,7 +24,6 @@ class OtherGraphVM : GraphVM {
         firstPageRunning = pageRunning.asDriver(for:0)
         userName = name
         super.init()
-        
 
         //TODO: refactor using load() method
         refresh.subscribe(onNext: { [unowned self] () in
@@ -52,7 +51,7 @@ class OtherGraphVM : GraphVM {
         if indexPath.row > (numberOfRows(in: indexPath.section) - 10) {
             let nextSection = indexPath.section + 1
             if nextSection < numberOfSections {
-                load(monthDate)
+                load(Calendar.common.date(byAdding: .month, value: -1, to: monthDate)!.trimmedDayAndTime)
             }
         }
 

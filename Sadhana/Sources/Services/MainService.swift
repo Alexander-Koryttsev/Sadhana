@@ -12,6 +12,13 @@ import Crashlytics
 
 class MainService {
     static let shared = MainService()
+    var user : User?
+
+    init() {
+        if let ID = Local.defaults.userID {
+            user = Local.service.viewContext.fetch(userFor: ID)
+        }
+    }
 
     func loadMyEntries() -> Single<[ManagedEntry]> {
         return Remote.service.loadEntries(for: Local.defaults.userID!, lastUpdatedDate: Local.defaults.entriesUpdatedDate ?? Calendar.current.date(byAdding: .month, value: -24, to: Date()))
@@ -28,8 +35,9 @@ class MainService {
             .flatMap { (user) -> Single<ManagedUser> in
                 return Local.service.backgroundContext.rxSave(user:user)
             }
-            .do(onNext:{ (user) in
+            .do(onNext:{ [unowned self] (user) in
                 Local.defaults.userID = user.ID
+                self.user = Local.service.viewContext.object(with: user.objectID) as? User
                 Answers.logLogin(withMethod: nil, success: true, customAttributes: ["Name": user.name, "ID": user.ID])
             }, onError:{ (error) in
                 Answers.logLogin(withMethod: nil, success: false, customAttributes: ["Error": error.localizedDescription])

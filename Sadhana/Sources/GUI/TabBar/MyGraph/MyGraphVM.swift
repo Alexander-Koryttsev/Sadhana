@@ -14,8 +14,8 @@ import Foundation
 class MyGraphVM: GraphVM {
     let running = ActivityIndicator()
     let select = PublishSubject<IndexPath>()
-    let logOut = PublishSubject<Void>()
-    private let router: MyGraphRouter
+    let settings = PublishSubject<Void>()
+    private unowned let router: MyGraphRouter
 
     private let updateSectionInternal = PublishSubject<Int>()
     let updateSection : Driver<Int>
@@ -34,16 +34,6 @@ class MyGraphVM: GraphVM {
         select.subscribe(onNext:{ [unowned self] (indexPath) in
             self.router.showSadhanaEditing(date: self.date(at: indexPath))
         }).disposed(by: disposeBag)
-
-        logOut.asDriver(onErrorJustReturn: ()).map {_ -> Alert in
-            let alert = Alert()
-            alert.add(action:"logout".localized, style: .destructive, handler: {
-                RootRouter.shared?.logOut()
-            })
-
-            alert.addCancelAction()
-            return alert
-        }.drive(alerts).disposed(by: disposeBag)
     }
 
     override func reloadData() {
@@ -81,5 +71,9 @@ class MyGraphVM: GraphVM {
         var month = entries(for: date.trimmedDayAndTime)
 
         return (month[date], date)
+    }
+
+    @objc func showSettings() {
+        router.showSettings()
     }
 }

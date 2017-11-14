@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		30C7E711667CDBC29B92157F /* Pods_Sadhana.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0B60592337E436959AB732F /* Pods_Sadhana.framework */; };
+		9600D8B41FAEF37C0055E354 /* SettingAvatarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9600D8B31FAEF37C0055E354 /* SettingAvatarCell.swift */; };
 		96086DD71F3B2FB2006C9312 /* GraphVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96086DD61F3B2FB2006C9312 /* GraphVM.swift */; };
 		960A0D421F273F5700356152 /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960A0D411F273F5700356152 /* CircleView.swift */; };
 		960A0D451F2770D000356152 /* WeekVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960A0D441F2770D000356152 /* WeekVC.swift */; };
@@ -21,6 +22,7 @@
 		9612BD821F0130A700336A1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 966056A31EF2B50D00973FA4 /* Assets.xcassets */; };
 		9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9612BD881F02BD3400336A1B /* RxSwift+Extensions.swift */; };
 		961D389D1F24750000E73E21 /* CountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961D389C1F24750000E73E21 /* CountView.swift */; };
+		9636F4711FAF07060068BB62 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9636F4701FAF07060068BB62 /* File.swift */; };
 		964C27CF1F4C9BFB0006593C /* OtherGraphVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C27CE1F4C9BFB0006593C /* OtherGraphVC.swift */; };
 		964C82901F17D5A200A41D8A /* NavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C828F1F17D5A200A41D8A /* NavigationVC.swift */; };
 		9652C9931F45D8160065458B /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9652C9921F45D8160065458B /* KeyboardManager.swift */; };
@@ -51,6 +53,7 @@
 		96A196CD1F4AFE1B00AAB635 /* OtherGraphListContainerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196CC1F4AFE1B00AAB635 /* OtherGraphListContainerVC.swift */; };
 		96A196D11F4C1CDD00AAB635 /* GraphCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196D01F4C1CDD00AAB635 /* GraphCell.swift */; };
 		96A196F11F4C921100AAB635 /* OtherGraphVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196F01F4C921100AAB635 /* OtherGraphVM.swift */; };
+		96A5355F1FB1FCFF00A30215 /* CwlSysctl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A5355E1FB1FCFC00A30215 /* CwlSysctl.swift */; };
 		96A55B481F12919300FD3700 /* RootRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B471F12919300FD3700 /* RootRouter.swift */; };
 		96A55B4A1F1291D500FD3700 /* MainTabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B491F1291D500FD3700 /* MainTabBarVC.swift */; };
 		96A55B4C1F14AD6200FD3700 /* LocalDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B4B1F14AD6200FD3700 /* LocalDefaults.swift */; };
@@ -88,6 +91,7 @@
 		05D1DDB55E7989C94428503D /* Pods-Sadhana.prod-debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sadhana.prod-debug.xcconfig"; path = "Pods/Target Support Files/Pods-Sadhana/Pods-Sadhana.prod-debug.xcconfig"; sourceTree = "<group>"; };
 		3052CDD956362BA858A7DB4E /* Pods-Sadhana.prod-release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sadhana.prod-release.xcconfig"; path = "Pods/Target Support Files/Pods-Sadhana/Pods-Sadhana.prod-release.xcconfig"; sourceTree = "<group>"; };
 		8917180F0D3D4E452DF3158F /* Pods-Sadhana.dev-release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sadhana.dev-release.xcconfig"; path = "Pods/Target Support Files/Pods-Sadhana/Pods-Sadhana.dev-release.xcconfig"; sourceTree = "<group>"; };
+		9600D8B31FAEF37C0055E354 /* SettingAvatarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingAvatarCell.swift; sourceTree = "<group>"; };
 		96086DD61F3B2FB2006C9312 /* GraphVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GraphVM.swift; path = Sadhana/Sources/GUI/Base/Graph/GraphVM.swift; sourceTree = SOURCE_ROOT; };
 		960A0D411F273F5700356152 /* CircleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
 		960A0D441F2770D000356152 /* WeekVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeekVC.swift; sourceTree = "<group>"; };
@@ -99,8 +103,9 @@
 		960A0D4D1F2876C000356152 /* MyGraphVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyGraphVC.swift; sourceTree = "<group>"; };
 		960A0D4E1F2876C000356152 /* MyGraphVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyGraphVM.swift; sourceTree = "<group>"; };
 		9612BD881F02BD3400336A1B /* RxSwift+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RxSwift+Extensions.swift"; sourceTree = "<group>"; };
-		9612BD8A1F02BE4400336A1B /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; };
+		9612BD8A1F02BE4400336A1B /* MyPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = MyPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		961D389C1F24750000E73E21 /* CountView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CountView.swift; path = ../../Components/View/CountView.swift; sourceTree = "<group>"; };
+		9636F4701FAF07060068BB62 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		964C27CE1F4C9BFB0006593C /* OtherGraphVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherGraphVC.swift; sourceTree = "<group>"; };
 		964C828F1F17D5A200A41D8A /* NavigationVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationVC.swift; sourceTree = "<group>"; };
 		9652C9911F45AC5C0065458B /* Merge.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Merge.xcconfig; sourceTree = "<group>"; };
@@ -144,6 +149,7 @@
 		96A196CC1F4AFE1B00AAB635 /* OtherGraphListContainerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherGraphListContainerVC.swift; sourceTree = "<group>"; };
 		96A196D01F4C1CDD00AAB635 /* GraphCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphCell.swift; sourceTree = "<group>"; };
 		96A196F01F4C921100AAB635 /* OtherGraphVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherGraphVM.swift; sourceTree = "<group>"; };
+		96A5355E1FB1FCFC00A30215 /* CwlSysctl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CwlSysctl.swift; sourceTree = "<group>"; };
 		96A55B471F12919300FD3700 /* RootRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootRouter.swift; sourceTree = "<group>"; };
 		96A55B491F1291D500FD3700 /* MainTabBarVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarVC.swift; sourceTree = "<group>"; };
 		96A55B4B1F14AD6200FD3700 /* LocalDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDefaults.swift; sourceTree = "<group>"; };
@@ -207,6 +213,14 @@
 				3052CDD956362BA858A7DB4E /* Pods-Sadhana.prod-release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		9600D8B21FAEF3260055E354 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				9600D8B31FAEF37C0055E354 /* SettingAvatarCell.swift */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 		960A0D431F27706A00356152 /* ViewController */ = {
@@ -351,6 +365,7 @@
 				96B607C21F18E7A1002B9AB5 /* Rx */,
 				9612BD871F02BD2200336A1B /* Extensions */,
 				96B607D41F1A39C5002B9AB5 /* DateUtility.swift */,
+				96A5355E1FB1FCFC00A30215 /* CwlSysctl.swift */,
 			);
 			path = Utilites;
 			sourceTree = "<group>";
@@ -499,6 +514,7 @@
 		96A874221F865B110097E432 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				9600D8B21FAEF3260055E354 /* Cell */,
 				96A874231F865B1E0097E432 /* SettingsVC.swift */,
 				96A874251F865B270097E432 /* SettingsVM.swift */,
 			);
@@ -548,6 +564,7 @@
 				96B607EF1F1D01DE002B9AB5 /* Button */,
 				96B607F11F1D01DE002B9AB5 /* Cell */,
 				96B607F21F1D01DE002B9AB5 /* View */,
+				9636F4701FAF07060068BB62 /* File.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -759,6 +776,7 @@
 			files = (
 				96A55B481F12919300FD3700 /* RootRouter.swift in Sources */,
 				96A196C51F4AFBAD00AAB635 /* FavoriteGraphListVM.swift in Sources */,
+				9600D8B41FAEF37C0055E354 /* SettingAvatarCell.swift in Sources */,
 				967D79251F00F3CD00A961D6 /* RemoteService.swift in Sources */,
 				961D389D1F24750000E73E21 /* CountView.swift in Sources */,
 				96E976771F15473400F6766F /* LoginVC.swift in Sources */,
@@ -803,6 +821,7 @@
 				96A196CB1F4AFCE800AAB635 /* OtherGraphListRouter.swift in Sources */,
 				960A0D451F2770D000356152 /* WeekVC.swift in Sources */,
 				964C82901F17D5A200A41D8A /* NavigationVC.swift in Sources */,
+				96A5355F1FB1FCFF00A30215 /* CwlSysctl.swift in Sources */,
 				96A196C11F4AFB8D00AAB635 /* AllGraphListVM.swift in Sources */,
 				96A9217E1F03FC9D0056BC5B /* Model.xcdatamodeld in Sources */,
 				967D79291F00F63E00A961D6 /* General.swift in Sources */,
@@ -817,6 +836,7 @@
 				96B9A5651F25C04C000673B7 /* Time.swift in Sources */,
 				96B607D51F1A39C5002B9AB5 /* DateUtility.swift in Sources */,
 				96A196BA1F48256F00AAB635 /* Responder.swift in Sources */,
+				9636F4711FAF07060068BB62 /* File.swift in Sources */,
 				9652C9A71F46DE140065458B /* ContainerFormCell.swift in Sources */,
 				96A196D11F4C1CDD00AAB635 /* GraphCell.swift in Sources */,
 				96B607D11F19097F002B9AB5 /* MainTabBarRouter.swift in Sources */,

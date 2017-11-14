@@ -7,7 +7,7 @@ target 'Sadhana' do
     pod 'Alamofire',    '~> 4.4'
     pod 'AlamofireImage', '~> 3.2'
     pod 'ModelMapper',  '~> 6.0'
-    pod 'EasyPeasy',    '~> 1.4'
+    pod 'EasyPeasy',    '~> 1.5'
     pod 'DynamicButton', '~> 4.0'
     pod 'Fabric'
     pod 'Crashlytics'

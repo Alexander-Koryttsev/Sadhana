@@ -7,12 +7,17 @@
 //
 
 import UIKit
+import MessageUI
 
 class MyGraphRouter : EditingRouter {
     weak var parent : MainTabBarRouter?
+    let navVC = NavigationVC()
+    let composerDelegate = ComposerDelegate()
 
     func initialVC() -> UIViewController {
-        return NavigationVC(rootViewController: MyGraphVC(MyGraphVM(self)))
+        navVC.viewControllers = [ MyGraphVC(MyGraphVM(self)) ]
+        navVC.view.backgroundColor = .white
+        return navVC
     }
 
     func showSadhanaEditing(date: Date) {
@@ -24,6 +29,19 @@ class MyGraphRouter : EditingRouter {
     }
 
     func showSettings() {
+        navVC.pushViewController(SettingsVC(SettingsVM(self)), animated: true)
+    }
 
+    func show(mailComposer: MFMailComposeViewController) {
+        mailComposer.navigationBar.tintColor = AppDelegate.shared?.window?.tintColor
+        mailComposer.mailComposeDelegate = composerDelegate
+        navVC.present(mailComposer, animated: true, completion: nil)
     }
 }
+
+class ComposerDelegate : NSObject, MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true, completion: nil)
+    }
+}
+

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AlamofireImage
 
 struct Config {
     #if DEV
@@ -73,7 +74,15 @@ struct Main {
 
 class Common {
     static let shared = Common()
+    let calendar : Calendar
     private var dates = [[Date]]()
+
+    init() {
+        var cal = Calendar.current
+        cal.timeZone = TimeZone.create()
+        calendar = cal
+    }
+
     var calendarDates : [[Date]] {
         get {
             if dates.count == 0 || dates.first!.first! < Date().trimmedTime {
@@ -82,8 +91,6 @@ class Common {
                 let begin = info.systemUptime
                 // do something
                 var month = [Date]()
-                var calendar = Calendar.current
-                calendar.timeZone = TimeZone.create()
                 calendar.enumerateDates(startingAfter: Date(), matching: DateComponents(hour:0, minute:0), matchingPolicy: .strict, direction: .backward, using: { (date, exactMatch, stop) in
 
                     guard let date = date else { return }
@@ -103,6 +110,9 @@ class Common {
             return dates
         }
     }
+
+    static let avatarFilter = CircleFilter()
+    static let avatarPlaceholder = #imageLiteral(resourceName: "default-avatar").af_imageRoundedIntoCircle()
 }
 
 protocol JSONConvertible {
@@ -136,6 +146,17 @@ extension UIImage {
 extension UIImageView {
     convenience init(screenSized name:String) {
         self.init(image: UIImage.screenSized(name))
+    }
+
+    var avatarURL : URL? {
+        get {
+            return nil
+        }
+        set {
+            if let url = newValue {
+                af_setImage(withURL: url, placeholderImage:Common.avatarPlaceholder, filter:Common.avatarFilter, imageTransition:.crossDissolve(0.25))
+            }
+        }
     }
 }
 

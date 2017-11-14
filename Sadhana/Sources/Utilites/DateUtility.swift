@@ -129,6 +129,10 @@ extension Calendar {
         }
     }
 
+    static var common : Calendar {
+        return Common.shared.calendar
+    }
+
     //US: [0, 1, 2, 3, 4, 5, 6]
     //UA: [1, 2, 3, 4, 5, 6, 0]
     var orderedWeekDayIndexes : [Int] {

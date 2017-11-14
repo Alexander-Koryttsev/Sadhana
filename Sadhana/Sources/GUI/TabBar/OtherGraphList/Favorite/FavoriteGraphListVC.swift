@@ -26,7 +26,7 @@ class FavoriteGraphListVC : GraphListVC<FavoriteGraphListVM> {
         Answers.logContentView(withName: "Favorite Graph List", contentType: nil, contentId: nil, customAttributes: nil)
         
         let label = UILabel()
-        label.text = "Избранные графики садханы не проявлены. Давайте вместе молиться Кришне чтобы они проявились. 🙏"
+        label.text = "letsPrayForFavorites".localized
         label.numberOfLines = 0
         label.textAlignment = .center
         

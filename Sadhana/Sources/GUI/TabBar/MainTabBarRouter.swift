@@ -17,7 +17,7 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
     let otherGraphListRouter = OtherGraphListRouter()
     weak var tabBarVC : MainTabBarVC?
     let window : UIWindow
-    let plusButton = DynamicButton(style: .plus)
+    let plusButton = UIFactory.editingButton
     var isEditing = false {
         didSet {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -30,27 +30,11 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
         self.window = window
         otherGraphListRouter.parent = self
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidChange(notification:)), name: .UIKeyboardDidChangeFrame, object: nil)
     }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
         plusButton.removeTarget(nil, action: nil, for: .allEvents)
-    }
-
-    @objc func keyboardWillChange(notification:NSNotification) {
-        guard let userInfo = notification.userInfo,
-            let keyboarFrame = userInfo[UIKeyboardFrameEndUserInfoKey] as? CGRect else { return }
-        let shown = keyboarFrame.origin.y < UIScreen.main.bounds.size.height
-
-        UIView.animate(withDuration: 0.3) {
-            self.plusButton <- Bottom((shown ? keyboarFrame.size.height : 0) + 5)
-            self.window.layoutIfNeeded()
-        }
-    }
-
-    @objc func keyboardDidChange(notification:NSNotification) {
-
     }
 
     func showInitialVC() {
@@ -72,6 +56,7 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
 
     func showSadhanaEditing(date: Date) {
         let vm = EditingVM(self, date:date)
+        plusButton.isHidden = false;
         plusButton.rx.tap.bind(to:vm.save).disposed(by: vm.disposeBag)
         let vc = EditingVC(vm)
         tabBarVC?.present(vc, animated: true, completion: nil)
@@ -80,7 +65,9 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
 
     func hideSadhanaEditing() {
         tabBarVC?.presentedViewController?.setEditing(false, animated: true)
-        tabBarVC?.dismiss(animated: true, completion: nil)
+        tabBarVC?.dismiss(animated: true, completion: { [unowned self] in
+            self.plusButton.isHidden = true
+        })
         isEditing = false
     }
 
@@ -93,6 +80,7 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
     }
 
     private func setUpPlusButton() {
+        plusButton.isHidden = true
         plusButton.strokeColor = .white
         plusButton.backgroundColor = .sdTangerine
         let inset = CGFloat(12)
@@ -108,6 +96,17 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
             Bottom(5)
         ]
         plusButton.addTarget(self, action:#selector(togglePlusButton(sender:)), for: .touchUpInside)
+    }
+
+    @objc func keyboardWillChange(notification:NSNotification) {
+        guard let userInfo = notification.userInfo,
+            let keyboarFrame = userInfo[UIKeyboardFrameEndUserInfoKey] as? CGRect else { return }
+        let shown = keyboarFrame.origin.y < UIScreen.main.bounds.size.height
+
+        UIView.animate(withDuration: 0.3) {
+            self.plusButton <- Bottom((shown ? keyboarFrame.size.height : 0) + 5)
+            self.window.layoutIfNeeded()
+        }
     }
 }
 

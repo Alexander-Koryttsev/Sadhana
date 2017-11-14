@@ -6,5 +6,4 @@
   Copyright © 2017 Alexander Koryttsev. All rights reserved.
 */
 
-//"CFBundleLocalizedName" = "Садхана";
-//"CFBundleName" = "Садхана";
+//"CFBundleDisplayName" = "Садхана";

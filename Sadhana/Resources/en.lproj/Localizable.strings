@@ -22,7 +22,6 @@ signIn = "Sign In";
 
 //My Graph
 myGraph = "My Graph";
-logout = "Logout";
 
 //EntryFieldKey
 wakeUpTime = "Wake Up time";
@@ -42,3 +41,17 @@ bedTime = "Bed time";
 otherGraph = "Other Graphs";
 all = "All";
 favorites = "Favorites";
+
+//Favorites
+letsPrayForFavorites = "The favorite graphs are not manifested. Let's pray together to Krishna so that they manifest. 🙏";
+
+//Settings
+settings = "Settings";
+letterToDevs = "Feedback";
+signOut = "Sign Out";
+
+//Feedback
+cantSendMailTitle = "The system mail client isn't configured";
+cantSendMailMessage = "You can send an email to \"%@\" via a third-party mail client";
+copyAddres = "Copy address";
+deviceInfo = "Device information";

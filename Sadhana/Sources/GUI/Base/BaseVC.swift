@@ -72,8 +72,14 @@ class BaseTableVC<VM:BaseVM>: UITableViewController, ViewController {
         self.tableView.reloadData()
     }
 
-    func bindViewModel() -> Void {
+    func bindViewModel() {
         baseBindViewModel()
+    }
+
+    func alertDidDismiss() {
+        if clearsSelectionOnViewWillAppear, let selectedPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: selectedPath, animated: true)
+        }
     }
 }
 
@@ -108,72 +114,11 @@ class BaseTabBarVC<VM:BaseVM>: UITabBarController, ViewController {
     }
 }
 
-class BaseFetchedResultsVC<VM:BaseVM>: BaseTableVC<VM>, NSFetchedResultsControllerDelegate {
-
-    var updatedSections = IndexSet()
-    var insertedSections = IndexSet()
-    var oldSectionsCount = 0
-
-/*
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?,
-                    for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        log("change(\(type.rawValue)) rows")
-        switch type {
-        case .insert:   tableView.insertRows(at: [newIndexPath!], with: .none); break
-        case .delete:   tableView.deleteRows(at: [indexPath!], with: .none)   ; break
-        case .move:
-            tableView.deleteRows(at: [indexPath!], with: .none)
-            tableView.insertRows(at: [newIndexPath!], with: .none)
-            break
-        case .update:   tableView.reloadRows(at: [indexPath!], with: .none)   ; break
-        }
-    }*/
-
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo,
-                    atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        //log("change(\(type.rawValue)) section \(sectionIndex)")
-        switch type {
-        case .insert:  /* tableView.insertSections(IndexSet(integer:sectionIndex), with: .none);*/ insertedSections.insert(sectionIndex); break
-       // case .delete:   tableView.deleteSections(IndexSet(integer:sectionIndex), with: .none); break
-        //case .move:     log("what should I do with move section?")                         ; break
-        case .update:   /*tableView.reloadSections(IndexSet(integer:sectionIndex), with: .none);*/ updatedSections.insert(sectionIndex); break
-        default: break
-        }
-    }
-
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-       // log("will change (now sections \(tableView.numberOfSections))")
-        oldSectionsCount = tableView.numberOfSections
-        updatedSections.removeAll()
-        insertedSections.removeAll()
-    }
-
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        //log("did change")
-       // reloadData()
-/*
-        if self.tableView.window != nil && self.oldSectionsCount + self.insertedSections.count == controller.sections?.count {
-            self.tableView.beginUpdates()
-            self.tableView.reloadSections(self.updatedSections, with: .none)
-            self.tableView.insertSections(self.insertedSections, with: .none)
-            self.tableView.endUpdates()
-            if self.updatedSections.count > 0 {
-                self.sectionsDidUpdate(self.updatedSections)
-            }
-        }
-        else {*/
-            self.reloadData()
-      //  }
-    }
-
-    func sectionsDidUpdate(_ sections:IndexSet) {
-
-    }
-}
-
 protocol ViewController {
     associatedtype VM:BaseVM
     var viewModel:VM { get }
+
+    func alertDidDismiss()
 }
 
 extension ViewController where Self : UIViewController {
@@ -186,8 +131,9 @@ extension ViewController where Self : UIViewController {
     fileprivate func baseBindViewModel() {
         viewModel.alerts.subscribe(onNext: { [weak self] (alert) in
 
-            alert.add(completion: { 
+            alert.add(completion: { [weak self] in
                 RootRouter.shared?.setPlusButton(hidden:false, animated:true)
+                self?.alertDidDismiss()
             })
 
             self?.present(alert.uiAlertController, animated: true)
@@ -198,8 +144,11 @@ extension ViewController where Self : UIViewController {
     fileprivate func baseViewDidDisappear() {
         viewModel.disappearBag = DisposeBag()
     }
-}
 
+    func alertDidDismiss() {
+
+    }
+}
 
 class Alert {
     var title : String?
@@ -243,6 +192,69 @@ class Alert {
                 }
             })
         }
+    }
+}
+
+class BaseFetchedResultsVC<VM:BaseVM>: BaseTableVC<VM>, NSFetchedResultsControllerDelegate {
+
+    var updatedSections = IndexSet()
+    var insertedSections = IndexSet()
+    var oldSectionsCount = 0
+
+    /*
+     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?,
+     for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+     log("change(\(type.rawValue)) rows")
+     switch type {
+     case .insert:   tableView.insertRows(at: [newIndexPath!], with: .none); break
+     case .delete:   tableView.deleteRows(at: [indexPath!], with: .none)   ; break
+     case .move:
+     tableView.deleteRows(at: [indexPath!], with: .none)
+     tableView.insertRows(at: [newIndexPath!], with: .none)
+     break
+     case .update:   tableView.reloadRows(at: [indexPath!], with: .none)   ; break
+     }
+     }*/
+
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo,
+                    atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+        //log("change(\(type.rawValue)) section \(sectionIndex)")
+        switch type {
+        case .insert:  /* tableView.insertSections(IndexSet(integer:sectionIndex), with: .none);*/ insertedSections.insert(sectionIndex); break
+            // case .delete:   tableView.deleteSections(IndexSet(integer:sectionIndex), with: .none); break
+        //case .move:     log("what should I do with move section?")                         ; break
+        case .update:   /*tableView.reloadSections(IndexSet(integer:sectionIndex), with: .none);*/ updatedSections.insert(sectionIndex); break
+        default: break
+        }
+    }
+
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // log("will change (now sections \(tableView.numberOfSections))")
+        oldSectionsCount = tableView.numberOfSections
+        updatedSections.removeAll()
+        insertedSections.removeAll()
+    }
+
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        //log("did change")
+        // reloadData()
+        /*
+         if self.tableView.window != nil && self.oldSectionsCount + self.insertedSections.count == controller.sections?.count {
+         self.tableView.beginUpdates()
+         self.tableView.reloadSections(self.updatedSections, with: .none)
+         self.tableView.insertSections(self.insertedSections, with: .none)
+         self.tableView.endUpdates()
+         if self.updatedSections.count > 0 {
+         self.sectionsDidUpdate(self.updatedSections)
+         }
+         }
+         else {*/
+        self.reloadData()
+        //  }
+    }
+
+    func sectionsDidUpdate(_ sections:IndexSet) {
+
     }
 }
 

@@ -14,8 +14,6 @@ class GraphCell : UITableViewCell {
     let avatarImageView = UIImageView()
     let nameLabel = UILabel()
     let entryView = EntryView()
-    static let avatarFilter = CircleFilter()
-    static let avatarPlaceholder = #imageLiteral(resourceName: "default-avatar").af_imageRoundedIntoCircle()
 
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -51,15 +49,13 @@ class GraphCell : UITableViewCell {
     func map(entry:Entry, name:String, avatarURL:URL?) {
         entryView.map(entry, maxRoundsCount: max(16, entry.japaSum))
         nameLabel.text = name
-        if avatarURL != nil {
-            avatarImageView.af_setImage(withURL: avatarURL!, placeholderImage:GraphCell.avatarPlaceholder, filter:GraphCell.avatarFilter, imageTransition:.crossDissolve(0.25))
-        }
+        avatarImageView.avatarURL = avatarURL
     }
 
     func clear() {
         entryView.clear()
         nameLabel.text = nil
         avatarImageView.af_cancelImageRequest()
-        avatarImageView.af_setImage(withURL: Remote.URL.defaultAvatar.urlValue, placeholderImage:GraphCell.avatarPlaceholder, filter:GraphCell.avatarFilter)
+        avatarImageView.avatarURL = Remote.URL.defaultAvatar.urlValue
     }
 }

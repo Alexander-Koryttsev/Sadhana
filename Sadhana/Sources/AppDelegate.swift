@@ -16,11 +16,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var router: RootRouter?
+    static var shared : AppDelegate?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
+        AppDelegate.shared = self
         window = UIWindow(frame: UIScreen.main.bounds)
+        window?.backgroundColor = .white
         window?.tintColor = .sdTangerine
         router = RootRouter(window!)
         router!.showInitialVC()

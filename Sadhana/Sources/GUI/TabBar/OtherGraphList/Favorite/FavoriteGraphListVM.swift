@@ -11,7 +11,7 @@ import RxCocoa
 import RxSwift
 
 class FavoriteGraphListVM : GraphListVM {
-    private let router : OtherGraphListRouter
+    private unowned let router : OtherGraphListRouter
 
     init(_ router:OtherGraphListRouter) {
         self.router = router

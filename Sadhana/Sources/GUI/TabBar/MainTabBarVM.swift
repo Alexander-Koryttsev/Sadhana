@@ -14,4 +14,8 @@ class MainTabBarVM: BaseVM {
     init(_ router : MainTabBarRouter) {
         self.router = router
     }
+
+    @objc func addEntry() {
+        router.showSadhanaEditing()
+    }
 }

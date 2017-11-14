@@ -29,7 +29,7 @@ class AllGraphListVM : GraphListVM {
         }
     }
 
-    private let router : OtherGraphListRouter
+    private unowned let router : OtherGraphListRouter
 
     init(_ router:OtherGraphListRouter) {
         self.router = router
