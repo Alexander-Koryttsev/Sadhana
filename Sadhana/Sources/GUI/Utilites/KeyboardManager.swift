@@ -89,12 +89,18 @@ class KeyboardContainer : UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+
+        if iOS(11) {
+            buttonContainer.layer.masksToBounds = true
+            buttonContainer.layer.cornerRadius = 5
+        }
+
         addSubview(buttonContainer)
         buttonContainer <- [
-            Width(==(-1)*0.33).like(self),
-            Height(*0.25).like(self),
-            Left(),
-            Bottom()
+            Width(==(iOS(11) ? -9 : -1)*0.33).like(self),
+            Height(==(iOS(11) ? -8 : 0 )*0.25).like(self),
+            Left(iOS(11) ? 6 : 0),
+            Bottom(iOS(11) ? 3 : 0)
         ]
 
         buttonContainer.addSubview(backButton)

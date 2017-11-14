@@ -19,6 +19,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
     let navigationBar = UINavigationBar()
     let weekKeysBar = UIStackView()
     let weekPageVC = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
+    let bottomBar = BlurView()
     var weekVC : WeekVC
     var weekVCDisposeBag = DisposeBag()
     var entryEditingVC : EntryEditingVC {
@@ -44,8 +45,14 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         automaticallyAdjustsScrollViewInsets = false
         setUpTopBar()
         setUpPageVC()
+        setUpBottomBar()
         view.bringSubview(toFront: topBar)
         bindWeekVC()
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -69,6 +76,28 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         }).disposed(by: disposeBag)
     }
 
+    func setUpBottomBar() {
+        bottomBar.showTopSeparator = true
+        view.addSubview(bottomBar)
+        bottomBar <- [
+            Left(),
+            Bottom(),
+            Right(),
+            Height(50)
+        ]
+    }
+
+    @objc func keyboardWillChange(notification:NSNotification) {
+        guard let userInfo = notification.userInfo,
+            let keyboarFrame = userInfo[UIKeyboardFrameEndUserInfoKey] as? CGRect else { return }
+        let shown = keyboarFrame.origin.y < UIScreen.main.bounds.size.height
+
+        UIView.animate(withDuration: 0.3) {
+            self.bottomBar <- Bottom(shown ? keyboarFrame.size.height : 0)
+            self.view.layoutIfNeeded()
+        }
+    }
+
     func setUpTopBar() {
         view.addSubview(topBar)
         topBar <- [
@@ -78,7 +107,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
             Height(128)
         ]
 
-        let topBarBackground = UINavigationBar()
+        let topBarBackground = BlurView()
         topBar.addSubview(topBarBackground)
         topBarBackground <- Edges()
 

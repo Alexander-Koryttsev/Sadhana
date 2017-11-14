@@ -21,7 +21,6 @@ class MainTabBarVC : BaseTabBarVC<MainTabBarVM> {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        tabBar.bringSubview(toFront: editingButton)
 
         if let items = tabBar.items, items.count == 2 {
             let offset = CGFloat(16)
@@ -30,6 +29,8 @@ class MainTabBarVC : BaseTabBarVC<MainTabBarVM> {
             let rightItem = tabBar.items?.last!
             rightItem?.titlePositionAdjustment = UIOffset(horizontal: offset, vertical: 0)
         }
+
+        tabBar.bringSubview(toFront: editingButton)
     }
 
     override func setViewControllers(_ viewControllers: [UIViewController]?, animated: Bool) {

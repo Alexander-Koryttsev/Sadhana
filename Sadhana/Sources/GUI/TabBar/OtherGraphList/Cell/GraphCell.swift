@@ -40,6 +40,8 @@ class GraphCell : UITableViewCell {
             Bottom(2).to(avatarImageView, .bottom),
             Left().to(nameLabel, .left)
         ]
+
+        separatorInset = UIEdgeInsetsMake(0, 10, 0, 0)
     }
     
     required init?(coder aDecoder: NSCoder) {

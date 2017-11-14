@@ -37,6 +37,13 @@ enum GeneralError : Error {
     case noSelf
 }
 
+let Device = UIDevice.current
+let iOS = NSString(string: Device.systemVersion).integerValue
+
+func iOS(_ version: Int) -> Bool {
+    return iOS >= version
+}
+
 struct Local {
     static let service = LocalService{}
     static let defaults = LocalDefaults()
@@ -117,6 +124,12 @@ class Common {
 
 protocol JSONConvertible {
     var json : JSON { get }
+}
+
+extension NSObject {
+    static var classString : String {
+        return NSStringFromClass(self)
+    }
 }
 
 extension String {

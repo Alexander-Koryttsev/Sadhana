@@ -41,7 +41,7 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
             Left(2),
             Bottom(),
             Right(2),
-            Top(2)
+            Top(iOS(11) ? 10 : 2)
         ]
         tableView.tableHeaderView = searchContainer
         viewModel.refresh.onNext(())
@@ -67,7 +67,7 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
        // observer = NotificationCenter.default.addObserver(forName: .UIApplicationWillEnterForeground, object: nil, queue: nil) { [weak self] (_) in
         //    self?.viewModel.refresh.onNext()
         //}
-        //NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { (_) in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
+        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { (_) in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
         
         Answers.logContentView(withName: "All Graph List", contentType: nil, contentId: nil, customAttributes: nil)
     }

@@ -16,7 +16,7 @@ class EntryEditingVC : BaseTableVC<EntryEditingVM> {
     override func viewDidLoad() {
         automaticallyAdjustsScrollViewInsets = false
         super.viewDidLoad()
-        tableView.contentInset = UIEdgeInsetsMake(128, 0, 50, 0)
+        tableView.contentInset = UIEdgeInsetsMake(iOS(11) ? 108 : 128, 0, 50, 0)
         tableView.keyboardDismissMode = .onDrag
         tableView.tableFooterView = UIView()
         tableView.showsVerticalScrollIndicator = false

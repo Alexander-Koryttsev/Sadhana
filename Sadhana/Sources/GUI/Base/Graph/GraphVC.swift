@@ -31,8 +31,8 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
 
         super.viewDidLoad()
 
-        tableView.register(EntryCell.self, forCellReuseIdentifier: NSStringFromClass(EntryCell.self))
-        tableView.register(GraphHeader.self, forHeaderFooterViewReuseIdentifier: NSStringFromClass(GraphHeader.self))
+        tableView.register(EntryCell.self, forCellReuseIdentifier: EntryCell.classString)
+        tableView.register(GraphHeader.self, forHeaderFooterViewReuseIdentifier: GraphHeader.classString)
     }
 
     func setUpErrorLabel() {
