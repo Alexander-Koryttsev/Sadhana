@@ -10,114 +10,15 @@ import UIKit
 import CoreData
 import RxSwift
 import Foundation
-
-class BaseVC<VM:BaseVM>: UIViewController, ViewController {
-    let viewModel:VM
-    
-    init(_ viewModel:VM) {
-        self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        bindViewModel()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        baseViewDidDisappear()
-    }
-    
-    func bindViewModel() -> Void {
-        baseBindViewModel()
-    }
-}
-
-class BaseTableVC<VM:BaseVM>: UITableViewController, ViewController {
-    let viewModel:VM
-    
-    init(_ viewModel:VM, style:UITableViewStyle = .plain) {
-        self.viewModel = viewModel
-        super.init(style: style)
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        bindViewModel()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        baseViewDidDisappear()
-    }
-
-    func reloadData() {
-        self.tableView.reloadData()
-    }
-
-    func bindViewModel() {
-        baseBindViewModel()
-    }
-
-    func alertDidDismiss() {
-        if clearsSelectionOnViewWillAppear, let selectedPath = tableView.indexPathForSelectedRow {
-            tableView.deselectRow(at: selectedPath, animated: true)
-        }
-    }
-}
-
-class BaseTabBarVC<VM:BaseVM>: UITabBarController, ViewController {
-    let viewModel:VM
-
-    init(_ viewModel:VM) {
-        self.viewModel = viewModel
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        bindViewModel()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        baseViewDidDisappear()
-    }
-
-    func bindViewModel() -> Void {
-        baseBindViewModel()
-    }
-}
+import EasyPeasy
 
 protocol ViewController {
     associatedtype VM:BaseVM
     var viewModel:VM { get }
+    var hasGuide:Bool { get }
+    var guideView:GuideView? { get set }
 
+    func createGuide()
     func alertDidDismiss()
 }
 
@@ -140,9 +41,47 @@ extension ViewController where Self : UIViewController {
             RootRouter.shared?.setPlusButton(hidden:true, animated:true)
         }).disposed(by: disposeBag)
     }
-    
+
+    fileprivate func baseViewDidAppear() {
+         if hasGuide, !Local.defaults.isGuideShown(self) {
+            createGuide()
+            if let guide = guideView {
+                guide.isHidden = true
+
+                let closeButton = UIButton(type: .custom)
+                closeButton.setImage(#imageLiteral(resourceName: "close"), for: .normal)
+                closeButton.rx.tap.asDriver().drive(onNext: { [unowned self] () in
+                    self.hideGuide(animated: true)
+                }).disposed(by: disposeBag)
+                view.addSubview(closeButton)
+                closeButton.easy.layout([Right(20), Top(20)])
+                guide.closeButton = closeButton
+
+                UIView.transition(with: view, duration: 0.25, options: .transitionCrossDissolve, animations: {
+                    guide.isHidden = false
+                }, completion: nil)
+
+                Local.defaults.set(guide: self, shown: true)
+            }
+         }
+    }
+
     fileprivate func baseViewDidDisappear() {
         viewModel.disappearBag = DisposeBag()
+        hideGuide(animated: false)
+    }
+
+    func hideGuide(animated:Bool) {
+        if let guide = guideView {
+            if animated {
+                UIView.transition(with: view, duration: 0.25, options: .transitionCrossDissolve, animations: {
+                    guide.removeFromSuperview()
+                }, completion: nil)
+            }
+            else {
+                guide.removeFromSuperview()
+            }
+        }
     }
 
     func alertDidDismiss() {
@@ -150,111 +89,147 @@ extension ViewController where Self : UIViewController {
     }
 }
 
-class Alert {
-    var title : String?
-    var message : String?
-    var style = UIAlertControllerStyle.actionSheet
-    private var actions = [Action]()
-    private var completions = [Block]()
-
-    var uiAlertController : UIAlertController {
-        get {
-            let alert = UIAlertController(title: title, message: message, preferredStyle: style)
-            for action in actions {
-                alert.addAction(action.uiAlertAction(completions: completions))
-            }
-            return alert
-        }
+class BaseVC<VM:BaseVM>: UIViewController, ViewController {
+    let viewModel:VM
+    weak var guideView:GuideView?
+    var hasGuide: Bool {
+        return false
+    }
+    
+    init(_ viewModel:VM) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
     }
 
-    func add(action title: String, style: UIAlertActionStyle? = .default, handler: Block?) {
-        actions.append(Action(title: title, style: style!, handler: handler))
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        bindViewModel()
     }
 
-    func addCancelAction() {
-        add(action:"cancel".localized, style: .cancel, handler: nil)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        baseViewDidAppear()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        baseViewDidDisappear()
+    }
+    
+    func bindViewModel() -> Void {
+        baseBindViewModel()
     }
 
-    func add(completion: @escaping Block) {
-        completions.append(completion)
-    }
-
-    struct Action {
-        var title : String
-        var style = UIAlertActionStyle.default
-        var handler : Block?
-
-        func uiAlertAction(completions:[Block]) -> UIAlertAction {
-            return UIAlertAction(title: title, style: style, handler: { (_) in
-                self.handler?()
-                for completion in completions {
-                    completion()
-                }
-            })
-        }
-    }
-}
-
-class BaseFetchedResultsVC<VM:BaseVM>: BaseTableVC<VM>, NSFetchedResultsControllerDelegate {
-
-    var updatedSections = IndexSet()
-    var insertedSections = IndexSet()
-    var oldSectionsCount = 0
-
-    /*
-     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?,
-     for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-     log("change(\(type.rawValue)) rows")
-     switch type {
-     case .insert:   tableView.insertRows(at: [newIndexPath!], with: .none); break
-     case .delete:   tableView.deleteRows(at: [indexPath!], with: .none)   ; break
-     case .move:
-     tableView.deleteRows(at: [indexPath!], with: .none)
-     tableView.insertRows(at: [newIndexPath!], with: .none)
-     break
-     case .update:   tableView.reloadRows(at: [indexPath!], with: .none)   ; break
-     }
-     }*/
-
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo,
-                    atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-        //log("change(\(type.rawValue)) section \(sectionIndex)")
-        switch type {
-        case .insert:  /* tableView.insertSections(IndexSet(integer:sectionIndex), with: .none);*/ insertedSections.insert(sectionIndex); break
-            // case .delete:   tableView.deleteSections(IndexSet(integer:sectionIndex), with: .none); break
-        //case .move:     log("what should I do with move section?")                         ; break
-        case .update:   /*tableView.reloadSections(IndexSet(integer:sectionIndex), with: .none);*/ updatedSections.insert(sectionIndex); break
-        default: break
-        }
-    }
-
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        // log("will change (now sections \(tableView.numberOfSections))")
-        oldSectionsCount = tableView.numberOfSections
-        updatedSections.removeAll()
-        insertedSections.removeAll()
-    }
-
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        //log("did change")
-        // reloadData()
-        /*
-         if self.tableView.window != nil && self.oldSectionsCount + self.insertedSections.count == controller.sections?.count {
-         self.tableView.beginUpdates()
-         self.tableView.reloadSections(self.updatedSections, with: .none)
-         self.tableView.insertSections(self.insertedSections, with: .none)
-         self.tableView.endUpdates()
-         if self.updatedSections.count > 0 {
-         self.sectionsDidUpdate(self.updatedSections)
-         }
-         }
-         else {*/
-        self.reloadData()
-        //  }
-    }
-
-    func sectionsDidUpdate(_ sections:IndexSet) {
+    func createGuide() {
 
     }
 }
+
+class BaseTableVC<VM:BaseVM>: UITableViewController, ViewController {
+    let viewModel:VM
+    weak var guideView:GuideView?
+    var hasGuide: Bool {
+        return false
+    }
+    
+    init(_ viewModel:VM, style:UITableViewStyle = .plain) {
+        self.viewModel = viewModel
+        super.init(style: style)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        bindViewModel()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        baseViewDidAppear()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        baseViewDidDisappear()
+    }
+
+    func reloadData() {
+        self.tableView.reloadData()
+    }
+
+    func bindViewModel() {
+        baseBindViewModel()
+    }
+
+    func alertDidDismiss() {
+        if clearsSelectionOnViewWillAppear, let selectedPath = tableView.indexPathForSelectedRow {
+            tableView.deselectRow(at: selectedPath, animated: true)
+        }
+    }
+
+    func createGuide() {
+
+    }
+}
+
+class BaseTabBarVC<VM:BaseVM>: UITabBarController, ViewController {
+    let viewModel:VM
+    weak var guideView:GuideView?
+    var hasGuide: Bool {
+        return false
+    }
+
+    init(_ viewModel:VM) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        bindViewModel()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        baseViewDidAppear()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        baseViewDidDisappear()
+    }
+
+    func bindViewModel() -> Void {
+        baseBindViewModel()
+    }
+
+    func createGuide() {
+
+    }
+}
+
+
 

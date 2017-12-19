@@ -61,9 +61,14 @@ class KeyboardManager {
 
     @objc func keyboardWillChange(_ notification:NSNotification) {
         guard let userInfo = notification.userInfo,
-            let beginFrame = userInfo[UIKeyboardFrameBeginUserInfoKey] as? CGRect,
-            let endFrame = userInfo[UIKeyboardFrameEndUserInfoKey] as? CGRect
+            var beginFrame = userInfo[UIKeyboardFrameBeginUserInfoKey] as? CGRect,
+            var endFrame = userInfo[UIKeyboardFrameEndUserInfoKey] as? CGRect
         else { return }
+
+        if iPhoneX {
+            beginFrame.size.height = beginFrame.height - 75
+            endFrame.size.height = endFrame.height - 75
+        }
 
         keyboardContainer.isHidden = !showBackNextButtons
 
@@ -96,33 +101,33 @@ class KeyboardContainer : UIView {
         }
 
         addSubview(buttonContainer)
-        buttonContainer <- [
-            Width(==(iOS(11) ? -9 : -1)*0.33).like(self),
-            Height(==(iOS(11) ? -8 : 0 )*0.25).like(self),
+        buttonContainer.easy.layout([
+            Width(==(iOS(11) ? -7 : -1)*0.33).like(self),
+            Height(==(iOS(11) ? -7.5 : 0 )*0.25).like(self),
             Left(iOS(11) ? 6 : 0),
             Bottom(iOS(11) ? 3 : 0)
-        ]
+        ])
 
         buttonContainer.addSubview(backButton)
         let image = UIImage(cgImage: #imageLiteral(resourceName: "login-arrow").cgImage!, scale: UIScreen.main.scale, orientation: .upMirrored)
         backButton.setImage(image, for: UIControlState())
         backButton.adjustsImageWhenHighlighted = false
-        backButton <- [
+        backButton.easy.layout([
             Top(),
             Left(),
             Bottom(),
-        ]
+        ])
 
         buttonContainer.addSubview(nextButton)
         nextButton.setImage(#imageLiteral(resourceName: "login-arrow"), for: UIControlState())
         nextButton.adjustsImageWhenHighlighted = false
-        nextButton <- [
+        nextButton.easy.layout([
             Top(),
             Right(),
             Bottom(),
             Left().to(backButton),
             Width().like(backButton)
-        ]
+        ])
     }
 
     required init?(coder aDecoder: NSCoder) {

@@ -14,6 +14,7 @@ sadhana = "Sadhana";
 today = "Today";
 hours = "hours";
 minutes = "minutes";
+begin = "Begin";
 
 //Login
 login = "Login";
@@ -22,6 +23,7 @@ signIn = "Sign In";
 
 //My Graph
 myGraph = "My Graph";
+myGraphGuidePlusButton = "To fill the sadhana graph for today - tap this button";
 
 //EntryFieldKey
 wakeUpTime = "Wake Up time";
@@ -36,6 +38,12 @@ service = "Service";
 yoga = "Yoga";
 lections = "Lections";
 bedTime = "Bed time";
+
+//Editing
+editingGuideDay = "Here you can choose the day you want to fill.";
+editingGuideSwipes = "Also, you can scroll through the days left-right.";
+editingGuideSave = "To save and return to the list - tap this button";
+editingGuideEnjoy = "Enjoy!";
 
 //Other Graph
 otherGraph = "Other Graphs";

@@ -34,13 +34,14 @@ class OtherGraphVC : GraphVC<OtherGraphVM> {
         }).disposed(by: disposeBag)
 
         viewModel.pageDidUpdate.asDriver(onErrorJustReturn: 0).drive(onNext: { [unowned self] (section) in
-            let visibleSections = self.tableView.indexPathsForVisibleRows?.map { $0.section }
-
-            if let sections = visibleSections,
-                sections.contains(section) {
-                self.tableView.beginUpdates()
-                self.tableView.reloadSections(IndexSet(integer:section), with: .fade)
-                self.tableView.endUpdates()
+            if let paths = self.tableView.indexPathsForVisibleRows {
+                for path in paths {
+                    if path.section == section {
+                        if let cell = self.tableView.cellForRow(at: path) {
+                            self.setUp(cell, at: path)
+                        }
+                    }
+                }
             }
         }).disposed(by: disposeBag)
         

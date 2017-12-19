@@ -15,11 +15,15 @@ class SettingsVC : BaseTableVC <SettingsVM> {
         super.init(viewModel, style: .grouped)
     }
 
+    override func bindViewModel() {
+        super.bindViewModel()
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     }
 
-    func field(at indexPath: IndexPath) -> FormField {
+    func field(at indexPath: IndexPath) -> FormFieldVM {
         return viewModel.sections[indexPath.section].items[indexPath.row]
     }
 
@@ -52,6 +56,11 @@ class SettingsVC : BaseTableVC <SettingsVM> {
             cell.textLabel?.textAlignment = .center
             cell.textLabel?.text = action.key
             cell.textLabel?.textColor = action.destructive ? .red : .sdTangerine
+            return cell
+        }
+
+        if let boolField = field as? VariableFieldVM<Bool> {
+            let cell = BoolFormCell(boolField)
             return cell
         }
 

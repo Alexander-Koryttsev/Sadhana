@@ -37,12 +37,12 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
         searchContainer.addSubview(searchBar)
         searchBar.searchBarStyle = .minimal
         searchBar.searchTextPositionAdjustment = UIOffsetMake(10.0, 0.0)
-        searchBar <- [
+        searchBar.easy.layout([
             Left(2),
             Bottom(),
             Right(2),
             Top(iOS(11) ? 10 : 2)
-        ]
+        ])
         tableView.tableHeaderView = searchContainer
         viewModel.refresh.onNext(())
     }
@@ -64,9 +64,7 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
             searchField.backgroundColor = .sdPaleGrey
             firstRun = false
         }
-       // observer = NotificationCenter.default.addObserver(forName: .UIApplicationWillEnterForeground, object: nil, queue: nil) { [weak self] (_) in
-        //    self?.viewModel.refresh.onNext()
-        //}
+ 
         NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { (_) in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
         
         Answers.logContentView(withName: "All Graph List", contentType: nil, contentId: nil, customAttributes: nil)
@@ -74,9 +72,6 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        
-       // NotificationCenter.default.removeObserver(observer!)
-       // observer = nil
     }
 
     override func bindViewModel() {
@@ -96,9 +91,15 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
         }).disposed(by: disposeBag)
 
         viewModel.pageDidUpdate.asDriver(onErrorJustReturn: 0).drive(onNext: { [unowned self] (section) in
-            self.tableView.beginUpdates()
-            self.tableView.reloadSections(IndexSet(integer:section), with: .none)
-            self.tableView.endUpdates()
+            if let paths = self.tableView.indexPathsForVisibleRows {
+                for path in paths {
+                    if path.section == section {
+                        if let cell = self.tableView.cellForRow(at: path) {
+                            self.setUp(cell, at: path)
+                        }
+                    }
+                }
+            }
         }).disposed(by: disposeBag)
 
         tableView.rx.itemSelected.asDriver().drive(viewModel.select).disposed(by: disposeBag)
@@ -116,14 +117,19 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for:indexPath) as! GraphCell
+        setUp(cell, at: indexPath)
+        return cell
+    }
+
+    func setUp(_ cell: UITableViewCell, at indexPath: IndexPath) {
+        let cell = cell as! GraphCell
         if let entry = viewModel.entry(at: indexPath) {
             cell.map(entry: entry, name: entry.userName, avatarURL:entry.avatarURL)
         }
         else {
             cell.clear()
         }
-
-        return cell
     }
+
 
 }

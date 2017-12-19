@@ -14,6 +14,7 @@ sadhana = "Садхана";
 today = "Сегодня";
 hours = "часов";
 minutes = "минут";
+begin = "Начать";
 
 //Login
 login = "Логин";
@@ -22,6 +23,7 @@ signIn = "Войти";
 
 //My Graph
 myGraph = "Мой график";
+myGraphGuidePlusButton = "Чтобы заполнить график садханы за сегодня - нажмите эту кнопку";
 
 //EntryFieldKey
 wakeUpTime = "Подъем в";
@@ -36,6 +38,12 @@ service = "Служение";
 yoga = "Йога";
 lections = "Лекции";
 bedTime = "Отбой в";
+
+//Editing
+editingGuideDay = "Здесь можно выбирать день, который хотите заполнить.";
+editingGuideSwipes = "Так же, можно пролистывать дни влево-вправо.";
+editingGuideSave = "Чтобы сохранить и вернуться к списку - нажмите эту кнопку";
+editingGuideEnjoy = "Приятного пользования!";
 
 //Other Graph
 otherGraph = "Все графики";

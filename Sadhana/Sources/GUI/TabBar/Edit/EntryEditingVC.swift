@@ -49,13 +49,13 @@ class EntryEditingVC : BaseTableVC<EntryEditingVM> {
         var firstResponsibleCell : ResponsibleCell?
         for field in viewModel.fields {
             var currentCell : FormCell?
-            if let field = field as? VariableField<Time?> {
+            if let field = field as? VariableFieldVM<Time?> {
                 currentCell = TimeKeyboardFormCell(field)
             }
-            else if let field = field as? FieldsContainer<Int16> {
+            else if let field = field as? FieldsContainerVM<Int16> {
                 currentCell = CountContainerCell(field)
             }
-            else if let field = field as? VariableField<Bool> {
+            else if let field = field as? VariableFieldVM<Bool> {
                 currentCell = BoolFormCell(field)
             }
 

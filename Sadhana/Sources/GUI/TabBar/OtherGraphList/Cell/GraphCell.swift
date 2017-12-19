@@ -19,27 +19,27 @@ class GraphCell : UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         contentView.addSubview(avatarImageView)
-        avatarImageView <- [
+        avatarImageView.easy.layout([
             Left(10),
             CenterY(),
             Size(44)
-        ]
+        ])
 
         contentView.addSubview(nameLabel)
         nameLabel.font = .systemFont(ofSize: 16)
-        nameLabel <- [
+        nameLabel.easy.layout([
             Top().to(avatarImageView, .top),
             Left(10).to(avatarImageView),
             Right(10)
-        ]
+        ])
         nameLabel.setContentCompressionResistancePriority(UILayoutPriority.required, for: .vertical)
 
         contentView.addSubview(entryView)
-        entryView <- [
+        entryView.easy.layout([
             Right().to(nameLabel, .right),
             Bottom(2).to(avatarImageView, .bottom),
             Left().to(nameLabel, .left)
-        ]
+        ])
 
         separatorInset = UIEdgeInsetsMake(0, 10, 0, 0)
     }

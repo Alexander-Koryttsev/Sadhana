@@ -8,11 +8,15 @@
 
 import UIKit
 import MessageUI
+import DynamicButton
 
 class MyGraphRouter : EditingRouter {
     weak var parent : MainTabBarRouter?
     let navVC = NavigationVC()
     let composerDelegate = ComposerDelegate()
+    var plusButton: DynamicButton {
+        return parent!.plusButton
+    }
 
     func initialVC() -> UIViewController {
         navVC.viewControllers = [ MyGraphVC(MyGraphVM(self)) ]

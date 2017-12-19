@@ -23,22 +23,22 @@ class CountView: UIView {
         valueField.textAlignment = .center
         valueField.keyboardType = .asciiCapableNumberPad
         valueField.placeholder = "0"
-        valueField <- [
+        valueField.easy.layout([
             Top(-8),
             CenterX(),
             Width(60),
             Height(44),
             
-        ]
+        ])
 
         addSubview(titleLabel)
         titleLabel.font = UIFont.systemFont(ofSize: 13.0, weight: UIFont.Weight.regular)
         titleLabel.textColor = .sdSilver
-        titleLabel <- [
+        titleLabel.easy.layout([
             CenterX().to(valueField),
             Top(-5).to(valueField),
             Bottom(>=0)
-        ]
+        ])
     }
     
     required init?(coder aDecoder: NSCoder) {

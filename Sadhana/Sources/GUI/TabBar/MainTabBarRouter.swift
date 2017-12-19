@@ -90,11 +90,11 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
         plusButton.contentEdgeInsets = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
         plusButton.alpha = 1
         window.addSubview(plusButton)
-        plusButton <- [
+        plusButton.easy.layout([
             CenterX(),
             Size(size),
-            Bottom(5)
-        ]
+            Bottom(iPhoneX ? 39 : 5)
+        ])
         plusButton.addTarget(self, action:#selector(togglePlusButton(sender:)), for: .touchUpInside)
     }
 
@@ -104,13 +104,15 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
         let shown = keyboarFrame.origin.y < UIScreen.main.bounds.size.height
 
         UIView.animate(withDuration: 0.3) {
-            self.plusButton <- Bottom((shown ? keyboarFrame.size.height : 0) + 5)
+            self.plusButton.easy.layout(Bottom((shown ? keyboarFrame.size.height : iPhoneX ? 34 : 0) + 5))
             self.window.layoutIfNeeded()
         }
     }
 }
 
 protocol EditingRouter {
+    var plusButton: DynamicButton { get }
+
     func showSadhanaEditing(date: Date)
     func hideSadhanaEditing()
 }

@@ -21,39 +21,39 @@ class EntryView : UIView {
     init() {
         super.init(frame:CGRect())
         addSubview(kirtanImageView)
-        kirtanImageView <- [
+        kirtanImageView.easy.layout([
             CenterY(),
             Right(),
             Top(>=0),
             Bottom(>=0)
-        ]
+        ])
 
         addSubview(readingImageView)
-        readingImageView <- [
+        readingImageView.easy.layout([
             CenterY(),
             Right(32).to(kirtanImageView),
-        ]
+        ])
 
         addSubview(readingLabel)
         readingLabel.font = UIFont.systemFont(ofSize: 12.0, weight: UIFont.Weight.regular)
-        readingLabel <- [
+        readingLabel.easy.layout([
             CenterY(),
             Left(4).to(readingImageView)
-        ]
+        ])
 
         addSubview(japaView)
-        japaView <- [
+        japaView.easy.layout([
             CenterY(),
             Left(),
             Right(32).to(readingImageView)
-        ]
+        ])
 
         self.addSubview(japaCountLabel)
         japaCountLabel.font = UIFont.systemFont(ofSize: 12.0, weight: UIFont.Weight.regular)
-        japaCountLabel <- [
+        japaCountLabel.easy.layout([
             CenterY(),
             Left(5).to(japaView)
-        ]
+        ])
     }
     
     required init?(coder aDecoder: NSCoder) {

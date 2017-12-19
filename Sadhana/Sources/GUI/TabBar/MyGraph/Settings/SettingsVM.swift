@@ -20,16 +20,58 @@ class SettingsVM : BaseVM {
         self.router = router
         super.init()
 
-        addUserInfoItem()
+        addUserInfoSection()
+        //addCommonSection()
+       // addMyGraphSection()
         addFeedbackItem()
         addSignOutItem()
     }
 
-    func addUserInfoItem() {
+    deinit {
+        if let user = Main.service.user as? ManagedUser {
+            _ = Remote.service.send(user).subscribe()
+        }
+    }
+
+    func addUserInfoSection() {
         if let user = Main.service.user {
             let userInfo = SettingInfo(key: user.name, imageURL: user.avatarURL)
             addSingle(item: userInfo)
         }
+    }
+
+    func addCommonSection() {
+        if let user = Main.service.user as? ManagedUser {
+            //TODO: Localize
+            let publicItem = KeyPathFieldVM(user, \ManagedUser.isPublic, for:"isPublic")
+            publicItem.variable.asDriver().drive(onNext:{ _ in
+                user.managedObjectContext?.saveHanlded()
+            }).disposed(by: disposeBag)
+
+            sections.append(SettingsSection(title: "Common Settings", items: [publicItem]))
+        }
+    }
+
+    func addMyGraphSection() {
+       // if let user = Main.service.user as? ManagedUser {
+            let items = [
+                myGraphItem(for: .wakeUpTime),
+                myGraphItem(for: .bedTime),
+                myGraphItem(for: .yoga),
+                myGraphItem(for: .service),
+                myGraphItem(for: .lections)
+            ]
+
+            sections.append(SettingsSection(title: "My Graph", items: items))
+       // }
+    }
+
+    func myGraphItem(for key: EntryFieldKey) -> FormFieldVM {
+        let variable = Variable(Local.defaults.isFieldEnabled(key))
+        variable.asDriver().drive(onNext: { (value) in
+            Local.defaults.set(field: key, enabled: value)
+        }).disposed(by: disposeBag)
+        return VariableFieldVM(variable, for: key.rawValue)
     }
 
     func addFeedbackItem() {
@@ -82,25 +124,23 @@ class SettingsVM : BaseVM {
         addSingle(item: logoutAction)
     }
 
-    func addSingle(item: FormField) {
-        sections.append(SettingsSection(title: "", items: [item]))
+    func addSingle(item: FormFieldVM, title: String? = "") {
+        sections.append(SettingsSection(title: title!, items: [item]))
     }
 }
 
-
-
 struct SettingsSection {
     let title : String
-    let items : [FormField]
+    let items : [FormFieldVM]
 }
 
-struct SettingAction : FormField {
+struct SettingAction : FormFieldVM {
     let key : String
     let destructive : Bool
     let action : Block
 }
 
-struct SettingInfo : FormField {
+struct SettingInfo : FormFieldVM {
     let key : String
     let imageURL : URL?
 }

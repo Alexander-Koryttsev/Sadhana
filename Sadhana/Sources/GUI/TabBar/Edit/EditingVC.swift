@@ -19,13 +19,17 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
     let navigationBar = UINavigationBar()
     let weekKeysBar = UIStackView()
     let weekPageVC = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
-    let bottomBar = BlurView()
+    let bottomBar = UIView()
+    let bottomBarBackground = BlurView()
     var weekVC : WeekVC
     var weekVCDisposeBag = DisposeBag()
     var entryEditingVC : EntryEditingVC {
         get {
             return pageVC.viewControllers?.first as! EntryEditingVC
         }
+    }
+    override var hasGuide: Bool {
+        return true
     }
 
     override init(_ viewModel: VM) {
@@ -59,6 +63,13 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         super.viewWillAppear(animated)
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if guideView != nil {
+            Local.defaults.shouldShowGuideCompletion = true
+        }
+    }
+
     override func bindViewModel() {
         super.bindViewModel()
         navigationItem.leftBarButtonItem?.rx.tap.asDriver().drive(viewModel.cancel).disposed(by: disposeBag)
@@ -77,14 +88,22 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
     }
 
     func setUpBottomBar() {
-        bottomBar.showTopSeparator = true
         view.addSubview(bottomBar)
-        bottomBar <- [
+        bottomBar.easy.layout([
             Left(),
-            Bottom(),
+            Bottom().to(view, .bottomMargin),
             Right(),
             Height(50)
-        ]
+        ])
+
+        bottomBarBackground.showTopSeparator = true
+        bottomBar.addSubview(bottomBarBackground)
+        bottomBarBackground.easy.layout([
+            Top(),
+            Left(),
+            Right(),
+            Bottom().to(view, .bottom)
+        ])
     }
 
     @objc func keyboardWillChange(notification:NSNotification) {
@@ -93,23 +112,24 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         let shown = keyboarFrame.origin.y < UIScreen.main.bounds.size.height
 
         UIView.animate(withDuration: 0.3) {
-            self.bottomBar <- Bottom(shown ? keyboarFrame.size.height : 0)
+            self.bottomBar.easy.layout(Bottom(shown ? keyboarFrame.size.height : 0).to(self.view, shown ? .bottom : .bottomMargin))
+            self.bottomBarBackground.easy.layout(Bottom(shown ? keyboarFrame.size.height : 0).to(self.view, .bottom))
             self.view.layoutIfNeeded()
         }
     }
 
     func setUpTopBar() {
         view.addSubview(topBar)
-        topBar <- [
-            Top(),
+        topBar.easy.layout([
+            Top().to(topLayoutGuide),
             Left(),
             Right(),
-            Height(128)
-        ]
+            Height(108)
+        ])
 
         let topBarBackground = BlurView()
         topBar.addSubview(topBarBackground)
-        topBarBackground <- Edges()
+        topBarBackground.easy.layout([Top().to(view, .top), Left(), Right(), Bottom()])
 
         setUpNavigationBar()
         setUpWeekKeysBar()
@@ -122,12 +142,12 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         navigationBar.shadowImage = UIImage()
         navigationBar.items = [navigationItem]
         navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)]
-        navigationBar <- [
-            Top(20),
+        navigationBar.easy.layout([
+            Top(),
             Left(),
             Right(),
             Height(44)
-        ]
+        ])
     }
 
     func setUpWeekKeysBar() {
@@ -135,17 +155,17 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         weekKeysBar.axis = .horizontal
         weekKeysBar.alignment = .center
         weekKeysBar.distribution = .fillEqually
-        weekKeysBar <- [
+        weekKeysBar.easy.layout([
             Top().to(navigationBar),
             Left(),
             Right(),
             Height(12)
-        ]
+        ])
 
         for symbol in Calendar.local.orderedWeekDaySymbols {
             let label = UILabel()
             label.font = .sdTextStyle5Font
-            label.text = String(symbol.characters.first!).uppercased()
+            label.text = String(symbol.first!).uppercased()
             label.textAlignment = .center
             weekKeysBar.addArrangedSubview(label)
         }
@@ -160,12 +180,12 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         weekPageVC.setViewControllers([weekVC], direction: .forward, animated: false, completion: nil)
         weekPageVC.dataSource = self
         weekPageVC.delegate = self
-        weekPageVC.view <- [
+        weekPageVC.view.easy.layout([
             Top().to(weekKeysBar),
             Left(),
             Bottom(),
             Right()
-        ]
+        ])
 
         refreshWeekKeys()
     }
@@ -174,7 +194,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         pageVC.willMove(toParentViewController: self)
         addChildViewController(pageVC)
         view.addSubview(pageVC.view)
-        pageVC.view <- Edges()
+        pageVC.view.easy.layout(Edges())
         pageVC.didMove(toParentViewController: self)
         //TODO: become first responder
         pageVC.setViewControllers([EntryEditingVC(viewModel.viewModelForEntryEditing()!)]
@@ -226,6 +246,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         driver.drive(onNext:{ [weak self] (date) in
             self?.weekVCDidSelect(date: date)
             self?.refreshWeekKeys()
+            self?.showNextGuide()
         }).disposed(by: weekVCDisposeBag)
 
         driver.map { (date) in return date.monthMedium }.drive(rx.title).disposed(by: weekVCDisposeBag)
@@ -236,6 +257,49 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         pageVC.viewControllers?.forEach({ (viewController) in
             viewController.setEditing(false, animated: true)
         })
+    }
+
+    func showNextGuide() {
+        if let guide = guideView {
+            UIView.transition(with: guide, duration: 0.25, options: .transitionCrossDissolve, animations: {
+                guide.subviews.forEach({ (subview) in
+                    if subview != guide.backgroundView {
+                        subview.removeFromSuperview()
+                    }
+                })
+
+                guide.highlight(self.viewModel.router.plusButton)
+
+                let arrow = UIImageView(image:#imageLiteral(resourceName: "arrow-down"))
+                guide.addSubview(arrow)
+                arrow.easy.layout([Bottom(iPhoneX ? 84 : 50), CenterX(70)])
+
+                let label = guide.createLabel("editingGuideSave")
+                label.easy.layout([Left(42), Right(42), Bottom(13).to(arrow)])
+            }, completion: nil)
+        }
+    }
+
+    override func createGuide() {
+        let guide = GuideView(frame: view.bounds)
+        view.addSubview(guide)
+        guide.highlight(weekVC.circle)
+
+        let arrow = UIImageView(image:#imageLiteral(resourceName: "arrow-up"))
+        guide.addSubview(arrow)
+        arrow.easy.layout([Top(iPhoneX ? 167 : 133), Left(weekVC.circle.frame.maxX + 30).with(.medium), Right(<=10)])
+
+        let dayLabel = guide.createLabel("editingGuideDay")
+        dayLabel.easy.layout([Left(42), Right(42), Top(10).to(arrow)])
+
+        let swipeLabel = guide.createLabel("editingGuideSwipes")
+        swipeLabel.easy.layout([Left(42), Right(42), Top(16).to(dayLabel)])
+
+        let swipeIcon = UIImageView(image: #imageLiteral(resourceName: "swipe-icon"))
+        guide.addSubview(swipeIcon)
+        swipeIcon.easy.layout([Top(14).to(swipeLabel), CenterX()])
+
+        guideView = guide
     }
 
     //MARK: Page View Controller Data Source

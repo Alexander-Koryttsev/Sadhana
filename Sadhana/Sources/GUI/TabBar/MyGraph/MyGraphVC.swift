@@ -92,20 +92,20 @@ class BlurView : UIVisualEffectView {
         topSeparator.backgroundColor = separatorColor
         topSeparator.isHidden = true
         contentView.addSubview(topSeparator)
-        topSeparator <- [
+        topSeparator.easy.layout([
             Left(),
             Right(),
             Top(),
             Height(0.25)
-        ]
+        ])
         bottomSeparator.backgroundColor = separatorColor
         contentView.addSubview(bottomSeparator)
-        bottomSeparator <- [
+        bottomSeparator.easy.layout([
             Left(),
             Right(),
             Bottom(),
             Height(0.5)
-        ]
+        ])
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -123,7 +123,7 @@ class GraphHeader: UITableViewHeaderFooterView {
         titleLabel.textAlignment = .center
         titleLabel.font = UIFont.systemFont(ofSize: 15)
         titleLabel.textColor = UIColor.sdBrownishGrey
-        titleLabel <- Center()
+        titleLabel.easy.layout(Center())
     }
     
     required init?(coder aDecoder: NSCoder) {

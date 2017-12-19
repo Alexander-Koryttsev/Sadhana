@@ -47,7 +47,7 @@ extension Reactive where Base: UISearchBar {
                 .startWith(text)
         }
 
-        let bindingObserver = UIBindingObserver(UIElement: self.base) { (searchBar, text: String) in
+        let bindingObserver = Binder(self.base) { (searchBar, text: String) in
             searchBar.text = text
         }
 
@@ -69,7 +69,7 @@ extension UIControl {
                 }
                 .startWith(getter(existingSelf))
         }
-        return ControlProperty(values: values, valueSink: UIBindingObserver(UIElement: control) { control, value in
+        return ControlProperty(values: values, valueSink: Binder(control) { control, value in
             setter(control, value)
         })
     }
@@ -77,14 +77,14 @@ extension UIControl {
 
 
 extension Reactive where Base: UIRefreshControl {
-    var beginRefreshing: UIBindingObserver<Base, Void> {
-        return UIBindingObserver(UIElement: self.base) { refreshControl, _ in
+    var beginRefreshing: Binder<Void> {
+        return Binder(self.base) { refreshControl, _ in
             refreshControl.beginRefreshing()
         }
     }
 
-    var endRefreshing: UIBindingObserver<Base, Void> {
-        return UIBindingObserver(UIElement: self.base) { refreshControl, _ in
+    var endRefreshing: Binder<Void> {
+        return Binder(self.base) { refreshControl, _ in
             refreshControl.endRefreshing()
         }
     }

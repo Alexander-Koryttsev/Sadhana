@@ -13,8 +13,8 @@ import CoreData
 class EntryEditingVM: BaseVM {
 
     let date : Date
-    private var fieldsInternal = [FormField]()
-    var fields : [FormField] { get {
+    private var fieldsInternal = [FormFieldVM]()
+    var fields : [FormFieldVM] { get {
             return fieldsInternal
         }
     }
@@ -45,7 +45,7 @@ class EntryEditingVM: BaseVM {
             self.field(for: .japa18, type:Int16.self),
             self.field(for: .japa24, type:Int16.self),
         ]
-        let japaContainer = FieldsContainer(EntryFieldKey.japa.rawValue, japaFields, colors: [.sdSunflowerYellow, .sdTangerine, .sdNeonRed, .sdBrightBlue])
+        let japaContainer = FieldsContainerVM(EntryFieldKey.japa.rawValue, japaFields, colors: [.sdSunflowerYellow, .sdTangerine, .sdNeonRed, .sdBrightBlue])
         fieldsInternal.append(japaContainer)
 
         add(timeField: .reading, optional: false)
@@ -60,13 +60,13 @@ class EntryEditingVM: BaseVM {
     }
 
     private func add<T>(field: EntryFieldKey, type:T.Type) {
-        if Local.defaults.isFieldEnabled(field) {
+        //if Local.defaults.isFieldEnabled(field) {
             fieldsInternal.append(self.field(for:field, type: T.self))
-        }
+        //}
     }
 
     private func add(timeField: EntryFieldKey, optional:Bool) {
-        if Local.defaults.isFieldEnabled(timeField) {
+       // if Local.defaults.isFieldEnabled(timeField) {
 
             let variable = Variable(entry.timeOptionalValue(forKey: timeField))
             variable.asDriver().skip(2).drive(onNext: { [unowned entry] (next) in
@@ -75,26 +75,26 @@ class EntryEditingVM: BaseVM {
                 entry.dateUpdated = Date()
             }).disposed(by: disposeBag)
 
-            fieldsInternal.append(VariableField<Time?>(variable, for: timeField.rawValue))
-        }
+            fieldsInternal.append(VariableFieldVM<Time?>(variable, for: timeField.rawValue))
+       // }
     }
 
-    private func field<T>(for key: EntryFieldKey, type:T.Type) -> VariableField<T> {
+    private func field<T>(for key: EntryFieldKey, type:T.Type) -> VariableFieldVM<T> {
         let variable = Variable(entry.value(forKey: key.rawValue) as! T)
         variable.asDriver().skip(1).drive(onNext: { [unowned entry] (next) in
             entry.setValue(next is NSNull ? nil : next, forKey: key.rawValue)
             entry.dateUpdated = Date()
         }).disposed(by: disposeBag)
 
-        return VariableField<T>(variable, for: key.rawValue)
+        return VariableFieldVM<T>(variable, for: key.rawValue)
     }
 }
 
-protocol FormField {
+protocol FormFieldVM {
     var key : String { get }
 }
 
-class VariableField<T> : FormField {
+class VariableFieldVM<T> : FormFieldVM {
     let key : String
     let variable : Variable<T>
     init(_ variable : Variable<T>, for key : String) {
@@ -103,11 +103,27 @@ class VariableField<T> : FormField {
     }
 }
 
-class FieldsContainer<T> : FormField {
+class KeyPathFieldVM<Object, Value> : VariableFieldVM<Value> {
+    typealias KP = ReferenceWritableKeyPath <Object, Value>
+    private var object : Object
+    let keyPath : KP
+    let disposeBag = DisposeBag()
+
+    init(_ object : Object, _ keyPath : KP, for key : String) {
+        self.object = object
+        self.keyPath = keyPath
+        super.init(Variable(object[keyPath: keyPath]), for: key)
+        variable.asDriver().drive(onNext: { (value) in
+            self.object[keyPath: self.keyPath] = value
+        }).disposed(by: disposeBag)
+    }
+}
+
+class FieldsContainerVM<T> : FormFieldVM {
     let key: String
-    let fields: [VariableField<T>]
+    let fields: [VariableFieldVM<T>]
     let colors: [UIColor]?
-    init(_ key: String, _ fields: [VariableField<T>], colors: [UIColor]? = nil) {
+    init(_ key: String, _ fields: [VariableFieldVM<T>], colors: [UIColor]? = nil) {
         self.key = key
         self.fields = fields
         self.colors = colors

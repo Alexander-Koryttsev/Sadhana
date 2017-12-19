@@ -14,7 +14,7 @@ import RxSwift
 class WeekVC: UIViewController {
 
     private let stackView = UIStackView()
-    private let circle = CircleView()
+    let circle = CircleView()
 
     let disposeBag = DisposeBag()
     var labels : [UILabel] {
@@ -39,7 +39,7 @@ class WeekVC: UIViewController {
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.distribution = .fillEqually
-        stackView <- Edges()
+        stackView.easy.layout(Edges())
 
         let currentDate = Date().trimmedTime
 
@@ -76,11 +76,11 @@ class WeekVC: UIViewController {
         }
 
         stackView.insertSubview(circle, at: 0)
-        circle <- [
+        circle.easy.layout([
             Size(35),
             CenterY(),
             CenterX()
-        ]
+        ])
 
         self.selectedDate.asDriver().drive(onNext: { [unowned self] (date) in
             self.labels.forEach { (label) in
@@ -91,7 +91,7 @@ class WeekVC: UIViewController {
 
             self.circle.tintColor = date == Date().trimmedTime ? .sdTangerine : .black
             self.circle.setNeedsDisplay()
-            self.circle <- CenterX().to(self.stackView.arrangedSubviews[self.selectedDate.value.weekDayIndex])
+            self.circle.easy.layout(CenterX().to(self.stackView.arrangedSubviews[self.selectedDate.value.weekDayIndex]))
             self.stackView.layoutIfNeeded()
         }).disposed(by: disposeBag)
     }

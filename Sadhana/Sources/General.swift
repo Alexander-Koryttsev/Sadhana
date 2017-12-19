@@ -39,6 +39,9 @@ enum GeneralError : Error {
 
 let Device = UIDevice.current
 let iOS = NSString(string: Device.systemVersion).integerValue
+let Screen = UIScreen.main
+let iPhone = UI_USER_INTERFACE_IDIOM() == .phone
+let iPhoneX = max(Screen.bounds.size.width, Screen.bounds.size.height) == 812.0
 
 func iOS(_ version: Int) -> Bool {
     return iOS >= version
@@ -92,15 +95,15 @@ class Common {
 
     var calendarDates : [[Date]] {
         get {
-            if dates.count == 0 || dates.first!.first! < Date().trimmedTime {
+            if dates.count == 0 || dates.first!.first! != Date().trimmedTime {
                 dates.removeAll()
-                let info = ProcessInfo.processInfo
-                let begin = info.systemUptime
-                // do something
                 var month = [Date]()
+                var prevDate : Date? = nil
                 calendar.enumerateDates(startingAfter: Date(), matching: DateComponents(hour:0, minute:0), matchingPolicy: .strict, direction: .backward, using: { (date, exactMatch, stop) in
 
                     guard let date = date else { return }
+                    if prevDate == date { return }
+
                     month.append(date)
 
                     if calendar.component(.day, from: date) == 1,
@@ -110,9 +113,8 @@ class Common {
                     }
                     
                     stop = dates.count == 24
+                    prevDate = date
                 });
-                let diff = (info.systemUptime - begin)
-                log("diff is \(diff)")
             }
             return dates
         }
@@ -129,6 +131,9 @@ protocol JSONConvertible {
 extension NSObject {
     static var classString : String {
         return NSStringFromClass(self)
+    }
+    var classString : String {
+        return String(describing: type(of: self)).components(separatedBy: ".").last!
     }
 }
 

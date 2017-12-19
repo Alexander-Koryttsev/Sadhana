@@ -19,19 +19,19 @@ class SettingAvatarCell: UITableViewCell {
         super.init(style: UITableViewCellStyle.default, reuseIdentifier: SettingAvatarCell.reuseID)
 
         contentView.addSubview(avatarView)
-        avatarView <- [
+        avatarView.easy.layout([
             Left(14),
             Top(10),
             Bottom(10),
             Width().like(avatarView, .height)
-        ]
+        ])
 
         contentView.addSubview(nameLabel)
-        nameLabel <- [
+        nameLabel.easy.layout([
             Left(14).to(avatarView),
             CenterY(),
             Right(<=14)
-        ]
+        ])
     }
 
     required init?(coder aDecoder: NSCoder) {

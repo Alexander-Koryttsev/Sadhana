@@ -62,9 +62,9 @@ extension PrimitiveSequence where Trait == SingleTrait {
 }
 
 extension PrimitiveSequence where Trait == CompletableTrait {
-    func track(_ errors:PublishSubject<Error>) -> PrimitiveSequence<CompletableTrait, Element> {
-        return self.do(onError:{(error) in
+    func track(_ errors:PublishSubject<Error>) -> Completable {
+        return self.asObservable().do(onError:{(error) in
             errors.onNext(error)
-        })
+        }).completable()
     }
 }

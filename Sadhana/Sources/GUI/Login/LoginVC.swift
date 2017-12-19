@@ -47,28 +47,28 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
     func setUpBackground() {
         let gradient = CircleGradientView()
         view.addSubview(gradient)
-        gradient <- Edges()
+        gradient.easy.layout(Edges())
 
         let prabhupada = UIImageView(screenSized:"prabhupada")
         prabhupada.contentMode = .center
         view.addSubview(prabhupada)
-        prabhupada <- [
+        prabhupada.easy.layout([
             Left(),
             Top(),
             Right()
-        ]
+        ])
 
         let sevaLogo = UIImageView(screenSized:"v-seva-logo")
         view.addSubview(sevaLogo)
-        sevaLogo <- [
+        sevaLogo.easy.layout([
             Right(screenWidthSpecific(w320: 12, w375: 14, w414: 21)),
             Bottom(screenWidthSpecific(w320: 12, w375: 14, w414: 21))
-        ]
+        ])
 
         view.addSubview(darkBackground)
         darkBackground.backgroundColor = .black
         darkBackground.alpha = 0
-        darkBackground <- Edges()
+        darkBackground.easy.layout(Edges())
     }
 
     func setUpLogo() {
@@ -93,7 +93,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         form.backgroundColor = UIColor.white
         form.clipsToBounds = true
         form.layer.cornerRadius = 5
-        form <- Edges()
+        form.easy.layout(Edges())
 
         setUpLoginField()
         setUpPasswordField()
@@ -112,24 +112,24 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         loginField.keyboardType = .emailAddress
         loginField.returnKeyType = .next
         loginField.delegate = self
-        loginField <- [
+        loginField.easy.layout([
             Top(),
             Left(8),
             Right(8),
             Height(44)
-        ]
+        ])
     }
     
     func setUpPasswordField() {
         let separator = UIView()
         form.addSubview(separator)
         separator.backgroundColor = .sdPaleGrey
-        separator <- [
+        separator.easy.layout([
             Top().to(loginField),
             Left().to(loginField, .left),
             Right().to(loginField, .right),
             Height(1),
-        ]
+        ])
 
         form.addSubview(passwordField)
         passwordField.placeholder = "password".localized
@@ -141,40 +141,40 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         passwordField.returnKeyType = .go
         passwordField.enablesReturnKeyAutomatically = true
         passwordField.delegate = self
-        passwordField <- [
+        passwordField.easy.layout([
             Top().to(separator),
             Left().to(loginField, .left),
             Right().to(loginField, .right),
             Height().like(loginField)
-        ]
+        ])
     }
 
     func setUpLoginButton() {
         form.addSubview(loginButton)
         loginButton.setTitle("signIn".localized, for: .normal)
         loginButton.titleLabel?.font = UIFont.sdTextStyle2Font()
-        loginButton <- [
+        loginButton.easy.layout([
             Top().to(passwordField),
             Left(),
             Right(),
             Height(59),
             Bottom(0)
-        ]
+        ])
 
         loginButton.addSubview(arrow)
-        arrow <- [
+        arrow.easy.layout([
             CenterY().to(loginButton.titleLabel!),
             Left(10).to(loginButton.titleLabel!, .right)
-        ]
+        ])
     }
 
     func setUpActivityIndicator() {
         form.addSubview(activityIndicator)
         activityIndicator.hidesWhenStopped = true
-        activityIndicator <- [
+        activityIndicator.easy.layout([
             CenterX().to(loginButton),
             CenterY().to(loginButton)
-        ]
+        ])
     }
 
     func setUpErrorLabel() {
@@ -183,41 +183,41 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         errorLabel.textColor = UIColor.white
         errorLabel.textAlignment = .center
         errorLabel.text = ""
-        errorLabel <- [
+        errorLabel.easy.layout([
             Top(12).to(form),
             CenterX(),
             Width(280)
-        ]
+        ])
     }
 
     func buildConstraints() {
-        formArea <- [
+        formArea.easy.layout([
             Top(),
             Left(),
             Right(),
             Bottom(0)
-        ]
+        ])
 
-        logo <- Center().with(.high)
+        logo.easy.layout(Center().with(.high))
 
-        titleLabel <- [
+        titleLabel.easy.layout([
             Top().to(logo),
             CenterX()
-        ]
+        ])
 
-        formContainer <- [
+        formContainer.easy.layout([
             Top(22).to(titleLabel),
             Width(280),
             CenterX()
-        ]
+        ])
     }
 
     func animateForm() {
         formContainer.alpha = 0
         let deadlineTime = DispatchTime.now() + .milliseconds(500)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime, execute: {
-            self.formContainer <- Top(-5).to(self.formArea, .centerY)
-            self.titleLabel <- Bottom(22).to(self.formContainer)
+            self.formContainer.easy.layout(Top(-5).to(self.formArea, .centerY))
+            self.titleLabel.easy.layout(Bottom(22).to(self.formContainer))
 
             UIView.animate(withDuration: 1.5, animations: {
                 self.formArea.layoutIfNeeded()
@@ -232,7 +232,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         let shown = keyboarFrame.origin.y < UIScreen.main.bounds.size.height
 
         UIView.animate(withDuration: 0.3) {
-            self.formArea <- Bottom(shown ? keyboarFrame.size.height : 0)
+            self.formArea.easy.layout(Bottom(shown ? keyboarFrame.size.height : 0))
             self.view.layoutIfNeeded()
             self.darkBackground.alpha = shown ? 0.3 : 0
         }

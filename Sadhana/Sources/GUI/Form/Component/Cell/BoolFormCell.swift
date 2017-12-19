@@ -11,11 +11,11 @@ import RxCocoa
 import RxSwift
 
 class BoolFormCell: FormCell {
-    private let viewModel: VariableField<Bool>
+    private let viewModel: VariableFieldVM<Bool>
     private let switcher = UISwitch()
     let disposeBag = DisposeBag()
 
-    init(_ viewModel: VariableField<Bool>) {
+    init(_ viewModel: VariableFieldVM<Bool>) {
         self.viewModel = viewModel
         super.init(style: .default, reuseIdentifier: nil)
         accessoryView = switcher

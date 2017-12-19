@@ -21,26 +21,26 @@ class EntryCell: UITableViewCell {
         separatorInset = UIEdgeInsets(top: 0, left: contentView.layoutMargins.left, bottom: 0, right: 0)
 
         contentView.addSubview(entryView)
-        entryView <- [
+        entryView.easy.layout([
             CenterY(),
             Left(60).to(contentView),
             Right().to(contentView, .rightMargin)
-        ]
+        ])
 
         contentView.addSubview(dateLabel)
         dateLabel.font = UIFont.systemFont(ofSize: 16.0, weight: UIFont.Weight.light)
-        dateLabel <- [
+        dateLabel.easy.layout([
             CenterY(),
             Right(32).to(entryView)
-        ]
+        ])
 
         contentView.addSubview(weekDayLabel)
         weekDayLabel.font = UIFont.systemFont(ofSize: 10.0, weight: UIFont.Weight.bold)
         weekDayLabel.textColor = UIColor.sdSilver
-        weekDayLabel <- [
+        weekDayLabel.easy.layout([
             Left(5).to(dateLabel),
             Bottom(2).to(dateLabel, .bottom)
-        ]
+        ])
     }
 
     func map(_ entry: Entry, maxRoundsCount:Int16) {

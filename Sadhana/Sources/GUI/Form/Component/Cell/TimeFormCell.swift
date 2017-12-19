@@ -12,7 +12,7 @@ import RxCocoa
 import RxSwift
 
 class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
-    private let viewModel: VariableField<Time?>
+    private let viewModel: VariableFieldVM<Time?>
     private var hoursView: CountView {
         get {
             return countViews.first!
@@ -24,7 +24,7 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
         }
     }
 
-    init(_ viewModel: VariableField<Time?>) {
+    init(_ viewModel: VariableFieldVM<Time?>) {
         self.viewModel = viewModel
         super.init(fieldsCount:2)
 

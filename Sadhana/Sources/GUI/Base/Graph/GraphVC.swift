@@ -41,7 +41,7 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
         errorLabel.textAlignment = .center
         errorLabel.numberOfLines = 0
         errorLabel.textColor = UIColor.sdBrownishGrey
-        errorLabel <- Edges(10).with(.high)
+        errorLabel.easy.layout(Edges(10).with(.high))
     }
 
     override func bindViewModel() {
@@ -93,7 +93,12 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = (tableView.dequeueReusableCell(withIdentifier: NSStringFromClass(EntryCell.self)) ?? EntryCell()) as! EntryCell
+        setUp(cell, at: indexPath)
+        return cell
+    }
 
+    func setUp(_ cell: UITableViewCell, at indexPath: IndexPath) {
+        let cell = cell as! EntryCell
         let (entry, date) = viewModel.entry(at: indexPath)
         if let entry = entry {
             cell.map(entry, maxRoundsCount:viewModel.maxCount(for: indexPath.section))
@@ -101,7 +106,5 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
         else {
             cell.clear(date)
         }
-
-        return cell
     }
 }

@@ -30,6 +30,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         Fabric.with([Crashlytics.self, Answers.self])
 
+        _ = Remote.service
+
         return true
     }
 

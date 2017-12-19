@@ -29,27 +29,27 @@ class CountsLayoutCell: ResponsibleCell {
 
         contentView.addSubview(titleLabel)
         titleLabel.font = UIFont.systemFont(ofSize: 14.0, weight: UIFont.Weight.regular)
-        titleLabel <- [
+        titleLabel.easy.layout([
             CenterX(),
             Top(9),
             Height(18)
-        ]
+        ])
 
         contentView.addSubview(countViewsBackgroundView)
         countViewsBackgroundView.backgroundColor = .sdSilver
-        countViewsBackgroundView <- [
+        countViewsBackgroundView.easy.layout([
             Top(10).to(titleLabel),
             Left(4),
             Right(4),
             Bottom(14)
-        ]
+        ])
 
         countViewsBackgroundView.addSubview(stackView)
         stackView.axis = .horizontal
         stackView.distribution = .equalCentering
         stackView.spacing = 1
         stackView.distribution = .fillEqually
-        stackView <- Edges()
+        stackView.easy.layout(Edges())
 
         for _ in (0..<fieldsCount) {
             stackView.addArrangedSubview(CountView())
@@ -107,24 +107,15 @@ class CountsLayoutCell: ResponsibleCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-  /*  override func becomeFirstResponder() -> Bool {
-        for view in countViews {
-            if (view.valueField.text == nil || view.valueField.text!.isEmpty) {
-                return view.valueField.becomeFirstResponder()
-            }
-        }
-        return false
-    }
-*/
     override func height() -> CGFloat {
         return 100
     }
 }
 
 class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
-    private let viewModel: FieldsContainer<Int16>
+    private let viewModel: FieldsContainerVM<Int16>
 
-    init(_ viewModel: FieldsContainer<Int16>) {
+    init(_ viewModel: FieldsContainerVM<Int16>) {
         self.viewModel = viewModel
         super.init(fieldsCount:viewModel.fields.count)
 

@@ -26,7 +26,7 @@ class OtherGraphListContainerVC : UIViewController {
             currentVC.willMove(toParentViewController: self)
             addChildViewController(currentVC)
             view.addSubview(currentVC.view)
-            currentVC.view <- Edges()
+            currentVC.view.easy.layout(Edges())
         }
     }
 

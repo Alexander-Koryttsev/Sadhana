@@ -34,9 +34,9 @@ class FavoriteGraphListVC : GraphListVC<FavoriteGraphListVM> {
         container.backgroundColor = .white
         container.addSubview(label)
         
-        label <- Edges(10)
+        label.easy.layout(Edges(10))
         
         tableView.superview!.addSubview(container)
-        container <- Edges()
+        container.easy.layout(Edges())
     }
 }

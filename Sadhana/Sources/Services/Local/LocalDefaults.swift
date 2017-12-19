@@ -15,6 +15,8 @@ class LocalDefaults {
         case entriesUpdatedDate
         case userID
         case optionFields
+        case otherGraphsEnabled
+        case guidesShown
 
         var string : String {
             get {
@@ -61,6 +63,17 @@ class LocalDefaults {
         }
     }
 
+    var guidesShown : [String : Bool] {
+        get {
+            return dictionary(for:.guidesShown) as? [String : Bool] ?? [String : Bool]()
+        }
+        set {
+            set(newValue, for: .guidesShown)
+        }
+    }
+
+    var shouldShowGuideCompletion = false
+
     func set(field:EntryFieldKey, enabled:Bool) {
         var fields = optionFields
         fields[field.rawValue] = !enabled
@@ -68,7 +81,17 @@ class LocalDefaults {
     }
 
     func isFieldEnabled(_ field:EntryFieldKey) -> Bool {
-        return optionFields[field.rawValue] == false || optionFields[field.rawValue] == nil
+        return optionFields[field.rawValue] ?? false
+    }
+
+    func set(guide:NSObject, shown:Bool) {
+        var guides = guidesShown
+        guides[guide.classString] = shown
+        guidesShown = guides
+    }
+
+    func isGuideShown(_ guide:NSObject) -> Bool {
+        return guidesShown[guide.classString] ?? false
     }
 
     func reset() {
