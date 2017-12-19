@@ -1,0 +1,2 @@
+PRODUCT_NAME = $(TARGET_NAME)
+PRODUCT_BUNDLE_IDENTIFIER = com.vaishnava-seva.sadhana

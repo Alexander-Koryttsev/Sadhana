@@ -1,0 +1,65 @@
+/* 
+  Localisable.strings
+  Sadhana
+
+  Created by Alexander Koryttsev on 7/14/17.
+  Copyright © 2017 Alexander Koryttsev. All rights reserved.
+*/
+
+//General
+ok = "OK";
+cancel = "Cancel";
+discardChanges = "Discard changes";
+sadhana = "Sadhana";
+today = "Today";
+hours = "hours";
+minutes = "minutes";
+begin = "Begin";
+
+//Login
+login = "Login";
+password = "Password";
+signIn = "Sign In";
+
+//My Graph
+myGraph = "My Graph";
+myGraphGuidePlusButton = "To fill the sadhana graph for today - tap this button";
+
+//EntryFieldKey
+wakeUpTime = "Wake Up time";
+japa_rounds = "Japa rounds";
+japaCount7_30 = "before 7:30";
+japaCount10 = "before 10";
+japaCount18 = "before 18";
+japaCount24 = "after 18";
+reading = "Reading books";
+kirtan = "Kirtan";
+service = "Service";
+yoga = "Yoga";
+lections = "Lections";
+bedTime = "Bed time";
+
+//Editing
+editingGuideDay = "Here you can choose the day you want to fill.";
+editingGuideSwipes = "Also, you can scroll through the days left-right.";
+editingGuideSave = "To save and return to the list - tap this button";
+editingGuideEnjoy = "Enjoy!";
+
+//Other Graph
+otherGraph = "Other Graphs";
+all = "All";
+favorites = "Favorites";
+
+//Favorites
+letsPrayForFavorites = "The favorite graphs are not manifested. Let's pray together to Krishna so that they manifest. 🙏";
+
+//Settings
+settings = "Settings";
+letterToDevs = "Feedback";
+signOut = "Sign Out";
+
+//Feedback
+cantSendMailTitle = "The system mail client isn't configured";
+cantSendMailMessage = "You can send an email to \"%@\" via a third-party mail client";
+copyAddres = "Copy address";
+deviceInfo = "Device information";
