@@ -178,6 +178,14 @@ extension UIImageView {
     }
 }
 
+extension UIView {
+    func removeAllSubviews() {
+        subviews.forEach { (subview) in
+            subview.removeFromSuperview()
+        }
+    }
+}
+
 func desc(_ object:Any?) -> String {
     let anyObject : AnyObject = object as AnyObject
     guard let string = anyObject.description else { return ""}

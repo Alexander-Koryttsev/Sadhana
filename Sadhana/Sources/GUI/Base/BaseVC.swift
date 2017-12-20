@@ -54,7 +54,7 @@ extension ViewController where Self : UIViewController {
                     self.hideGuide(animated: true)
                 }).disposed(by: disposeBag)
                 view.addSubview(closeButton)
-                closeButton.easy.layout([Right(20), Top(20)])
+                closeButton.easy.layout([Right(8), Top(8), Size(44)])
                 guide.closeButton = closeButton
 
                 UIView.transition(with: view, duration: 0.25, options: .transitionCrossDissolve, animations: {

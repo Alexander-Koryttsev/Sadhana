@@ -72,6 +72,9 @@ class SettingsVC : BaseTableVC <SettingsVM> {
         let field = self.field(at: indexPath)
         if let action = field as? SettingAction {
             action.action()
+            if !action.presenter {
+                tableView.deselectRow(at: indexPath, animated: true)
+            }
         }
     }
 

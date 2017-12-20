@@ -7,12 +7,14 @@
 //
 
 import UIKit
+import RxSwift
 import RxCocoa
 import EasyPeasy
 
 class MainTabBarVC : BaseTabBarVC<MainTabBarVM> {
 
     let editingButton = UIFactory.editingButton
+    var guideBag = DisposeBag()
     override var hasGuide: Bool {
         return true
     }
@@ -70,7 +72,7 @@ class MainTabBarVC : BaseTabBarVC<MainTabBarVM> {
                 UIView.transition(with: self.view, duration: 0.25, options: .transitionCrossDissolve, animations: {
                     completionBackground.removeFromSuperview()
                 }, completion: nil)
-            }).disposed(by: disposeBag)
+            }).disposed(by: guideBag)
 
             UIView.transition(with: view, duration: 0.25, options: .transitionCrossDissolve, animations: {
                 self.view.addSubview(completionBackground)
@@ -96,15 +98,82 @@ class MainTabBarVC : BaseTabBarVC<MainTabBarVM> {
     override func createGuide() {
         let guide = GuideView(frame: view.bounds)
         view.addSubview(guide)
-        guide.highlight(editingButton)
 
-        let arrow = UIImageView(image:#imageLiteral(resourceName: "arrow-down"))
-        guide.addSubview(arrow)
-        arrow.easy.layout([Bottom(iPhoneX ? 84 : 50), CenterX(80)])
-
-        let label = guide.createLabel("myGraphGuidePlusButton")
-        label.easy.layout([Left(42), Right(42), Bottom(10).to(arrow)])
+        let alert = guide.createAlert()
+        let imageView = UIImageView(image: #imageLiteral(resourceName: "illustration"))
+        alert.contentView.addSubview(imageView)
+        imageView.easy.layout(Edges())
+        alert.button.setTitle("Приступить", for: .normal)
+        alert.button.rx.tap.subscribe(onNext: { [unowned self] () in
+            UIView.animate(withDuration: 0.25, animations: {
+                self.showFeaturesGuide()
+                guide.layoutIfNeeded()
+            })
+        }).disposed(by: guideBag)
 
         guideView = guide
+    }
+
+    func showFeaturesGuide() {
+        guideBag = DisposeBag()
+        if let guide = guideView,
+            let alert = guide.alert {
+
+            alert.contentView.removeAllSubviews()
+            let title = UILabel()
+            title.text = "Что нового:"
+            title.font = .boldSystemFont(ofSize: 30)
+            alert.contentView.addSubview(title)
+            title.easy.layout([Top(58), CenterX()])
+
+            let noInetIcon = UIImageView(image: #imageLiteral(resourceName: "no-internet-icon"))
+            alert.contentView.addSubview(noInetIcon)
+            noInetIcon.easy.layout([Top(29).to(title), Left().to(title, .left)])
+
+            let noInetTitle = UILabel()
+            noInetTitle.text = "Работает\nбез интернета"
+            noInetTitle.textColor = .sdSilver
+            noInetTitle.textAlignment = .center
+            noInetTitle.font = .systemFont(ofSize: 13)
+            noInetTitle.numberOfLines = 2
+            alert.contentView.addSubview(noInetTitle)
+            noInetTitle.easy.layout([Top(16).to(noInetIcon), CenterX().to(noInetIcon), Bottom(62).to(alert.button, .top)])
+
+
+            let fastIcon = UIImageView(image: #imageLiteral(resourceName: "faster-icon"))
+            alert.contentView.addSubview(fastIcon)
+            fastIcon.easy.layout([CenterY().to(noInetIcon), Right().to(title, .right)])
+
+            let fastTitle = UILabel()
+            fastTitle.text = "Быстро\nзаполняется"
+            fastTitle.textColor = .sdSilver
+            fastTitle.textAlignment = .center
+            fastTitle.font = .systemFont(ofSize: 13)
+            fastTitle.numberOfLines = 2
+            alert.contentView.addSubview(fastTitle)
+            fastTitle.easy.layout([CenterY().to(noInetTitle), CenterX().to(fastIcon)])
+
+            alert.button.setTitle("Понтно", for: .normal)
+
+            alert.button.rx.tap.subscribe(onNext: { [unowned self] () in
+                UIView.transition(with: guide, duration: 0.25, options: .transitionCrossDissolve, animations: {
+                    guide.removeAlert()
+                    self.showPlusButtonGuide()
+                }, completion: nil)
+            }).disposed(by: guideBag)
+        }
+    }
+
+    func showPlusButtonGuide() {
+        if let guide = guideView {
+            guide.highlight(editingButton)
+
+            let arrow = UIImageView(image:#imageLiteral(resourceName: "arrow-down"))
+            guide.addSubview(arrow)
+            arrow.easy.layout([Bottom(iPhoneX ? 84 : 50), CenterX(80)])
+
+            let label = guide.createLabel("myGraphGuidePlusButton")
+            label.easy.layout([Left(42), Right(42), Bottom(10).to(arrow)])
+        }
     }
 }

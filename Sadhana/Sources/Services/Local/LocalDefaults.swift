@@ -91,7 +91,14 @@ class LocalDefaults {
     }
 
     func isGuideShown(_ guide:NSObject) -> Bool {
+        log("isGuide \(guide) shown \(guidesShown[guide.classString] ?? false)")
+        log("guides:\(guidesShown)")
         return guidesShown[guide.classString] ?? false
+    }
+
+    func resetGuide() {
+        guidesShown = [:]
+        log("guides:\(guidesShown)")
     }
 
     func reset() {
