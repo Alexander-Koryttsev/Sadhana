@@ -40,8 +40,7 @@ class LoginVM : BaseVM {
             .flatMap { [unowned self] _ -> Observable<Bool> in
                 return Main.service.login(self.login.value, password: self.password.value)
                     .flatMap { [unowned self] (user) -> Single<[ManagedEntry]> in
-                        //TODO: localize!
-                        self.messages.onNext("Харе Кришна, \(user.name)!\nЗагружаем Вашу садхану...")
+                        self.messages.onNext(String(format: "login_welcome".localized, user.name))
                         return Main.service.loadMyEntries()
                     }
                     .observeOn(MainScheduler.instance)

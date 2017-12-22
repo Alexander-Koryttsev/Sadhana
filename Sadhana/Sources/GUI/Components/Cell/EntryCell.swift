@@ -19,6 +19,8 @@ class EntryCell: UITableViewCell {
 
         contentView.layoutMargins = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
         separatorInset = UIEdgeInsets(top: 0, left: contentView.layoutMargins.left, bottom: 0, right: 0)
+        backgroundColor = .white
+        contentView.backgroundColor = .white
 
         contentView.addSubview(entryView)
         entryView.easy.layout([

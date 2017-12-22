@@ -32,6 +32,10 @@ extension ViewController where Self : UIViewController {
     fileprivate func baseBindViewModel() {
         viewModel.alerts.subscribe(onNext: { [weak self] (alert) in
 
+            if iPad {
+                alert.style = .alert
+            }
+
             alert.add(completion: { [weak self] in
                 RootRouter.shared?.setPlusButton(hidden:false, animated:true)
                 self?.alertDidDismiss()
@@ -42,11 +46,10 @@ extension ViewController where Self : UIViewController {
         }).disposed(by: disposeBag)
     }
 
-    fileprivate func baseViewDidAppear() {
+    fileprivate func baseViewDidAppear(_ animated: Bool) {
          if hasGuide, !Local.defaults.isGuideShown(self) {
             createGuide()
             if let guide = guideView {
-                guide.isHidden = true
 
                 let closeButton = UIButton(type: .custom)
                 closeButton.setImage(#imageLiteral(resourceName: "close"), for: .normal)
@@ -54,13 +57,16 @@ extension ViewController where Self : UIViewController {
                     self.hideGuide(animated: true)
                 }).disposed(by: disposeBag)
                 view.addSubview(closeButton)
-                closeButton.easy.layout([Right(8), Top(8), Size(44)])
+                closeButton.easy.layout([Right(8), Top(iPhoneX ? 42 : 8), Size(44)])
                 guide.closeButton = closeButton
 
-                UIView.transition(with: view, duration: 0.25, options: .transitionCrossDissolve, animations: {
-                    guide.isHidden = false
-                }, completion: nil)
-
+                if animated {
+                    guide.isHidden = true
+                    UIView.transition(with: view, duration: 0.25, options: .transitionCrossDissolve, animations: {
+                        guide.isHidden = false
+                    }, completion: nil)
+                }
+              
                 Local.defaults.set(guide: self, shown: true)
             }
          }
@@ -116,7 +122,7 @@ class BaseVC<VM:BaseVM>: UIViewController, ViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        baseViewDidAppear()
+        baseViewDidAppear(animated)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -160,7 +166,7 @@ class BaseTableVC<VM:BaseVM>: UITableViewController, ViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        baseViewDidAppear()
+        baseViewDidAppear(animated)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -214,7 +220,7 @@ class BaseTabBarVC<VM:BaseVM>: UITabBarController, ViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        baseViewDidAppear()
+        baseViewDidAppear(animated)
     }
     
     override func viewDidDisappear(_ animated: Bool) {

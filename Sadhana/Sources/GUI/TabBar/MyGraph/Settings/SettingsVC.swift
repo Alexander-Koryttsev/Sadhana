@@ -8,6 +8,7 @@
 
 import UIKit
 import AlamofireImage
+import Crashlytics
 
 class SettingsVC : BaseTableVC <SettingsVM> {
 
@@ -21,6 +22,8 @@ class SettingsVC : BaseTableVC <SettingsVM> {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+
+        Answers.logContentView(withName: "Settings", contentType: nil, contentId: nil, customAttributes: nil)
     }
 
     func field(at indexPath: IndexPath) -> FormFieldVM {

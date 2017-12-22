@@ -10,6 +10,8 @@ import Foundation
 import RxCocoa
 import RxSwift
 import MessageUI
+import Crashlytics
+
 
 class SettingsVM : BaseVM {
 
@@ -100,6 +102,7 @@ class SettingsVM : BaseVM {
 
                 mailComposerVC.addAttachmentData(deviceData.data(using:.utf8)!, mimeType: "text", fileName: "deviceInfo".localized + ".txt")
                 self.router.show(mailComposer: mailComposerVC)
+                Answers.logContentView(withName: "Feedback", contentType: nil, contentId: nil, customAttributes: nil)
             }
             else {
                 let alert = Alert()

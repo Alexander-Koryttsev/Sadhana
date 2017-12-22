@@ -42,6 +42,7 @@ let iOS = NSString(string: Device.systemVersion).integerValue
 let Screen = UIScreen.main
 let iPhone = UI_USER_INTERFACE_IDIOM() == .phone
 let iPhoneX = max(Screen.bounds.size.width, Screen.bounds.size.height) == 812.0
+let iPad = UI_USER_INTERFACE_IDIOM() == .pad
 
 func iOS(_ version: Int) -> Bool {
     return iOS >= version
@@ -98,12 +99,10 @@ class Common {
             if dates.count == 0 || dates.first!.first! != Date().trimmedTime {
                 dates.removeAll()
                 var month = [Date]()
-                var prevDate : Date? = nil
-                calendar.enumerateDates(startingAfter: Date(), matching: DateComponents(hour:0, minute:0), matchingPolicy: .strict, direction: .backward, using: { (date, exactMatch, stop) in
+                var date = Date().trimmedTime
+                var stop = false
 
-                    guard let date = date else { return }
-                    if prevDate == date { return }
-
+                while !stop {
                     month.append(date)
 
                     if calendar.component(.day, from: date) == 1,
@@ -111,10 +110,10 @@ class Common {
                         dates.append(month)
                         month.removeAll()
                     }
-                    
+
                     stop = dates.count == 24
-                    prevDate = date
-                });
+                    date = calendar.date(byAdding: .day, value: -1, to: date)!
+                }
             }
             return dates
         }
@@ -142,6 +141,10 @@ extension String {
         get {
             return NSLocalizedString(self, comment: "")
         }
+    }
+
+    var capitalizedFirstLetter: String {
+        return prefix(1).uppercased() + dropFirst()
     }
 }
 

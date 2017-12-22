@@ -10,28 +10,12 @@
       "scale" : "3x"
     },
     {
-      "orientation" : "landscape",
-      "idiom" : "iphone",
-      "extent" : "full-screen",
-      "minimum-system-version" : "11.0",
-      "subtype" : "2436h",
-      "scale" : "3x"
-    },
-    {
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "736h",
       "filename" : "login-screen-6@3x.png",
       "minimum-system-version" : "8.0",
       "orientation" : "portrait",
-      "scale" : "3x"
-    },
-    {
-      "orientation" : "landscape",
-      "idiom" : "iphone",
-      "extent" : "full-screen",
-      "minimum-system-version" : "8.0",
-      "subtype" : "736h",
       "scale" : "3x"
     },
     {
@@ -61,21 +45,32 @@
     },
     {
       "orientation" : "portrait",
-      "idiom" : "iphone",
+      "idiom" : "ipad",
       "extent" : "full-screen",
+      "minimum-system-version" : "7.0",
+      "scale" : "1x"
+    },
+    {
+      "orientation" : "landscape",
+      "idiom" : "ipad",
+      "extent" : "full-screen",
+      "minimum-system-version" : "7.0",
       "scale" : "1x"
     },
     {
       "orientation" : "portrait",
-      "idiom" : "iphone",
+      "idiom" : "ipad",
+      "filename" : "login-screen-i-pad-portrait@2x.png",
       "extent" : "full-screen",
+      "minimum-system-version" : "7.0",
       "scale" : "2x"
     },
     {
-      "orientation" : "portrait",
-      "idiom" : "iphone",
+      "orientation" : "landscape",
+      "idiom" : "ipad",
+      "filename" : "login-screen-i-pad-landscape@2x.png",
       "extent" : "full-screen",
-      "subtype" : "retina4",
+      "minimum-system-version" : "7.0",
       "scale" : "2x"
     }
   ],

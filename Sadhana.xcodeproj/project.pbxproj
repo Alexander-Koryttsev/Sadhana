@@ -84,6 +84,8 @@
 		96B607FB1F1D01EF002B9AB5 /* EntryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607FA1F1D01EF002B9AB5 /* EntryCell.swift */; };
 		96B9A5651F25C04C000673B7 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B9A5641F25C04C000673B7 /* Time.swift */; };
 		96B9A5671F25DAAA000673B7 /* ManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B9A5661F25DAAA000673B7 /* ManagedObject.swift */; };
+		96CFC2EA1FEBBFED000472BA /* AudioService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CFC2E91FEBBFED000472BA /* AudioService.swift */; };
+		96CFC2EF1FEBC0B1000472BA /* tada.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 96CFC2EE1FEBC0B1000472BA /* tada.mp3 */; };
 		96E976771F15473400F6766F /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976761F15473400F6766F /* LoginVC.swift */; };
 		96E976811F1548E600F6766F /* LoginVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976801F1548E600F6766F /* LoginVM.swift */; };
 		96E976851F16463B00F6766F /* BaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E976841F16463B00F6766F /* BaseVC.swift */; };
@@ -184,6 +186,8 @@
 		96B607FA1F1D01EF002B9AB5 /* EntryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntryCell.swift; sourceTree = "<group>"; };
 		96B9A5641F25C04C000673B7 /* Time.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		96B9A5661F25DAAA000673B7 /* ManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagedObject.swift; sourceTree = "<group>"; };
+		96CFC2E91FEBBFED000472BA /* AudioService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioService.swift; sourceTree = "<group>"; };
+		96CFC2EE1FEBC0B1000472BA /* tada.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = tada.mp3; sourceTree = "<group>"; };
 		96E976761F15473400F6766F /* LoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		96E976801F1548E600F6766F /* LoginVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVM.swift; sourceTree = "<group>"; };
 		96E976841F16463B00F6766F /* BaseVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseVC.swift; sourceTree = "<group>"; };
@@ -302,6 +306,7 @@
 		966056A21EF2B50D00973FA4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				96CFC2EB1FEBC08E000472BA /* Audio */,
 				966056A31EF2B50D00973FA4 /* Assets.xcassets */,
 				96B607CA1F18F45E002B9AB5 /* Localizable.strings */,
 			);
@@ -352,6 +357,7 @@
 				966395571F448915000CAEDB /* MainService.swift */,
 				967D791F1F00F3CD00A961D6 /* Local */,
 				967D79211F00F3CD00A961D6 /* Remote */,
+				96CFC2E91FEBBFED000472BA /* AudioService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -605,6 +611,14 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		96CFC2EB1FEBC08E000472BA /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				96CFC2EE1FEBC0B1000472BA /* tada.mp3 */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
 		96F600471EC996AC006DAECE = {
 			isa = PBXGroup;
 			children = (
@@ -708,6 +722,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96CFC2EF1FEBC0B1000472BA /* tada.mp3 in Resources */,
 				9669D58D1F4369A100728E1A /* InfoPlist.strings in Resources */,
 				96B607C81F18F45E002B9AB5 /* Localizable.strings in Resources */,
 				9612BD821F0130A700336A1B /* Assets.xcassets in Resources */,
@@ -801,6 +816,7 @@
 				9652C9931F45D8160065458B /* KeyboardManager.swift in Sources */,
 				96B070881F0FE5C8004C9249 /* RemoteEntry.swift in Sources */,
 				96A196C31F4AFBA400AAB635 /* FavoriteGraphListVC.swift in Sources */,
+				96CFC2EA1FEBBFED000472BA /* AudioService.swift in Sources */,
 				96B070861F0FDB78004C9249 /* Entry.swift in Sources */,
 				960A0D511F2876C000356152 /* EntryEditingVC.swift in Sources */,
 				96A196C71F4AFBB800AAB635 /* GraphListVC.swift in Sources */,
@@ -953,6 +969,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = "Dev-Debug";
 		};
@@ -1017,6 +1034,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = "Dev-Release";
 		};
@@ -1137,6 +1155,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = "Prod-Debug";
 		};
@@ -1146,13 +1165,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEVELOPMENT_TEAM = 48MD2JEP44;
 				INFOPLIST_FILE = "$(SRCROOT)/Sadhana/SupportingFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = "Prod-Release";
 		};

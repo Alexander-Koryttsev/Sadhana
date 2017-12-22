@@ -11,7 +11,7 @@ import UIKit
 class Alert {
     var title : String?
     var message : String?
-    var style = UIAlertControllerStyle.actionSheet
+    var style = iPhone ? UIAlertControllerStyle.actionSheet : UIAlertControllerStyle.alert
     private var actions = [Action]()
     private var completions = [Block]()
 
