@@ -70,7 +70,7 @@ class KeyboardManager {
             endFrame.size.height = endFrame.height - 75
         }
 
-        keyboardContainer.isHidden = !showBackNextButtons
+        keyboardContainer.isHidden = iPhone ? !showBackNextButtons : true
 
         if showBackNextButtons {
             let keyBoardWindow = UIApplication.shared.windows.last

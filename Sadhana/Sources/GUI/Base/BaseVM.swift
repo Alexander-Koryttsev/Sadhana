@@ -25,8 +25,7 @@ class BaseVM {
             .map({ (error) -> String in
                 switch error {
                 case RemoteError.notLoggedIn:
-                    //TODO: localize
-                    let message = "Your session is expired"
+                    let message = "error_session_expired".localized
                     RootRouter.shared?.logOut(error:error)
                     return message
                 case RemoteError.invalidRequest(_, let description):

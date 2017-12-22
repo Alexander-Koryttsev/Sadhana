@@ -10,6 +10,8 @@ import Foundation
 import RxCocoa
 import RxSwift
 import MessageUI
+import Crashlytics
+
 
 class SettingsVM : BaseVM {
 
@@ -24,6 +26,11 @@ class SettingsVM : BaseVM {
         //addCommonSection()
        // addMyGraphSection()
         addFeedbackItem()
+
+        #if DEV
+            addDevSection()
+        #endif
+
         addSignOutItem()
     }
 
@@ -75,7 +82,7 @@ class SettingsVM : BaseVM {
     }
 
     func addFeedbackItem() {
-        let action = SettingAction(key: "letterToDevs".localized, destructive: false, action: { [unowned self] in
+        let action = SettingAction(key: "letterToDevs".localized, destructive: false, presenter:true) { [unowned self] in
             let address = "feedback.sadhana@gmail.com"
             if MFMailComposeViewController.canSendMail() {
                 let mailComposerVC = MFMailComposeViewController()
@@ -95,6 +102,7 @@ class SettingsVM : BaseVM {
 
                 mailComposerVC.addAttachmentData(deviceData.data(using:.utf8)!, mimeType: "text", fileName: "deviceInfo".localized + ".txt")
                 self.router.show(mailComposer: mailComposerVC)
+                Answers.logContentView(withName: "Feedback", contentType: nil, contentId: nil, customAttributes: nil)
             }
             else {
                 let alert = Alert()
@@ -106,13 +114,22 @@ class SettingsVM : BaseVM {
                 alert.addCancelAction()
                 self.alerts.onNext(alert)
             }
-        })
+        }
 
         addSingle(item: action)
     }
 
+    func addDevSection() {
+        let restartGuide = SettingAction(key: "Restart Guide", destructive: false, presenter: false) { [unowned self] () in
+            Local.defaults.resetGuide()
+            self.router.parent?.tabBarVC?.viewDidAppear(true)
+        }
+
+        addSingle(item: restartGuide, title: "Developer")
+    }
+
     func addSignOutItem() {
-        let logoutAction = SettingAction(key: "signOut".localized, destructive: true) { [unowned self] in
+        let logoutAction = SettingAction(key: "signOut".localized, destructive: true, presenter: false) { [unowned self] in
             let alert = Alert()
             alert.add(action:"signOut".localized, style: .destructive, handler: {
                 RootRouter.shared?.logOut()
@@ -137,6 +154,7 @@ struct SettingsSection {
 struct SettingAction : FormFieldVM {
     let key : String
     let destructive : Bool
+    let presenter : Bool
     let action : Block
 }
 

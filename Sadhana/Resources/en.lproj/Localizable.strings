@@ -20,6 +20,7 @@ begin = "Begin";
 login = "Login";
 password = "Password";
 signIn = "Sign In";
+login_welcome = "Hare Krishna, %@!\nLoading your sadhana...";
 
 //My Graph
 myGraph = "My Graph";
@@ -63,3 +64,17 @@ cantSendMailTitle = "The system mail client isn't configured";
 cantSendMailMessage = "You can send an email to \"%@\" via a third-party mail client";
 copyAddres = "Copy address";
 deviceInfo = "Device information";
+
+//Guide
+guide_app_updated_title = "Hurray!\nApp has been updated";
+guide_app_updated_message = "We hope now it will be more convenient for you to fill the sadhana graph";
+guide_app_udpated_button = "Proceed";
+
+guide_features_title = "What's new:";
+guide_feature_offline = "Works\noffline";
+guide_feature_fast_fill = "Fast\nfill";
+guide_features_button = "Ok";
+
+
+//Error
+error_session_expired = "Your session is expired";

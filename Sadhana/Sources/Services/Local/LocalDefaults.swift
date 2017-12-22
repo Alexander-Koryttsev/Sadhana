@@ -20,7 +20,7 @@ class LocalDefaults {
 
         var string : String {
             get {
-                return Key.prefix.rawValue.appending(rawValue.capitalized)
+                return Key.prefix.rawValue.appending(rawValue.capitalizedFirstLetter)
             }
         }
     }
@@ -94,9 +94,15 @@ class LocalDefaults {
         return guidesShown[guide.classString] ?? false
     }
 
+    func resetGuide() {
+        guidesShown = [:]
+    }
+
     func reset() {
         for key in UserDefaults.standard.dictionaryRepresentation().keys {
-            UserDefaults.standard.removeObject(forKey: key)
+            if key != Key.guidesShown.string {
+                UserDefaults.standard.removeObject(forKey: key)
+            }
         }
         UserDefaults.resetStandardUserDefaults()
         UserDefaults.standard.synchronize()

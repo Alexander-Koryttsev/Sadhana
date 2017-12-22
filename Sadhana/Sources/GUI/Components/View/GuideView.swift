@@ -7,10 +7,12 @@
 //
 
 import UIKit
+import EasyPeasy
 
 class GuideView: UIView {
 
     let backgroundView = CircleGradientView()
+    private(set) var alert: Alert?
     weak var closeButton: UIButton?
 
     override init(frame: CGRect) {
@@ -48,6 +50,20 @@ class GuideView: UIView {
         return label
     }
 
+    func createAlert() -> Alert {
+        alert = Alert()
+        addSubview(alert!)
+        alert?.easy.layout(Width(300), Center())
+        isUserInteractionEnabled = true
+        return alert!
+    }
+
+    func removeAlert() {
+        alert?.removeFromSuperview()
+        alert = nil
+        isUserInteractionEnabled = false
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
         backgroundView.frame = bounds
@@ -55,6 +71,29 @@ class GuideView: UIView {
 
     deinit {
         closeButton?.removeFromSuperview()
+    }
+
+    class Alert: UIView {
+        let contentView = UIView()
+        let button = Button()
+
+        init() {
+            super.init(frame: CGRect())
+
+            layer.masksToBounds = true
+            layer.cornerRadius = 7
+            backgroundColor = .white
+
+            addSubview(button)
+            button.easy.layout([Height(50), Left(), Bottom(), Right()])
+
+            addSubview(contentView)
+            contentView.easy.layout([Top(), Left(), Right(), Bottom().to(button)])
+        }
+
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
     }
 }
 
