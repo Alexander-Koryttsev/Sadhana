@@ -36,6 +36,7 @@ enum InvalidRequestType : String {
     case notLoggedIn = "json_not_logged_in"
     case entryExists = "sadhana_entry_exists"
     case restForbidden = "rest_forbidden"
+    case entryNotFound = "entry_not_found"
     case unknown
 }
 
@@ -267,54 +268,66 @@ class RemoteService {
                                                                    "items_per_page": pageSize]).map(object: AllEntriesResponse.self)
     }
 
-    func send(_ entry: Entry) -> Single<Int32> {
+    func send(_ entry: Entry) -> Single<Int32?> {
         let path = "sadhanaEntry/\(entry.userID)"
 
-        return apiRequest(entry.ID != nil ? .put : .post, path, parameters: entry.json).catchError({ [unowned self] (error) -> PrimitiveSequence<SingleTrait, JSON> in
+        return apiRequest(entry.ID == nil ? .post : .put, path, parameters: entry.json).catchError({ [unowned self] (error) -> PrimitiveSequence<SingleTrait, JSON> in
             
             switch error {
             case RemoteError.invalidRequest(let type, _):
-                if type == .entryExists {
-                    let loadEntries = self.loadEntries(for: entry.userID, month: entry.date.trimmedDayAndTime)
-                    let mapEntries = loadEntries.flatMap({ [unowned self] (entries) -> Single<JSON> in
-                        
-                        let currentEntryFilter = entries.filter({ (filterEntry) -> Bool in
-                            return filterEntry.date == entry.date
-                        })
-                        
-                        if let currentEntry = currentEntryFilter.first {
-                            if currentEntry.dateUpdated > entry.dateUpdated {
-                                return Single.just(["entry_id": currentEntry.ID!])
+                switch type {
+                    case .entryNotFound:
+                        var entryJson = entry.json
+                        entryJson.removeValue(forKey: "entry_id")
+                        return self.apiRequest(.post, path, parameters: entryJson)
+                    case .entryExists:
+                        let loadEntries = self.loadEntries(for: entry.userID, month: entry.date.trimmedDayAndTime)
+                        let mapEntries = loadEntries.flatMap({ [unowned self] (entries) -> Single<JSON> in
+
+                            let currentEntryFilter = entries.filter({ (filterEntry) -> Bool in
+                                return filterEntry.date == entry.date
+                            })
+
+                            if let currentEntry = currentEntryFilter.first {
+                                if currentEntry.dateUpdated > entry.dateUpdated {
+                                    return Single.just(["entry_id": currentEntry.ID!])
+                                }
+                                var entryJson = entry.json
+                                entryJson["entry_id"] = currentEntry.ID!
+                                return self.apiRequest(.put, path, parameters: entryJson)
                             }
-                            var entryJson = entry.json
-                            entryJson["entry_id"] = currentEntry.ID!
-                            return self.apiRequest(.put, path, parameters: entryJson)
-                        }
-                        
-                        return Single.error(error)
-                    })
-                    
-                    return mapEntries
+
+                            return Single.error(error)
+                        })
+
+                        return mapEntries
+
+                    default: break
                 }
                 
                 break
+
             default: break
             }
             
             return Single.error(error)
         })
-            .map({ (json) -> Int32 in
+            .map({ (json) -> Int32? in
 
             guard let jsonValue = json["entry_id"] else {
                 throw RemoteError.invalidData
             }
 
             if jsonValue is Int32 {
-                return jsonValue as! Int32
+                return jsonValue as? Int32
             }
 
             if jsonValue is String {
                 return Int32(jsonValue as! String)!
+            }
+
+            if jsonValue is NSNull {
+                return nil
             }
 
             throw RemoteError.invalidData

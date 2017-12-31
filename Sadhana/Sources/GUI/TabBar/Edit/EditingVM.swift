@@ -82,7 +82,7 @@ class EditingVM: BaseVM {
             for entry in entries {
                 if entry.shouldSynch {
                     let strongSelf = self!
-                    let signal : Single<Int32> = Remote.service.send(entry).do(onNext: { (ID) in
+                    let signal : Single<Int32?> = Remote.service.send(entry).do(onNext: { (ID) in
                         entry.ID = ID
                         entry.dateSynched = Date()
                         strongSelf.context.saveRecursive()
