@@ -10,7 +10,7 @@ import UIKit
 import DynamicButton
 import EasyPeasy
 import RxCocoa
-import RxSwift
+
 
 class MainTabBarRouter : EditingRouter, WindowRouter {
     var myGraphRouter = MyGraphRouter()
@@ -29,29 +29,22 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
     init(window: UIWindow) {
         self.window = window
         otherGraphListRouter.parent = self
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
     }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
         plusButton.removeTarget(nil, action: nil, for: .allEvents)
+        plusButton.removeFromSuperview()
     }
 
     func showInitialVC() {
         myGraphRouter.parent = self
         let tabBarVC = MainTabBarVC(MainTabBarVM(self))
-        tabBarVC.setViewControllers([myGraphRouter.initialVC(), otherGraphListRouter.initialVC], animated: false)
+        tabBarVC.setViewControllers([myGraphRouter.initialVC, otherGraphListRouter.initialVC], animated: false)
         setRootViewController(tabBarVC)
         setUpPlusButton()
         self.tabBarVC = tabBarVC
-    }
-
-    func reset() {
-        tabBarVC?.view.removeFromSuperview()
-        tabBarVC = nil
-        isEditing = false
-        plusButton.setStyle(.plus, animated: false)
-        plusButton.removeFromSuperview()
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
     }
 
     func showSadhanaEditing(date: Date) {

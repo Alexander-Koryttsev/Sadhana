@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import RxSwift
+
 import DynamicButton
 import EasyPeasy
 import Crashlytics
@@ -17,11 +17,10 @@ class RootRouter : WindowRouter {
     static var shared:RootRouter?
     
     let window: UIWindow
-    var mainTabBarRouter : MainTabBarRouter
-
+    var mainTabBarRouter: MainTabBarRouter?
+    
     init(_ aWindow:UIWindow) {
         window = aWindow
-        mainTabBarRouter = MainTabBarRouter(window: window)
         RootRouter.shared = self
     }
     
@@ -47,20 +46,22 @@ class RootRouter : WindowRouter {
     }
 
     func setPlusButton(hidden:Bool, animated:Bool) {
-        let animations = { [unowned self] () in
-            self.mainTabBarRouter.plusButton.alpha = hidden ? 0 : 1
-        }
+        if let tabBarRouter = mainTabBarRouter {
+            let animations = {
+                tabBarRouter.plusButton.alpha = hidden ? 0 : 1
+            }
 
-        if animated {
-            UIView.animate(withDuration: 0.25, animations: animations)
-        }
-        else {
-            animations()
+            if animated {
+                UIView.animate(withDuration: 0.25, animations: animations)
+            }
+            else {
+                animations()
+            }
         }
     }
     
-    private func showLoginVC(error: Error? = nil) -> Void {
-        mainTabBarRouter.reset()
+    private func showLoginVC(error: Error? = nil) {
+        mainTabBarRouter = MainTabBarRouter(window: window)
         let vm = LoginVM()
         setRootViewController(LoginVC(vm))
         if let error = error {
@@ -69,7 +70,32 @@ class RootRouter : WindowRouter {
     }
 
     private func showTabBarVC() -> Void {
-        mainTabBarRouter.showInitialVC()
+        mainTabBarRouter = MainTabBarRouter(window: window)
+        mainTabBarRouter!.showInitialVC()
+    }
+
+    func showRegistration() {
+        let regVC = RegistrationVC(RegistrationVM())
+        regVC.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(hideRegistration))
+        let navVC = NavigationVC(rootViewController: regVC)
+        window.rootViewController?.present(navVC, animated: true, completion: nil)
+    }
+
+    @objc func hideRegistration() {
+        window.rootViewController?.dismiss(animated: true)
+    }
+
+    func show(picker: FormPickerVM) {
+        let pickerVC = FormPickerVC(picker)
+        if let navVC = window.rootViewController?.presentedViewController as? NavigationVC {
+            navVC.pushViewController(pickerVC, animated: true)
+        }
+    }
+
+    func hidePicker() {
+        if let navVC = window.rootViewController?.presentedViewController as? NavigationVC {
+            navVC.popToRootViewController(animated: true)
+        }
     }
 }
 

@@ -26,25 +26,25 @@ class MappingHelper {
 extension DateFormatter {
     static func create() -> DateFormatter {
         let formatter = DateFormatter()
-        formatter.timeZone = TimeZone.create()
+        formatter.timeZone = TimeZone.zero()
         return formatter
     }
 }
 
 extension TimeZone {
-    static func create() -> TimeZone {
+    static func zero() -> TimeZone {
         return TimeZone(secondsFromGMT:0)!
     }
 }
 
 extension Date {
-    func remoteDateString() -> String {
+    var remoteDateString : String {
         return MappingHelper.shared.dateFormatter.string(from: self)
     }
-    func remoteDateTimeString() -> String {
+    var remoteDateTimeString : String {
         return MappingHelper.shared.dateTimeFormatter.string(from: self)
     }
-    func remoteTimeString() -> String {
+    var remoteTimeString : String {
         return MappingHelper.shared.timeFormatter.string(from: self)
     }
 }

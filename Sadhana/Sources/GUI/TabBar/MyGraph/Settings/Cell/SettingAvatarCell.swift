@@ -9,7 +9,7 @@
 import UIKit
 import EasyPeasy
 
-class SettingAvatarCell: UITableViewCell {
+class SettingAvatarCell: FormCell {
 
     let avatarView = UIImageView()
     let nameLabel = UILabel()

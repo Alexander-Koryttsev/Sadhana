@@ -18,6 +18,9 @@ class GraphCell : UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
+        backgroundColor = .white
+        contentView.backgroundColor = .white
+
         contentView.addSubview(avatarImageView)
         avatarImageView.easy.layout([
             Left(10),
@@ -34,6 +37,7 @@ class GraphCell : UITableViewCell {
         ])
         nameLabel.setContentCompressionResistancePriority(UILayoutPriority.required, for: .vertical)
 
+        entryView.backgroundColor = .white
         contentView.addSubview(entryView)
         entryView.easy.layout([
             Right().to(nameLabel, .right),
@@ -58,6 +62,6 @@ class GraphCell : UITableViewCell {
         entryView.clear()
         nameLabel.text = nil
         avatarImageView.af_cancelImageRequest()
-        avatarImageView.avatarURL = Remote.URL.defaultAvatar.urlValue
+        avatarImageView.avatarURL = Remote.URL.defaultAvatar.fullURL
     }
 }

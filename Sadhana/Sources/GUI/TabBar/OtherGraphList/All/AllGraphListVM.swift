@@ -8,7 +8,7 @@
 
 import Foundation
 import RxCocoa
-import RxSwift
+
 import Crashlytics
 
 class AllGraphListVM : GraphListVM {
@@ -23,6 +23,11 @@ class AllGraphListVM : GraphListVM {
     private var lastResponse : AllEntriesResponse?
     private var pages = [Int : [RemoteEntry]]()
     private var loadingPages = IndexSet()
+
+    override var numberOfSections: Int {
+        return pagesCount
+    }
+
     var pagesCount : Int {
         get {
             return lastResponse != nil ? Int(ceil(Float(lastResponse!.total)/Float(lastResponse!.pageSize))) : 0
@@ -53,9 +58,18 @@ class AllGraphListVM : GraphListVM {
 
         select.subscribe(onNext:{ [unowned self] (indexPath) in
             if let entry = self.entry(at: indexPath) {
-                router.showGraphOfUser(with: entry.userID, name: entry.userName)
+                router.showGraph(of:entry)
             }
         }).disposed(by: disposeBag)
+    }
+
+    override func numberOfRows(in section: Int) -> Int {
+     //   if section == 0 {
+
+     //   }
+       // else {
+            return entriesCount(in:section)
+        //}
     }
 
     func entriesCount(in section:Int) -> Int {
@@ -110,6 +124,18 @@ class AllGraphListVM : GraphListVM {
         let page = cachedPage(at:pageIndex)
 
         return page.count > 0 ? page[indexPath.row] : nil
+    }
+
+    @available(iOS 11, *)
+    override func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .normal, title: "Закрепить") { (action, view, handler) in
+
+        }
+
+        let configuration = UISwipeActionsConfiguration(actions: [action])
+        configuration.performsFirstActionWithFullSwipe = false
+
+        return configuration
     }
 
     required init?(coder aDecoder: NSCoder) {

@@ -8,6 +8,7 @@
 
 import UIKit
 import DynamicButton
+import EasyPeasy
 
 class UIFactory {
     class var editingButton : DynamicButton {

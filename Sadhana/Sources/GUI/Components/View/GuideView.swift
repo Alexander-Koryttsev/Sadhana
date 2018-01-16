@@ -11,7 +11,7 @@ import EasyPeasy
 
 class GuideView: UIView {
 
-    let backgroundView = CircleGradientView()
+    let backgroundView = RadialGradientView()
     private(set) var alert: Alert?
     weak var closeButton: UIButton?
 

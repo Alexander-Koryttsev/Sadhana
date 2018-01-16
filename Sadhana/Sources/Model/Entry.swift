@@ -71,10 +71,10 @@ extension Entry {
     var json : JSON {
         get {
             return ["entry_id": ID ?? NSNull(),
-                    "created_at": dateCreated.remoteDateTimeString(),
-                    "updated_at": dateUpdated.remoteDateTimeString(),
+                    "created_at": dateCreated.remoteDateTimeString,
+                    "updated_at": dateUpdated.remoteDateTimeString,
                     "user_id": userID,
-                    "entrydate": date.remoteDateString(),
+                    "entrydate": date.remoteDateString,
                     "jcount_730": japaCount7_30,
                     "jcount_1000": japaCount10,
                     "jcount_1800": japaCount18,

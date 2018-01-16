@@ -8,7 +8,7 @@
 
 import UIKit
 import RxCocoa
-import RxSwift
+
 import EasyPeasy
 
 class OtherGraphListContainerVC : UIViewController {
@@ -27,6 +27,8 @@ class OtherGraphListContainerVC : UIViewController {
             addChildViewController(currentVC)
             view.addSubview(currentVC.view)
             currentVC.view.easy.layout(Edges())
+            navigationItem.setLeftBarButtonItems(currentVC.navigationItem.leftBarButtonItems, animated: true)
+            navigationItem.setRightBarButtonItems(currentVC.navigationItem.rightBarButtonItems, animated: true)
         }
     }
 
@@ -55,6 +57,10 @@ class OtherGraphListContainerVC : UIViewController {
         segmentedControl.rx.selectedSegmentIndex.asDriver().distinctUntilChanged().drive(onNext:{ [unowned self] (index) in
             self.currentVC = self.viewControllers[index]
         }).disposed(by: disposeBag)
+
+        if #available(iOS 11, *) {
+            navigationItem.largeTitleDisplayMode = .never
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

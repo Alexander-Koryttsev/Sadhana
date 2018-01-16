@@ -9,8 +9,11 @@
 import UIKit
 import EasyPeasy
 
-class CountView: UIView {
-    let valueField = FormTextField()
+class CountView: UIView, ResponsibleContainer {
+    let valueField = NumberField()
+    var responsible: Responsible {
+        return valueField
+    }
     let titleLabel = UILabel()
 
     init() {

@@ -8,7 +8,7 @@
 
 import Foundation
 import RxCocoa
-import RxSwift
+
 
 class FavoriteGraphListVM : GraphListVM {
     private unowned let router : OtherGraphListRouter

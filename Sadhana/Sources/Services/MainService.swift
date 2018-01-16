@@ -7,16 +7,16 @@
 //
 
 import Foundation
-import RxSwift
+
 import Crashlytics
 
 class MainService {
-    static let shared = MainService()
     var user : User?
 
     init() {
         if let ID = Local.defaults.userID {
             user = Local.service.viewContext.fetch(userFor: ID)
+            updateFabricUserData()
         }
     }
 
@@ -38,9 +38,29 @@ class MainService {
             .do(onNext:{ [unowned self] (user) in
                 Local.defaults.userID = user.ID
                 self.user = Local.service.viewContext.object(with: user.objectID) as? User
+                self.updateFabricUserData()
+                Crashlytics.sharedInstance().setUserEmail(name)
                 Answers.logLogin(withMethod: nil, success: true, customAttributes: ["Name": user.name, "ID": user.ID])
             }, onError:{ (error) in
                 Answers.logLogin(withMethod: nil, success: false, customAttributes: ["Error": error.localizedDescription])
             })
+    }
+    
+    func register(_ registration: Registration) -> Single<ManagedUser> {
+        return Remote.service.register(registration)
+            .flatMap { _ in
+                Answers.logSignUp(withMethod: nil, success: true, customAttributes: ["Name": "\(registration.firstName) \(registration.lastName) \(registration.spiritualName)",
+                                                                                    "Country": registration.country,
+                                                                                    "City": registration.city,
+                                                                                    "Email": registration.email])
+                return Main.service.login(registration.email, password: registration.password)
+            }
+    }
+
+    func updateFabricUserData() {
+        if let user = user  {
+            Crashlytics.sharedInstance().setUserName(user.name)
+            Crashlytics.sharedInstance().setUserIdentifier("\(user.ID)")
+        }
     }
 }

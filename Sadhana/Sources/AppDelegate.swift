@@ -21,16 +21,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
 
+        Fabric.with([Crashlytics.self, Answers.self])
+
         AppDelegate.shared = self
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.backgroundColor = .white
         window?.tintColor = .sdTangerine
         router = RootRouter(window!)
         router!.showInitialVC()
-        
-        Fabric.with([Crashlytics.self, Answers.self])
 
         _ = Remote.service
+        _ = Local.service
+        _ = Main.service
 
         return true
     }
@@ -55,6 +57,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        return [ .portrait, .portraitUpsideDown ]
     }
 
 

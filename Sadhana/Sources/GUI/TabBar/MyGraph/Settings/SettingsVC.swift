@@ -20,6 +20,14 @@ class SettingsVC : BaseTableVC <SettingsVM> {
         super.bindViewModel()
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        if #available (iOS 11, *) {
+            navigationItem.largeTitleDisplayMode = .always
+        }
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -46,34 +54,13 @@ class SettingsVC : BaseTableVC <SettingsVM> {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let field = self.field(at: indexPath)
 
-        if let info = field as? SettingInfo {
-            let cell = tableView.dequeueReusableCell(withIdentifier: SettingAvatarCell.reuseID) as? SettingAvatarCell ?? SettingAvatarCell()
-            cell.nameLabel.text = info.key
-            cell.avatarView.avatarURL = info.imageURL
-            cell.selectionStyle = .none
-            return cell
-        }
-
-        if let action = field as? SettingAction {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Action") ?? UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: "Action")
-            cell.textLabel?.textAlignment = .center
-            cell.textLabel?.text = action.key
-            cell.textLabel?.textColor = action.destructive ? .red : .sdTangerine
-            return cell
-        }
-
-        if let boolField = field as? VariableFieldVM<Bool> {
-            let cell = BoolFormCell(boolField)
-            return cell
-        }
-
-        fatalError("unknown setting field \(field)")
+        return FormFactory.cell(for: field) //TODO: implement reuse
     }
 
     // MARK: - Table Delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let field = self.field(at: indexPath)
-        if let action = field as? SettingAction {
+        if let action = field as? FormAction {
             action.action()
             if !action.presenter {
                 tableView.deselectRow(at: indexPath, animated: true)

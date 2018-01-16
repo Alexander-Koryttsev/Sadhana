@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+
 import Crashlytics
 
 class EditingVM: BaseVM {
@@ -98,7 +98,7 @@ class EditingVM: BaseVM {
 
             var attributes = [String:String]()
             entries.forEach({ (entry) in
-                attributes[entry.date.remoteDateString()] = (entry.ID != nil) ? entry.ID!.description : ""
+                attributes[entry.date.remoteDateString] = (entry.ID != nil) ? entry.ID!.description : ""
             })
             
             Answers.logCustomEvent(withName: "Save Entries", customAttributes: attributes)

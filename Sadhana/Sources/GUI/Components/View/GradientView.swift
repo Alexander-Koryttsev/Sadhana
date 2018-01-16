@@ -9,8 +9,7 @@
 import UIKit
 
 
-class CircleGradientView: UIView {
-
+class RadialGradientView: UIView {
     var colors = [UIColor.sdButterscotch, UIColor.sdDarkTaupe]
     var locations = [0.0, 1.0] as [CGFloat]
     var startRadius = CGFloat(0)
@@ -35,5 +34,28 @@ class CircleGradientView: UIView {
         // Draw a gradient
         context!.drawRadialGradient(gradient!, startCenter: centerInternal, startRadius: startRadius, endCenter: centerInternal, endRadius: endRadiusInternal, options: .drawsAfterEndLocation)
         context?.restoreGState()
+    }
+}
+
+class LinearGradientView: UIView {
+    override public class var layerClass: Swift.AnyClass {
+        get {
+            return CAGradientLayer.self
+        }
+    }
+
+    var gradientLayer : CAGradientLayer {
+        return layer as! CAGradientLayer
+    }
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        gradientLayer.colors = [UIColor.clear.cgColor, UIColor(white:0, alpha:0.4).cgColor]
+        gradientLayer.locations = [0.0, 1.0]
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

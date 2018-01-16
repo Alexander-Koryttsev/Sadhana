@@ -10,7 +10,7 @@ import UIKit
 import EasyPeasy
 import AudioToolbox
 import RxCocoa
-import RxSwift
+
 import Crashlytics
 
 class KeyboardManager {
@@ -109,7 +109,7 @@ class KeyboardContainer : UIView {
         ])
 
         buttonContainer.addSubview(backButton)
-        let image = UIImage(cgImage: #imageLiteral(resourceName: "login-arrow").cgImage!, scale: UIScreen.main.scale, orientation: .upMirrored)
+        let image =  #imageLiteral(resourceName: "login-arrow").upMirrored
         backButton.setImage(image, for: UIControlState())
         backButton.adjustsImageWhenHighlighted = false
         backButton.easy.layout([

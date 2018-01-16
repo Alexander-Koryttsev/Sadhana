@@ -9,15 +9,16 @@
 import Foundation
 
 class DateUtility {
-
     static let shared = DateUtility()
 
     let weekDayShortFormatter = DateFormatter()
     let monthMediumFormatter = DateFormatter()
+    let dateShortFormatter = DateFormatter()
 
     init () {
         weekDayShortFormatter.dateFormat = "E"
         monthMediumFormatter.dateFormat = "LLLL YYYY"
+        dateShortFormatter.dateStyle = .medium
     }
 }
 
@@ -76,7 +77,7 @@ extension Date {
             let month = calendar.component(.month, from: self)
             let day = calendar.component(.day, from: self)
 
-            let components = DateComponents(calendar: calendar, timeZone:TimeZone.create(), year: year, month: month, day:day)
+            let components = DateComponents(calendar: calendar, timeZone:TimeZone.zero(), year: year, month: month, day:day)
             return components.date!
         }
     }
@@ -88,7 +89,7 @@ extension Date {
             let year = calendar.component(.year, from: self)
             let month = calendar.component(.month, from: self)
 
-            let components = DateComponents(calendar: calendar, timeZone:TimeZone.create(), year: year, month: month)
+            let components = DateComponents(calendar: calendar, timeZone:TimeZone.zero(), year: year, month: month)
             return components.date!
         }
     }
@@ -117,6 +118,10 @@ extension Date {
         get {
             return Calendar.local.date(byAdding: .day, value: 1, to: self)!
         }
+    }
+
+    var dateShort: String {
+        return DateUtility.shared.dateShortFormatter.string(from: self)
     }
 }
 

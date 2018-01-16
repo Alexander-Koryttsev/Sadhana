@@ -7,7 +7,7 @@
 //
 
 import RxCocoa
-import RxSwift
+
 import Alamofire
 
 enum LoginErrorMessage: String {
@@ -36,7 +36,7 @@ class LoginVM : BaseVM {
         super.init()
 
         tap.withLatestFrom(canSignIn)
-            .filter({ (flag) -> Bool in return flag })
+            .filter{ $0 }
             .flatMap { [unowned self] _ -> Observable<Bool> in
                 return Main.service.login(self.login.value, password: self.password.value)
                     .flatMap { [unowned self] (user) -> Single<[ManagedEntry]> in
@@ -44,15 +44,19 @@ class LoginVM : BaseVM {
                         return Main.service.loadMyEntries()
                     }
                     .observeOn(MainScheduler.instance)
-                    .map({ (_) -> Bool in
+                    .map { _ -> Bool in
                         RootRouter.shared?.commitSignIn()
                         return true
-                    })
+                    }
                     .track(self.errors)
                     .track(self.running)
                     .catchErrorJustReturn(false)
             }
             .subscribe()
             .disposed(by: disposeBag)
+    }
+
+    @objc func register() {
+        RootRouter.shared?.showRegistration()
     }
 }

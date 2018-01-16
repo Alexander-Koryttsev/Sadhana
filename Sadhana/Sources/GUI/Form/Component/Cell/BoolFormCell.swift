@@ -8,7 +8,7 @@
 
 import UIKit
 import RxCocoa
-import RxSwift
+
 
 class BoolFormCell: FormCell {
     private let viewModel: VariableFieldVM<Bool>

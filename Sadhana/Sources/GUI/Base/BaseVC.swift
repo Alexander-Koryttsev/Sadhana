@@ -8,27 +8,44 @@
 
 import UIKit
 import CoreData
-import RxSwift
-import Foundation
+
 import EasyPeasy
+import RxCocoa
+
+class ViewControllerBaseVars<VM:BaseVM> {
+    var viewModel:VM
+    var guideView:GuideView? = nil
+    var firstAppearing = true
+    var hasGuide = false
+    
+    init(_ viewModel:VM) {
+        self.viewModel = viewModel
+    }
+}
 
 protocol ViewController {
     associatedtype VM:BaseVM
+    var base : ViewControllerBaseVars<VM> { get set }
+    
     var viewModel:VM { get }
-    var hasGuide:Bool { get }
-    var guideView:GuideView? { get set }
-
+    
     func createGuide()
     func alertDidDismiss()
 }
 
 extension ViewController where Self : UIViewController {
     var disposeBag:DisposeBag {
-        get {
-            return viewModel.disposeBag
-        }
+        return viewModel.disposeBag
+    }
+    
+    var viewModel:VM {
+        return base.viewModel
     }
 
+    var navigationVC: NavigationVC? {
+        return navigationController as? NavigationVC
+    }
+    
     fileprivate func baseBindViewModel() {
         viewModel.alerts.subscribe(onNext: { [weak self] (alert) in
 
@@ -47,10 +64,9 @@ extension ViewController where Self : UIViewController {
     }
 
     fileprivate func baseViewDidAppear(_ animated: Bool) {
-         if hasGuide, !Local.defaults.isGuideShown(self) {
+         if base.hasGuide, !Local.defaults.isGuideShown(self) {
             createGuide()
-            if let guide = guideView {
-
+            if let guide = base.guideView {
                 let closeButton = UIButton(type: .custom)
                 closeButton.setImage(#imageLiteral(resourceName: "close"), for: .normal)
                 closeButton.rx.tap.asDriver().drive(onNext: { [unowned self] () in
@@ -70,6 +86,10 @@ extension ViewController where Self : UIViewController {
                 Local.defaults.set(guide: self, shown: true)
             }
          }
+        
+        DispatchQueue.main.async { [unowned self] in
+            self.base.firstAppearing = false
+        }
     }
 
     fileprivate func baseViewDidDisappear() {
@@ -78,14 +98,17 @@ extension ViewController where Self : UIViewController {
     }
 
     func hideGuide(animated:Bool) {
-        if let guide = guideView {
+        if let guide = base.guideView {
             if animated {
                 UIView.transition(with: view, duration: 0.25, options: .transitionCrossDissolve, animations: {
                     guide.removeFromSuperview()
-                }, completion: nil)
+                }, completion: { _ in
+                    self.base.guideView = nil
+                })
             }
             else {
                 guide.removeFromSuperview()
+                base.guideView = nil
             }
         }
     }
@@ -93,17 +116,21 @@ extension ViewController where Self : UIViewController {
     func alertDidDismiss() {
 
     }
+
+    func setUpDefaultActivityIndicator(with driver: Driver<Bool>) {
+        let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        activityIndicator.hidesWhenStopped = true
+        let item = UIBarButtonItem(customView: activityIndicator)
+        navigationItem.rightBarButtonItem = item
+        driver.drive(activityIndicator.rx.isAnimating).disposed(by: disposeBag)
+    }
 }
 
 class BaseVC<VM:BaseVM>: UIViewController, ViewController {
-    let viewModel:VM
-    weak var guideView:GuideView?
-    var hasGuide: Bool {
-        return false
-    }
-    
+    var base: ViewControllerBaseVars<VM>
+
     init(_ viewModel:VM) {
-        self.viewModel = viewModel
+        self.base = ViewControllerBaseVars(viewModel)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -137,17 +164,15 @@ class BaseVC<VM:BaseVM>: UIViewController, ViewController {
     func createGuide() {
 
     }
+
+    
 }
 
-class BaseTableVC<VM:BaseVM>: UITableViewController, ViewController {
-    let viewModel:VM
-    weak var guideView:GuideView?
-    var hasGuide: Bool {
-        return false
-    }
+class BaseTableVC<VM:BaseTableVM>: UITableViewController, ViewController {
+    var base: ViewControllerBaseVars<VM>
     
     init(_ viewModel:VM, style:UITableViewStyle = .plain) {
-        self.viewModel = viewModel
+        self.base = ViewControllerBaseVars(viewModel)
         super.init(style: style)
     }
 
@@ -191,17 +216,26 @@ class BaseTableVC<VM:BaseVM>: UITableViewController, ViewController {
     func createGuide() {
 
     }
+
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return viewModel.numberOfSections
+    }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModel.numberOfRows(in: section)
+    }
+
+    @available(iOS 11.0, *)
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        return viewModel.trailingSwipeActionsConfiguration(forRowAt:indexPath)
+    }
 }
 
 class BaseTabBarVC<VM:BaseVM>: UITabBarController, ViewController {
-    let viewModel:VM
-    weak var guideView:GuideView?
-    var hasGuide: Bool {
-        return false
-    }
-
+    var base: ViewControllerBaseVars<VM>
+    
     init(_ viewModel:VM) {
-        self.viewModel = viewModel
+        self.base = ViewControllerBaseVars(viewModel)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -235,6 +269,10 @@ class BaseTabBarVC<VM:BaseVM>: UITabBarController, ViewController {
     func createGuide() {
 
     }
+}
+
+class CellAction {
+
 }
 
 

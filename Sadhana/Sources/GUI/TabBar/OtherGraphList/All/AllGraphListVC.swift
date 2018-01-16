@@ -8,7 +8,7 @@
 
 import UIKit
 import RxCocoa
-import RxSwift
+
 import EasyPeasy
 import Crashlytics
 
@@ -16,7 +16,6 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
 
     let searchBar = UISearchBar()
     let searchBarHeight : CGFloat = 46.0
-    var firstRun = true
     var observer : NSObjectProtocol?
 
     override var title:String? {
@@ -44,17 +43,17 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
             Top(iOS(11) ? 10 : 2)
         ])
         tableView.tableHeaderView = searchContainer
-        viewModel.refresh.onNext(())
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        viewModel.refresh.onNext(())
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if firstRun {
+        if base.firstAppearing {
             tableView.contentOffset = CGPoint(x:0, y: (searchBarHeight - (navigationController?.navigationBar.bounds.size.height)! - UIApplication.shared.statusBarFrame.size.height))
 
             let searchField : UITextField = searchBar.value(forKey: "_searchField") as! UITextField
@@ -62,12 +61,11 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
             searchField.layer.cornerRadius = searchField.bounds.size.height / 2.0
             searchField.borderStyle = .none
             searchField.backgroundColor = .sdPaleGrey
-            firstRun = false
         }
- 
-        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { (_) in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
         
         Answers.logContentView(withName: "All Graph List", contentType: nil, contentId: nil, customAttributes: nil)
+
+        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { _ in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -78,13 +76,12 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
         super.bindViewModel()
         let dataDidReloadDriver = viewModel.dataDidReload.asDriver(onErrorJustReturn: ())
 
+        let isRefreshControlAnimating = Driver.merge(viewModel.refreshDriver.map { true }, viewModel.firstPageRunning.filter { !$0 }.map { _ in false })
+        isRefreshControlAnimating.drive(refreshControl!.rx.isRefreshing).disposed(by: disposeBag)
+
         refreshControl?.rx.controlEvent(.valueChanged).asDriver().drive(viewModel.refresh).disposed(by: disposeBag)
 
-        dataDidReloadDriver.filter({ [unowned self] () -> Bool in
-            return self.refreshControl!.isRefreshing
-        }).drive(refreshControl!.rx.endRefreshing).disposed(by: disposeBag)
-
-        viewModel.refreshDriver.drive(refreshControl!.rx.beginRefreshing).disposed(by: disposeBag)
+        setUpDefaultActivityIndicator(with: viewModel.pageRunning.isActiveDriver)
 
         dataDidReloadDriver.drive(onNext: { [unowned self] () in
             self.reloadData()
@@ -105,14 +102,7 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
         tableView.rx.itemSelected.asDriver().drive(viewModel.select).disposed(by: disposeBag)
 
         searchBar.rx.textRequired.asDriver().drive(viewModel.search).disposed(by: disposeBag)
-    }
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.pagesCount
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.entriesCount(in: section)
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

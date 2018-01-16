@@ -8,7 +8,7 @@
 
 import UIKit
 import RxCocoa
-import RxSwift
+
 import EasyPeasy
 
 class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
@@ -24,6 +24,8 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
     let arrow = UIImageView(image:#imageLiteral(resourceName: "login-arrow"))
     let errorLabel = UILabel()
     let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .white)
+    let registerButton = UIButton(type: .system)
+    let sevaLogo = UIImageView(screenSized:"v-seva-logo")
 
     override func viewDidLoad() {
         view.backgroundColor = .white
@@ -32,7 +34,16 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         animateForm()
         super.viewDidLoad()
 
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillChangeFrame, object: nil)
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle { get { return UIStatusBarStyle.lightContent } }
@@ -42,10 +53,25 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         setUpFormAndLogo()
         setUpActivityIndicator()
         setUpErrorLabel()
+        setUpRegisterButton()
+    }
+
+    func setUpRegisterButton() {
+        registerButton.tintColor = .white
+        registerButton.setAttributedTitle(NSAttributedString(string: "register".localized, attributes: [.underlineStyle: NSUnderlineStyle.styleSingle.rawValue as AnyObject]), for: .normal)
+        registerButton.titleLabel?.font = .sdTextStyle3Font()
+        registerButton.addTarget(viewModel, action: #selector(LoginVM.register), for: .touchUpInside)
+
+        view.addSubview(registerButton)
+        registerButton.easy.layout([Height(50),
+                                    CenterY().to(sevaLogo),
+                                    CenterX(),
+                                    Width().like(formContainer)])
+        registerButton.setContentHuggingPriority(.defaultLow, for: .horizontal)
     }
 
     func setUpBackground() {
-        let gradient = CircleGradientView()
+        let gradient = RadialGradientView()
         view.addSubview(gradient)
         gradient.easy.layout(Edges())
 
@@ -58,7 +84,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
             Right()
         ])
 
-        let sevaLogo = UIImageView(screenSized:"v-seva-logo")
+        sevaLogo.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         view.addSubview(sevaLogo)
         sevaLogo.easy.layout([
             Right(screenWidthSpecific(w320: 12, w375: 14, w414: 21)),
@@ -278,6 +304,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         enabled.map({ (flag) -> CGFloat in
             return flag ? 1.0 : 0.0
         }).drive(loginButton.titleLabel!.rx.alpha).disposed(by: disposeBag)
+        enabled.drive(registerButton.rx.isEnabled).disposed(by: disposeBag)
 
         viewModel.errorMessages.drive(errorLabel.rx.text).disposed(by: disposeBag)
 

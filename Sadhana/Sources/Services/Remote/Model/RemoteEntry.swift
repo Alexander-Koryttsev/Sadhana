@@ -9,7 +9,7 @@
 import Foundation
 import Mapper
 
-struct RemoteEntry : Entry, Mappable {
+struct RemoteEntry : Entry, UserBriefInfo, Mappable {
     let ID : Int32?
     let userID : Int32
     let date : Date

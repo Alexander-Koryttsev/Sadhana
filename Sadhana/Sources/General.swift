@@ -8,6 +8,10 @@
 
 import UIKit
 import AlamofireImage
+import Fabric
+import Crashlytics
+
+@_exported import RxSwift
 
 struct Config {
     #if DEV
@@ -40,9 +44,13 @@ enum GeneralError : Error {
 let Device = UIDevice.current
 let iOS = NSString(string: Device.systemVersion).integerValue
 let Screen = UIScreen.main
+let ScreenSize = Screen.bounds.size
+let ScreenWidth = ScreenSize.width
+let ScreenHeight = ScreenSize.height
 let iPhone = UI_USER_INTERFACE_IDIOM() == .phone
-let iPhoneX = max(Screen.bounds.size.width, Screen.bounds.size.height) == 812.0
+let iPhoneX = max(ScreenWidth, ScreenHeight) == 812.0
 let iPad = UI_USER_INTERFACE_IDIOM() == .pad
+let TopInset = CGFloat(iPhoneX ? 88 : 64)
 
 func iOS(_ version: Int) -> Bool {
     return iOS >= version
@@ -53,34 +61,8 @@ struct Local {
     static let defaults = LocalDefaults()
 }
 
-struct Remote {
-    static let service = RemoteService()
-    
-    enum URL : String {
-        static let prefix = "https://\(Config.host)/"
-        
-        case api = "vs-api/v2/sadhana"
-        case authToken = "?oauth=token"
-        case defaultAvatar = "wp-content/themes/socialize-child/img/default_avatar.png"
-        
-        var fullString : String {
-            get {
-                return "\(URL.prefix)\(rawValue)"
-            }
-        }
-        
-        var urlValue : Foundation.URL {
-            return Foundation.URL(string:fullString)!
-        }
-        
-        var path : String {
-            return rawValue
-        }
-    }
-}
-
 struct Main {
-    static let service = MainService.shared
+    static let service = MainService()
 }
 
 class Common {
@@ -90,7 +72,7 @@ class Common {
 
     init() {
         var cal = Calendar.current
-        cal.timeZone = TimeZone.create()
+        cal.timeZone = TimeZone.zero()
         calendar = cal
     }
 
@@ -162,6 +144,14 @@ extension UIImage {
     static func screenSized(_ name:String) -> UIImage? {
         return UIImage(named:name.appending("-\(Int(UIScreen.main.bounds.size.width))w")) ?? UIImage(named:name)
     }
+
+    var upMirrored : UIImage {
+        return oriented(.upMirrored)
+    }
+
+    func oriented(_ orientation:UIImageOrientation) -> UIImage {
+        return UIImage(cgImage: cgImage!, scale: UIScreen.main.scale, orientation: orientation)
+    }
 }
 
 extension UIImageView {
@@ -217,5 +207,9 @@ func remoteLog(_ items: Any..., separator: String = " ", terminator: String = "\
         let stringItem = items.map {"\($0)"} .joined(separator: separator)
         print(stringItem, terminator: terminator)
     #endif
+}
+
+protocol Titled {
+    var title : String { get }
 }
 

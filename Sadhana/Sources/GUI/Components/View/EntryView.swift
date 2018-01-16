@@ -9,7 +9,7 @@
 import UIKit
 import EasyPeasy
 import RxCocoa
-import RxSwift
+
 
 class EntryView : UIView {
     let japaView = JapaView()

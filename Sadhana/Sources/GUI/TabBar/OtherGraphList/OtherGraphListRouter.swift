@@ -10,25 +10,23 @@ import UIKit
 
 class OtherGraphListRouter {
     weak var parent : MainTabBarRouter?
-    private var navigationVC = UINavigationController()
+    private var navigationVC = NavigationVC()
 
     var initialVC : UIViewController {
-        get {
-            let allVC = AllGraphListVC(AllGraphListVM(self))
-            let favoriteVC = FavoriteGraphListVC(FavoriteGraphListVM(self))
-            let container = OtherGraphListContainerVC([allVC, favoriteVC])
-            navigationVC.viewControllers = [container]
+        let allVC = AllGraphListVC(AllGraphListVM(self))
+        let favoriteVC = FavoriteGraphListVC(FavoriteGraphListVM(self))
+        let container = OtherGraphListContainerVC([allVC, favoriteVC])
+        navigationVC.viewControllers = [container]
 
-            return navigationVC
-        }
+        return navigationVC
     }
 
-    func showGraphOfUser(with ID:Int32, name:String) {
-        if ID == Local.defaults.userID {
+    func showGraph(of info:UserBriefInfo) {
+        if info.userID == Local.defaults.userID {
             parent?.showMyGraph()
         }
         else {
-            let vm = OtherGraphVM(ID, name: name)
+            let vm = OtherGraphVM(info)
             let vc = OtherGraphVC(vm)
             navigationVC.pushViewController(vc, animated: true)
         }

@@ -1,10 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "0920"
-   version = "1.3">
+   version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
+      <PreActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "sed -i -e &apos;s/&quot;&#x421;&#x430;&#x434;&#x445;&#x430;&#x43d;&#x430;&quot;/&quot;&#x421;&#x430;&#x434;&#x445;&#x430;&#x43d;&#x430; Dev&quot;/&apos; &quot;${SRCROOT}/Sadhana/SupportingFiles/ru.lproj/InfoPlist.strings&quot;&#10;sed -i -e &apos;s/&quot;Sadhana&quot;/&quot;Sadhana Dev&quot;/&apos; &quot;${SRCROOT}/Sadhana/SupportingFiles/en.lproj/InfoPlist.strings&quot;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "96F6004F1EC996AC006DAECE"
+                     BuildableName = "Sadhana.app"
+                     BlueprintName = "Sadhana"
+                     ReferencedContainer = "container:Sadhana.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PreActions>
+      <PostActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "sed -i -e &apos;s/&quot;&#x421;&#x430;&#x434;&#x445;&#x430;&#x43d;&#x430; Dev&quot;/&quot;&#x421;&#x430;&#x434;&#x445;&#x430;&#x43d;&#x430;&quot;/&apos; &quot;${SRCROOT}/Sadhana/SupportingFiles/ru.lproj/InfoPlist.strings&quot;&#10;sed -i -e &apos;s/&quot;Sadhana Dev&quot;/&quot;Sadhana&quot;/&apos; &quot;${SRCROOT}/Sadhana/SupportingFiles/en.lproj/InfoPlist.strings&quot;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "96F6004F1EC996AC006DAECE"
+                     BuildableName = "Sadhana.app"
+                     BlueprintName = "Sadhana"
+                     ReferencedContainer = "container:Sadhana.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PostActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"

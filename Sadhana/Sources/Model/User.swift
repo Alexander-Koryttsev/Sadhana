@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol User: JSONConvertible {
+protocol User: UserBriefInfo, JSONConvertible {
     var ID : Int32 { get }
     var name : String { get }
     var avatarURL : URL? { get }
@@ -21,6 +21,21 @@ protocol User: JSONConvertible {
     var exerciseEnabled : Bool { get }
     var lectionsEnabled : Bool { get }
     var bedTimeEnabled : Bool { get }
+}
+
+extension User {
+    var userID : Int32 {
+        return ID
+    }
+    var userName : String {
+        return name
+    }
+}
+
+protocol UserBriefInfo {
+    var userID : Int32 { get }
+    var userName : String { get }
+    var avatarURL : URL? { get }
 }
 
 extension User {
@@ -41,5 +56,6 @@ extension User {
         }
     }
 }
+
 
 

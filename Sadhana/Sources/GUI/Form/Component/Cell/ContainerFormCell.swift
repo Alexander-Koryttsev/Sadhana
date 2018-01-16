@@ -7,18 +7,22 @@
 //
 
 import UIKit
-import RxSwift
+
 import RxCocoa
 import EasyPeasy
 
-class CountsLayoutCell: ResponsibleCell {
+class CountsLayoutCell: FormCell, ResponsibleChain {
     let titleLabel = UILabel()
     let stackView = UIStackView()
     let countViewsBackgroundView = UIView()
+    let disposeBag = DisposeBag()
     var countViews : [CountView] {
         get {
             return stackView.arrangedSubviews as! [CountView]
         }
+    }
+    var responsibles: [Responsible] {
+        return countViews
     }
 
     init(fieldsCount:Int) {
@@ -55,39 +59,15 @@ class CountsLayoutCell: ResponsibleCell {
             stackView.addArrangedSubview(CountView())
         }
 
-        var previousField : FormTextField?
+        var previousView : CountView?
         for view in countViews {
-            if let previousField = previousField {
-
-                view.valueField.resignActive.filter({ (isNext) -> Bool in
-                    return !isNext
-                })
-                    .bind(to:previousField.becomeActive).disposed(by: disposeBag)
-
-                previousField.resignActive.filter({ (isNext) -> Bool in
-                    return isNext
-                })
-                    .bind(to:view.valueField.becomeActive).disposed(by: disposeBag)
+            if let previousView = previousView {
+                view.goBack.bind(to:previousView.becomeActive).disposed(by: disposeBag)
+                previousView.goNext.bind(to:view.becomeActive).disposed(by: disposeBag)
             }
             
-            previousField = view.valueField
+            previousView = view
         }
-
-        countViews.first!.valueField.resignActive.filter({ (isNext) -> Bool in
-            return !isNext
-        })  .bind(to:resignActive).disposed(by: disposeBag)
-
-        countViews.last!.valueField.resignActive.filter({ (isNext) -> Bool in
-            return isNext
-        })  .bind(to:resignActive).disposed(by: disposeBag)
-
-        becomeActive.filter { (isNext) -> Bool in
-            return isNext
-        }   .bind(to: countViews.first!.valueField.becomeActive).disposed(by: disposeBag)
-
-        becomeActive.filter { (isNext) -> Bool in
-            return !isNext
-        }   .bind(to: countViews.last!.valueField.becomeActive).disposed(by: disposeBag)
     }
 
     func set(colors: [UIColor]?) {
@@ -107,15 +87,15 @@ class CountsLayoutCell: ResponsibleCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func height() -> CGFloat {
+    override var height : CGFloat {
         return 100
     }
 }
 
 class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
-    private let viewModel: FieldsContainerVM<Int16>
+    private let viewModel: FieldsContainerVM
 
-    init(_ viewModel: FieldsContainerVM<Int16>) {
+    init(_ viewModel: FieldsContainerVM) {
         self.viewModel = viewModel
         super.init(fieldsCount:viewModel.fields.count)
 
@@ -124,13 +104,15 @@ class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
         for (vm, view) in zip(viewModel.fields, countViews) {
             view.titleLabel.text = vm.key.localized
             view.valueField.delegate = self
-            let value = vm.variable.value
-            if value > 0 {
-                view.valueField.text = value.description
+            if let variableField = vm as? VariableFieldVM<Int16> {
+                let value = variableField.variable.value
+                if value > 0 {
+                    view.valueField.text = value.description
+                }
+                view.valueField.rx.textRequired.asDriver().skip(1).map({ (string) -> Int16 in
+                    return Int16(string) ?? 0
+                }).drive(variableField.variable).disposed(by: disposeBag)
             }
-            view.valueField.rx.textRequired.asDriver().skip(1).map({ (string) -> Int16 in
-                return Int16(string) ?? 0
-            }).drive(vm.variable).disposed(by: disposeBag)
         }
     }
 
@@ -139,7 +121,7 @@ class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
     }
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let textField = textField as! FormTextField
+        let textField = textField as! NumberField
         let nsString = textField.text as NSString?
         if let resultString = nsString?.replacingCharacters(in: range, with: string) {
             if resultString.isEmpty {
@@ -147,9 +129,9 @@ class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
             }
 
             if Int16(resultString) != nil {
-                if resultString.characters.count > 1 {
+                if resultString.count > 1 {
                     DispatchQueue.main.async {
-                        textField.resignActive.onNext(true)
+                        textField.goNext.onNext(())
                     }
                 }
                 return true

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import RxSwift
+
 import RxCocoa
 import EasyPeasy
 
@@ -33,6 +33,10 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
 
         tableView.register(EntryCell.self, forCellReuseIdentifier: EntryCell.classString)
         tableView.register(GraphHeader.self, forHeaderFooterViewReuseIdentifier: GraphHeader.classString)
+
+        if #available(iOS 11, *) {
+            navigationItem.largeTitleDisplayMode = .never
+        }
     }
 
     func setUpErrorLabel() {
@@ -48,11 +52,11 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
         super.bindViewModel()
 
         refreshControl!.rx.controlEvent(.valueChanged).asDriver()
-            .do(onNext:{ [weak self] () in
+          /*  .do(onNext:{ [weak self] () in
                 self?.tableView.tableHeaderView = nil
-            })
+            })*/
             .drive(viewModel.refresh).disposed(by: disposeBag)
-
+/*
         viewModel.errorMessages.drive(onNext: { [weak self] (message) in
                 self?.errorLabel.text = message
                 //TODO: fix layout bug
@@ -68,7 +72,7 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
                 headerFrame?.size.height = height ?? 0 + 4;
                 self?.errorContainer.frame = headerFrame ?? CGRect();
                 self?.tableView.tableHeaderView = self?.errorContainer;
-            }).disposed(by: disposeBag)
+            }).disposed(by: disposeBag)*/
     }
 
     //MARK: Table Data Source

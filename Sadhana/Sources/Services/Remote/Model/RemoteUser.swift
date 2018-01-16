@@ -42,3 +42,27 @@ struct RemoteUser : User, Mappable {
 enum ConvertibleError : Error {
     case error
 }
+
+
+class Registration: JSONConvertible {
+    var spiritualName = ""
+    var firstName = ""
+    var lastName = ""
+    var password = ""
+    var email = ""
+    var country = ""
+    var city = ""
+    var birthday : Date?
+
+    var json: JSON {
+        return ["spiritual_name": spiritualName,
+                "first_name": firstName,
+                "last_name": lastName,
+                "password": password,
+                "email": email,
+                "country": country,
+                "city": city,
+                "birthday": birthday?.remoteDateString ?? ""]
+    }
+}
+

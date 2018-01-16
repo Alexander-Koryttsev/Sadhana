@@ -18,7 +18,7 @@ class MyGraphRouter : EditingRouter {
         return parent!.plusButton
     }
 
-    func initialVC() -> UIViewController {
+    var initialVC : UIViewController {
         navVC.viewControllers = [ MyGraphVC(MyGraphVM(self)) ]
         navVC.view.backgroundColor = .white
         return navVC

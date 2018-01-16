@@ -8,7 +8,7 @@
 
 import UIKit
 import RxCocoa
-import RxSwift
+
 import EasyPeasy
 import Crashlytics
 
@@ -28,13 +28,11 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
             return pageVC.viewControllers?.first as! EntryEditingVC
         }
     }
-    override var hasGuide: Bool {
-        return true
-    }
 
     override init(_ viewModel: VM) {
         weekVC = WeekVC(viewModel.initialDate)
         super.init(viewModel)
+        base.hasGuide = true
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -65,7 +63,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if guideView != nil {
+        if base.guideView != nil {
             Local.defaults.shouldShowGuideCompletion = true
         }
     }
@@ -260,7 +258,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
     }
 
     func showNextGuide() {
-        if let guide = guideView {
+        if let guide = base.guideView {
             UIView.transition(with: guide, duration: 0.25, options: .transitionCrossDissolve, animations: {
                 guide.subviews.forEach({ (subview) in
                     if subview != guide.backgroundView {
@@ -299,7 +297,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         guide.addSubview(swipeIcon)
         swipeIcon.easy.layout([Top(14).to(swipeLabel), CenterX()])
 
-        guideView = guide
+        base.guideView = guide
     }
 
     //MARK: Page View Controller Data Source
@@ -369,7 +367,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
                 break
             }
 
-            Answers.logContentView(withName: "Editing", contentType: "Entry", contentId: entryEditingVC.viewModel.date.remoteDateString(), customAttributes: nil)
+            Answers.logContentView(withName: "Editing", contentType: "Entry", contentId: entryEditingVC.viewModel.date.remoteDateString, customAttributes: nil)
         }
         else {
             weekVC = weekPageVC.viewControllers?.first as! WeekVC

@@ -8,8 +8,8 @@
 
 import Foundation
 import RxCocoa
-import RxSwift
 
-class GraphListVM : BaseVM {
+
+class GraphListVM : BaseTableVM {
     
 }

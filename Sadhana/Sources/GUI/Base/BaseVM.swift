@@ -7,7 +7,6 @@
 //
 
 import RxCocoa
-import RxSwift
 
 class BaseVM {
     let errorMessages : Driver<String>
@@ -36,6 +35,22 @@ class BaseVM {
             }).asSharedSequence()
         
         errorMessages.drive().disposed(by: disposeBag)
+    }
+}
+
+class BaseTableVM : BaseVM {
+
+    var numberOfSections : Int {
+        return 0
+    }
+
+     func numberOfRows(in section: Int) -> Int {
+        return 0
+    }
+
+    @available(iOS 11.0, *)
+    func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        return nil
     }
 }
 

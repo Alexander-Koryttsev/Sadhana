@@ -7,19 +7,24 @@
 //
 
 import UIKit
-import RxSwift
+
 import RxCocoa
 import EasyPeasy
 
 class FormCell : UITableViewCell {
-    func height() -> CGFloat {
+    func set(valid:Bool) {
+        backgroundColor = valid ? .white : UIColor(red: 1, green: 0.9, blue: 0.9, alpha: 1)
+    }
+
+    var height : CGFloat {
         return 44
     }
 }
 
-class ResponsibleCell: FormCell {
-    let resignActive = PublishSubject<Bool/*isNext*/>()
-    let becomeActive = PublishSubject<Bool/*isNext*/>()
+class ResponsibleFormCell: FormCell, Responsible {
+    let goBack = PublishSubject<Void>()
+    let goNext = PublishSubject<Void>()
+    let becomeActive = PublishSubject<Void>()
 
     let disposeBag = DisposeBag()
 
@@ -33,5 +38,47 @@ class ResponsibleCell: FormCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+    }
+}
+
+protocol Responsible {
+    var goBack : PublishSubject<Void> { get }
+    var goNext : PublishSubject<Void> { get }
+    var becomeActive : PublishSubject<Void> { get }
+}
+
+protocol ResponsibleContainer : Responsible {
+    var responsible : Responsible { get }
+}
+
+extension ResponsibleContainer {
+    var goBack : PublishSubject<Void> {
+        return responsible.goBack
+    }
+
+    var goNext : PublishSubject<Void> {
+        return responsible.goNext
+    }
+
+    var becomeActive : PublishSubject<Void> {
+        return responsible.becomeActive
+    }
+}
+
+protocol ResponsibleChain : Responsible {
+    var responsibles : [Responsible] { get }
+}
+
+extension ResponsibleChain {
+    var goBack : PublishSubject<Void> {
+        return responsibles.first!.goBack
+    }
+
+    var goNext : PublishSubject<Void> {
+        return responsibles.last!.goNext
+    }
+
+    var becomeActive : PublishSubject<Void> {
+        return responsibles.first!.becomeActive
     }
 }

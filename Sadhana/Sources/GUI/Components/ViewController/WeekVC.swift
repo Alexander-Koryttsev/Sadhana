@@ -9,7 +9,7 @@
 import UIKit
 import EasyPeasy
 import RxCocoa
-import RxSwift
+
 
 class WeekVC: UIViewController {
 

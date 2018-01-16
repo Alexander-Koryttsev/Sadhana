@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import RxSwift
+
 import Alamofire
 import Mapper
 import AlamofireImage
@@ -40,6 +40,38 @@ enum InvalidRequestType : String {
     case unknown
 }
 
+struct Remote {
+    static let service = RemoteService()
+
+    enum URL : String {
+        static let prefix = "https://\(Config.host)/"
+
+        case api = "vs-api/v2/sadhana"
+        case authToken = "?oauth=token"
+        case defaultAvatar = "wp-content/themes/socialize-child/img/default_avatar.png"
+
+        var fullString : String {
+            get {
+                return "\(URL.prefix)\(rawValue)"
+            }
+        }
+
+        var fullURL : Foundation.URL {
+            return Foundation.URL(string:fullString)!
+        }
+
+        var relativeString : String {
+            return rawValue
+        }
+    }
+}
+
+class SessionDelegate : NSObject, URLSessionDelegate {
+    func urlSession(_ session: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Swift.Void) {
+        completionHandler(.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
+    }
+}
+
 class RemoteService {
     private let clientID = "IXndKqmEoXPTwu46f7nmTcoJ2CfIS6"
     private let clientSecret = "1A4oOPOatd8j6EOaL3i9pblOUnqa6j"
@@ -62,8 +94,15 @@ class RemoteService {
     private let acceptableStatusCodes:Array<Int>
     private let manager : Alamofire.SessionManager
     private let running = ActivityIndicator()
+    private let session : URLSession
+
+    private var cachedCountries : [Country]?
+    private var cachedCities = [Int32 : [City]]()
     
     init() {
+
+        session = URLSession(configuration: .default, delegate: SessionDelegate(), delegateQueue: nil)
+
         var codes = Array(200..<300)
         codes.append(contentsOf: (400..<500))
         acceptableStatusCodes = codes
@@ -81,6 +120,7 @@ class RemoteService {
         let configuration = URLSessionConfiguration.default
         configuration.httpAdditionalHeaders = SessionManager.defaultHTTPHeaders
         let trustManager = ServerTrustPolicyManager(policies: serverTrustPolicies)
+
         manager = SessionManager(configuration: configuration, serverTrustPolicyManager: trustManager)
 
         UIImageView.af_sharedImageDownloader = ImageDownloader(sessionManager:SessionManager(configuration: configuration, serverTrustPolicyManager: trustManager))
@@ -110,7 +150,7 @@ class RemoteService {
     
     func refreshTokens() -> Completable {
         guard let tokenRefresh = tokens.refresh  else { return Completable.error(RemoteError.noRefreshToken) }
-        return baseRequest(.post, Remote.URL.authToken.path, parameters:
+        return baseRequest(.post, Remote.URL.authToken.relativeString, parameters:
             ["grant_type" : GrantType.refreshToken.rawValue,
              "refresh_token" : tokenRefresh,
              "client_id" : clientID,
@@ -121,7 +161,7 @@ class RemoteService {
 
     func login(name:String, password:String) -> Completable {
 
-        return baseRequest(.post, Remote.URL.authToken.path, parameters:
+        return baseRequest(.post, Remote.URL.authToken.relativeString, parameters:
             ["grant_type" : GrantType.password.rawValue,
              "client_id" : clientID,
              "client_secret" : clientSecret,
@@ -143,7 +183,7 @@ class RemoteService {
                 return Disposables.create {} 
             }
             
-            let request = self.manager.request("\(Remote.URL.prefix)/\(path)", method: method, parameters: parameters, encoding: JSONEncoding.default, headers: authorise ? self.authorizationHeaders : nil)
+            let request = self.manager.request("\(Remote.URL.prefix)\(path)", method: method, parameters: parameters, encoding: JSONEncoding.default, headers: authorise ? self.authorizationHeaders : nil)
             
             remoteLog("\n\t\t\t\t\t--- \(method) \(path) ---\n\nHead: \(desc(request.request?.allHTTPHeaderFields))\n\nParamteters: \(desc(parameters))")
             request .validate(statusCode: self.acceptableStatusCodes)
@@ -210,7 +250,7 @@ class RemoteService {
                     _ path: String,
                     parameters: [String: Any]? = nil) -> Single<JSON> {
 
-            let request = baseRequest(method, "\(Remote.URL.api.path)/\(path)", parameters: parameters, authorise: true)
+            let request = baseRequest(method, "\(Remote.URL.api.relativeString)/\(path)", parameters: parameters, authorise: true)
             
             return request.catchError { (handler: Error) -> Single<JSON> in
                 let returningError = Single<JSON>.error(handler)
@@ -229,7 +269,6 @@ class RemoteService {
                     default: return returningError
                 }
             }
-            
     }
     // MARK: API Methods
     func loadCurrentUser() -> Single <User> {
@@ -245,7 +284,7 @@ class RemoteService {
 
         var parameters = [String: Any]()
         if let lastUpdatedDate = lastUpdatedDate {
-            parameters["modified_since"] = lastUpdatedDate.remoteDateTimeString()
+            parameters["modified_since"] = lastUpdatedDate.remoteDateTimeString
         }
         else {
             parameters["year"] = month?.year
@@ -333,5 +372,81 @@ class RemoteService {
             throw RemoteError.invalidData
         })
     }
+
+    func loadCountries() -> Single<[Country]> {
+        if let cachedCountries = cachedCountries {
+            return Observable.of(cachedCountries).asSingle()
+        }
+
+        return baseRequest(.get, "\(Remote.URL.api.relativeString)/countries", authorise: false).map({ [unowned self] (dictionary) -> [Country] in
+            let items = dictionary["response"] as! [NSDictionary]
+            let countries = try! items.map { try Country(map: Mapper(JSON: $0)) }
+            self.cachedCountries = countries
+            return countries
+        });
+    }
+
+    func loadCities(countryID: Int32) -> Single<[City]> {
+        if let cachedCities = cachedCities[countryID] {
+            return Observable.of(cachedCities).asSingle()
+        }
+
+        return Single<[City]>.create { [unowned self] (observer) -> Disposable in
+            let url = URL(string: "\(Remote.URL.api.fullString)/cities?country_id=\(countryID)")
+
+            let task = self.session.dataTask(with: url!) {[unowned self] (data, response, error) in
+                do {
+                    if let json = try JSONSerialization.jsonObject(with: data!) as? JSON,
+                        let response = json["response"] as? [NSDictionary] {
+
+                        let cities = try! response.map { try City(map: Mapper(JSON: $0)) }
+                        self.cachedCities[countryID] = cities
+                        observer(.success(cities))
+                    }
+                }
+                catch {
+                    print(error)
+                }
+            }
+
+            task.resume()
+
+            return Disposables.create {
+                task.cancel()
+            }
+        }
+    }
+    
+    func register(_ registration: Registration) -> Single<Int32> {
+        return baseRequest(.post, "\(Remote.URL.api.relativeString)/registration", parameters: registration.json, authorise: false).map({ (json) -> Int32 in
+            return try Int32.create(json["user_id"])
+        });
+    }
+}
+
+extension Int32 {
+    static func create(_ value: Any?) throws -> Int32 {
+        if let int32 = value as? Int32 {
+            return Int32(int32)
+        }
+        else if let string = value as? String {
+            guard let int32 = Int32(string) else {
+                throw RemoteError.invalidData
+            }
+            return int32
+        }
+        else {
+            throw RemoteError.invalidData
+        }
+    }
+}
+
+
+extension NSURLRequest {
+    #if DEBUG
+    static func allowsAnyHTTPSCertificate(forHost host: String) -> Bool {
+        return true
+    }
+    #endif
 }
 

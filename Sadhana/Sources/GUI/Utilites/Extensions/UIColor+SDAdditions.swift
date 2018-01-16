@@ -51,6 +51,10 @@ extension UIColor {
     class var sdLightPeach: UIColor {
         return UIColor(red: 255.0 / 255.0, green: 194.0 / 255.0, blue: 194.0 / 255.0, alpha: 1.0)
     }
+    
+    @nonobjc class var sdSteel: UIColor {
+        return UIColor(red: 142.0 / 255.0, green: 142.0 / 255.0, blue: 147.0 / 255.0, alpha: 1.0)
+    }
 
     convenience init(red: Int, green: Int, blue: Int) {
         assert(red >= 0 && red <= 255, "Invalid red component")

@@ -6,27 +6,25 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import RxSwift
+
 import RxCocoa
 
-class GraphVM : BaseVM {
+class GraphVM : BaseTableVM {
 
     let refresh = PublishSubject<Void>()
     
     private var maxCounts = [Int : Int16]()
     var entries = [Date : [Date : Entry]]()
 
-    var numberOfSections : Int {
-        get {
-            return Common.shared.calendarDates.count
-        }
+    override var numberOfSections : Int {
+        return Common.shared.calendarDates.count
     }
 
     func reloadData() {
         maxCounts.removeAll()
     }
 
-    func numberOfRows(in section:Int) -> Int {
+    override func numberOfRows(in section:Int) -> Int {
         return Common.shared.calendarDates[section].count
     }
 

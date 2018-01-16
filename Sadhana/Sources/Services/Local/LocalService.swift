@@ -8,7 +8,7 @@
 
 import Foundation
 import CoreData
-import RxSwift
+
 enum LocalError : Error {
     case noData
 }

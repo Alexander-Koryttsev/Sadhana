@@ -9,7 +9,7 @@
 import UIKit
 import EasyPeasy
 import RxCocoa
-import RxSwift
+
 
 class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
     private let viewModel: VariableFieldVM<Time?>
@@ -55,14 +55,14 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
     }
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let textField = textField as! FormTextField
+        let textField = textField as! NumberField
         let nsString = textField.text as NSString?
         if let resultString = nsString?.replacingCharacters(in: range, with: string) {
             if resultString.isEmpty {
                 return true
             }
 
-            if resultString.characters.count > 2  {
+            if resultString.count > 2  {
                 return false
             }
 
@@ -70,9 +70,9 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
                 if textField == hoursView.valueField,
                     (0..<24).contains(number) {
                     if number > 2 ||
-                        resultString.characters.count == 2 {
+                        resultString.count == 2 {
                         DispatchQueue.main.async {
-                            textField.resignActive.onNext(true)
+                            textField.goNext.onNext(())
                         }
                     }
                     return true
@@ -80,9 +80,9 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
                 if textField == minutesView.valueField,
                     (0..<60).contains(number) {
                     if number > 5 ||
-                        resultString.characters.count == 2 {
+                        resultString.count == 2 {
                         DispatchQueue.main.async {
-                            self.resignActive.onNext(true)
+                            self.goNext.onNext(())
                         }
                     }
                     return true

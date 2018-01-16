@@ -7,21 +7,22 @@
 //
 
 import UIKit
-import RxSwift
+
 import RxCocoa
 import EasyPeasy
 
 class MainTabBarVC : BaseTabBarVC<MainTabBarVM> {
-
     let editingButton = UIFactory.editingButton
     var guideBag = DisposeBag()
-    override var hasGuide: Bool {
-        return true
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpEditingButton()
+        base.hasGuide = true
+    }
+    
+    deinit {
+        editingButton.removeFromSuperview()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -132,13 +133,13 @@ class MainTabBarVC : BaseTabBarVC<MainTabBarVM> {
             self.showFeaturesGuide()
         }).disposed(by: guideBag)
 
-        guideView = guide
+        base.guideView = guide
         playSound("tada")
     }
 
     func showFeaturesGuide() {
         guideBag = DisposeBag()
-        if let guide = guideView,
+        if let guide = base.guideView,
             let alert = guide.alert {
 
             alert.contentView.removeAllSubviews()
@@ -195,7 +196,7 @@ class MainTabBarVC : BaseTabBarVC<MainTabBarVM> {
     }
 
     func showPlusButtonGuide() {
-        if let guide = guideView {
+        if let guide = base.guideView {
             guide.highlight(editingButton)
 
             let arrow = UIImageView(image:#imageLiteral(resourceName: "arrow-down"))

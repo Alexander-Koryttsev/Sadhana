@@ -48,6 +48,15 @@
 		<true/>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>dev.vaishnavaseva.net</key>
+			<dict>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
 			<key>vaishnavaseva.net</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>

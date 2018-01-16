@@ -8,12 +8,12 @@
 
 import Foundation
 import RxCocoa
-import RxSwift
+
 import MessageUI
 import Crashlytics
 
 
-class SettingsVM : BaseVM {
+class SettingsVM : BaseTableVM {
 
     unowned let router : MyGraphRouter
     var sections = [SettingsSection]()
@@ -35,9 +35,9 @@ class SettingsVM : BaseVM {
     }
 
     deinit {
-        if let user = Main.service.user as? ManagedUser {
-            _ = Remote.service.send(user).subscribe()
-        }
+      //  if let user = Main.service.user as? ManagedUser {
+        //    _ = Remote.service.send(user).subscribe()
+        //}
     }
 
     func addUserInfoSection() {
@@ -50,7 +50,7 @@ class SettingsVM : BaseVM {
     func addCommonSection() {
         if let user = Main.service.user as? ManagedUser {
             //TODO: Localize
-            let publicItem = KeyPathFieldVM(user, \ManagedUser.isPublic, for:"isPublic")
+            let publicItem = KeyPathFieldVM(user, \ManagedUser.isPublic, for:"isPublic", type:.switcher)
             publicItem.variable.asDriver().drive(onNext:{ _ in
                 user.managedObjectContext?.saveHanlded()
             }).disposed(by: disposeBag)
@@ -78,11 +78,11 @@ class SettingsVM : BaseVM {
         variable.asDriver().drive(onNext: { (value) in
             Local.defaults.set(field: key, enabled: value)
         }).disposed(by: disposeBag)
-        return VariableFieldVM(variable, for: key.rawValue)
+        return VariableFieldVM(variable, for: key.rawValue, type:.switcher)
     }
 
     func addFeedbackItem() {
-        let action = SettingAction(key: "letterToDevs".localized, destructive: false, presenter:true) { [unowned self] in
+        let action = FormAction(key: "letterToDevs".localized, actionType:.basic, presenter:true) { [unowned self] in
             let address = "feedback.sadhana@gmail.com"
             if MFMailComposeViewController.canSendMail() {
                 let mailComposerVC = MFMailComposeViewController()
@@ -120,7 +120,7 @@ class SettingsVM : BaseVM {
     }
 
     func addDevSection() {
-        let restartGuide = SettingAction(key: "Restart Guide", destructive: false, presenter: false) { [unowned self] () in
+        let restartGuide = FormAction(key: "Restart Guide", actionType:.basic, presenter: false) { [unowned self] () in
             Local.defaults.resetGuide()
             self.router.parent?.tabBarVC?.viewDidAppear(true)
         }
@@ -129,7 +129,7 @@ class SettingsVM : BaseVM {
     }
 
     func addSignOutItem() {
-        let logoutAction = SettingAction(key: "signOut".localized, destructive: true, presenter: false) { [unowned self] in
+        let logoutAction = FormAction(key: "signOut".localized, actionType:.destructive, presenter: false) { [unowned self] in
             let alert = Alert()
             alert.add(action:"signOut".localized, style: .destructive, handler: {
                 RootRouter.shared?.logOut()
@@ -151,14 +151,19 @@ struct SettingsSection {
     let items : [FormFieldVM]
 }
 
-struct SettingAction : FormFieldVM {
+struct FormAction : FormFieldVM {
     let key : String
-    let destructive : Bool
+    let actionType : ActionType
     let presenter : Bool
     let action : Block
+
+    var type : FormFieldType {
+        return .action(actionType)
+    }
 }
 
 struct SettingInfo : FormFieldVM {
     let key : String
     let imageURL : URL?
+    let type = FormFieldType.profileInfo
 }

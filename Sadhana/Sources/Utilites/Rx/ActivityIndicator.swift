@@ -7,7 +7,7 @@
 //
 
 #if !RX_NO_MODULE
-import RxSwift
+
 import RxCocoa
 #endif
 
@@ -90,10 +90,8 @@ class IndexedActivityIndicator : SharedSequenceConvertibleType {
     private let loadingSubject = PublishSubject<E>()
     private let loading: SharedSequence<SharingStrategy, E>
 
-    var isRunning : Bool {
-        get {
-            return indexSet.count > 0
-        }
+    var isActive : Bool {
+        return indexSet.count > 0
     }
 
     init() {
@@ -140,6 +138,11 @@ class IndexedActivityIndicator : SharedSequenceConvertibleType {
             return running
         }
     }
+
+    var isActiveDriver : Driver<Bool> {
+        return loading.map { [unowned self] _ in self.isActive }.distinctUntilChanged()
+    }
+    
 }
 
 

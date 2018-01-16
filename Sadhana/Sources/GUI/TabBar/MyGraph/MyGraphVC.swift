@@ -8,7 +8,7 @@
 
 import UIKit
 import CoreData
-import RxSwift
+
 import RxCocoa
 import EasyPeasy
 import Crashlytics
@@ -36,7 +36,7 @@ class MyGraphVC: GraphVC<MyGraphVM> {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { (_) in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
+        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { _ in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
         
         Answers.logContentView(withName: "My Graph", contentType: nil, contentId: nil, customAttributes: nil)
     }

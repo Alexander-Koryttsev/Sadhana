@@ -8,8 +8,11 @@
 
 import UIKit
 import RxCocoa
-import RxSwift
+
 
 class GraphListVC<VM:GraphListVM> : BaseTableVC<VM> {
-    
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
 }
