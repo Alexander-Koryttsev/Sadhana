@@ -8,6 +8,7 @@
 
 import Foundation
 import RxCocoa
+import Alamofire
 
 import Crashlytics
 
@@ -58,7 +59,7 @@ class AllGraphListVM : GraphListVM {
 
         select.subscribe(onNext:{ [unowned self] (indexPath) in
             if let entry = self.entry(at: indexPath) {
-                router.showGraph(of:entry)
+                self.router.showGraph(of:entry)
             }
         }).disposed(by: disposeBag)
     }
@@ -125,7 +126,7 @@ class AllGraphListVM : GraphListVM {
 
         return page.count > 0 ? page[indexPath.row] : nil
     }
-
+/*
     @available(iOS 11, *)
     override func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .normal, title: "Закрепить") { (action, view, handler) in
@@ -136,7 +137,7 @@ class AllGraphListVM : GraphListVM {
         configuration.performsFirstActionWithFullSwipe = false
 
         return configuration
-    }
+    }*/
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

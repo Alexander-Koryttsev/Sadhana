@@ -89,6 +89,7 @@ country = "Страна";
 city = "Город";
 birthday = "Дата рождения";
 register = "Зарегистрироваться";
+empty_fields_warning = "Пожалуйста, заполните все поля";
 
 //Error
 error_session_expired = "Срок действия сессии истек";

@@ -11,7 +11,7 @@ import Foundation
 import Crashlytics
 
 class EditingVM: BaseVM {
-    let router : EditingRouter
+    unowned let router : EditingRouter
     let save = PublishSubject<Void>()
     let cancel = PublishSubject<Void>()
     let initialDate : Date
@@ -62,17 +62,16 @@ class EditingVM: BaseVM {
 
         }).disposed(by: disposeBag)
 
-        save.subscribe(onNext:{ [weak self] () in
-            if self == nil { return }
+        save.subscribe(onNext:{ [unowned self] () in
             var signals = [Observable<Bool>]()
             //TODO:filter
             //TODO:thread safe
             var entries = [ManagedEntry]()
-            for entry in self!.context.registeredObjects {
+            for entry in self.context.registeredObjects {
                 if let entry = entry as? ManagedEntry {
                     if entry.dateCreated == entry.dateUpdated,
                         entry.ID == nil {
-                        self!.context.delete(entry)
+                        self.context.delete(entry)
                         continue
                     }
                     entries.append(entry)
@@ -81,24 +80,27 @@ class EditingVM: BaseVM {
 
             for entry in entries {
                 if entry.shouldSynch {
-                    let strongSelf = self!
-                    let signal : Single<Int32?> = Remote.service.send(entry).do(onNext: { (ID) in
+                    let strongSelf = self
+                    let signal : Single<Int32?> = Remote.service.send(entry)
+                        .subscribeOn(MainScheduler.instance)
+                        .observeOn(MainScheduler.instance)
+                        .do(onNext: { (ID) in
                         entry.ID = ID
                         entry.dateSynched = Date()
                         strongSelf.context.saveRecursive()
                     })
                     signals.append(signal
-                        .track(self!.errors)
+                        .track(self.errors)
                         .asBoolObservable())
                 }
             }
 
-            self!.context.saveRecursive()
+            self.context.saveRecursive()
             _ = Observable.merge(signals).subscribe()
 
             var attributes = [String:String]()
             entries.forEach({ (entry) in
-                attributes[entry.date.remoteDateString] = (entry.ID != nil) ? entry.ID!.description : ""
+                attributes["Date"] = entry.date.remoteDateString
             })
             
             Answers.logCustomEvent(withName: "Save Entries", customAttributes: attributes)

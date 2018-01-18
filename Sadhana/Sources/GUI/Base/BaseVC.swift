@@ -17,6 +17,7 @@ class ViewControllerBaseVars<VM:BaseVM> {
     var guideView:GuideView? = nil
     var firstAppearing = true
     var hasGuide = false
+    var defaultErrorMessagingEnabled = true
     
     init(_ viewModel:VM) {
         self.viewModel = viewModel
@@ -61,6 +62,36 @@ extension ViewController where Self : UIViewController {
             self?.present(alert.uiAlertController, animated: true)
             RootRouter.shared?.setPlusButton(hidden:true, animated:true)
         }).disposed(by: disposeBag)
+
+        if base.defaultErrorMessagingEnabled {
+            viewModel.errorMessages.throttle(2).drive(onNext:{ [unowned self] (message) in
+                if let window = self.view.window {
+                    let container = BlurView()
+                    let label = UILabel()
+                    label.text = message
+                    label.textColor = .black
+                    label.textAlignment = .center
+                    label.font = UIFont.systemFont(ofSize: 12)
+                    label.numberOfLines = 2
+                    container.contentView.addSubview(label)
+                    label.easy.layout([Left(14), Bottom(5), Right(14), Height(34)])
+                    window.addSubview(container)
+                    let height = TopInset + 1
+                    container.easy.layout([Height(height), Top(-height), Left(), Right()])
+                    window.layoutIfNeeded()
+                    UIView.animate(withDuration: 0.25, animations: {
+                        container.easy.layout(Top())
+                        window.layoutIfNeeded()
+                    })
+                    UIView.animate(withDuration: 0.25, delay: Double(message.count)/20.0, options: [], animations: {
+                        container.easy.layout(Top(-height))
+                        window.layoutIfNeeded()
+                    }, completion: { _ in
+                        container.removeFromSuperview()
+                    })
+                }
+            }).disposed(by: disposeBag)
+        }
     }
 
     fileprivate func baseViewDidAppear(_ animated: Bool) {

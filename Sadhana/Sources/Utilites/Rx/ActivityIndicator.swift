@@ -56,7 +56,7 @@ public class ActivityIndicator : SharedSequenceConvertibleType {
     }
 
     fileprivate func trackActivityOfObservable<O: ObservableConvertibleType>(_ source: O) -> Observable<O.E> {
-        return Observable.using({ () -> ActivityToken<O.E> in
+        return Observable.using({ [unowned self] () -> ActivityToken<O.E> in
             self.increment()
             return ActivityToken(source: source.asObservable(), disposeAction: self.decrement)
         }) { t in
@@ -99,7 +99,7 @@ class IndexedActivityIndicator : SharedSequenceConvertibleType {
     }
 
     fileprivate func trackActivityOfObservable<O: ObservableConvertibleType>(_ source: O, index: Int) -> Observable<O.E> {
-        return Observable.using({ () -> ActivityToken<O.E> in
+        return Observable.using({ [unowned self] () -> ActivityToken<O.E> in
             self.increment(index)
             return ActivityToken(source: source.asObservable(), disposeAction:{
                 self.decrement(index)

@@ -50,7 +50,9 @@ class RegistrationVM: BaseTableVM {
 
         cityField.action = { [unowned cityField] in
             if let country = countryField.variable.value as? Country {
-                let pickerVM = FormPickerVM(fieldVM: cityField, load:Remote.service.loadCities(countryID: country.ID))
+                let pickerVM = FormPickerVM(fieldVM: cityField, searchSelector:{ string in
+                    return Remote.service.loadCities(countryID: country.ID, query:string)
+                })
                 pickerVM.select.subscribe({_ in
                     RootRouter.shared?.hidePicker()
                 }).disposed(by: pickerVM.disposeBag)
@@ -118,7 +120,7 @@ class RegistrationVM: BaseTableVM {
             .filter { [unowned self] valid in
                 if !valid {
                     DispatchQueue.main.async {
-                        self.messages.onNext("Пожалуйста, заполните все поля") //TODO: Localize
+                        self.messages.onNext("empty_fields_warning".localized)
                     }
                 }
                 return valid

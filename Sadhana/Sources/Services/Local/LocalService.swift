@@ -33,22 +33,27 @@ class LocalService: NSObject {
             completionClosure()
         }
         backgroundContext = persistentContainer.newBackgroundContext()
+        backgroundContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
     
     func newSubViewForegroundContext() -> NSManagedObjectContext {
         let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        context.parent = viewContext;
-        return context;
+        context.parent = viewContext
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        return context
     }
 
     func newSubViewBackgroundContext() -> NSManagedObjectContext {
         let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        context.parent = viewContext;
-        return context;
+        context.parent = viewContext
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        return context
     }
     
     func newBackgroundContext() -> NSManagedObjectContext {
-        return persistentContainer.newBackgroundContext();
+        let context = persistentContainer.newBackgroundContext()
+        context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        return context
     }
 
     func dropDatabase(completionClosure: @escaping () -> ()) {
@@ -72,6 +77,7 @@ class LocalService: NSObject {
             completionClosure()
         }
         backgroundContext = persistentContainer.newBackgroundContext()
+        backgroundContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
 }
 
@@ -102,7 +108,7 @@ extension NSManagedObjectContext {
         return fetchHandled(request)
     }
 
-    private func fetchHandled<T: NSFetchRequestResult>(_ request: NSFetchRequest<T>) -> [T] {
+    private func fetchHandled<T>(_ request: NSFetchRequest<T>) -> [T] {
         do {
             return try fetch(request)
         }
@@ -111,7 +117,7 @@ extension NSManagedObjectContext {
         }
     }
     
-    private func fetchSingle<T: NSFetchRequestResult>(_ request: NSFetchRequest<T>) -> T? {
+    private func fetchSingle<T>(_ request: NSFetchRequest<T>) -> T? {
         request.fetchLimit = 1
         
         do {
@@ -191,17 +197,17 @@ extension NSManagedObjectContext {
     }
 
     func rxSave() -> Completable {
-        return Completable.create { [weak self] (observer) -> Disposable in
-            self?.perform {
+        return Completable.create { [unowned self] (observer) -> Disposable in
+            self.perform {
                 do {
-                    if self?.persistentStoreCoordinator != nil && self!.persistentStoreCoordinator!.persistentStores.count == 0 {
+                    if self.persistentStoreCoordinator != nil && self.persistentStoreCoordinator!.persistentStores.count == 0 {
                         log("trying save without persistent stores")
                         //TODO: create pretty error
                         observer(.error(GeneralError.error))
                         return
                     }
-                    try self?.save()
-                    if let parent = self?.parent {
+                    try self.save()
+                    if let parent = self.parent {
                         _ = parent.rxSave().subscribe(observer)
                     }
                     else {
@@ -222,9 +228,15 @@ extension NSManagedObjectContext {
         let request = ManagedUser.request()
         request.predicate = NSPredicate(format: "id = %d", user.ID)
         request.fetchLimit = 1
-        return rxFetch(request).map { [weak self] (localUsers) -> ManagedUser in
-            let localUser = localUsers.count > 0 ? localUsers.first! : self!.create(ManagedUser.self)
-            return localUser.map(user)
+        return rxFetch(request).map { [unowned self] (localUsers) -> ManagedUser in
+            var localUser : ManagedUser? = nil
+
+            self.performAndWait {
+                localUser = localUsers.count > 0 ? localUsers.first! : self.create(ManagedUser.self)
+                localUser!.map(user)
+            }
+
+            return localUser!
             }.concat(rxSave())
     }
 
@@ -236,38 +248,39 @@ extension NSManagedObjectContext {
         }
         request.predicate = NSPredicate(format: "id IN %@", IDs)
         request.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
-        return self.rxFetch(request).map { [weak self] (localEntries) -> [ManagedEntry] in
-            //TODO: Check is context's queue
+        return self.rxFetch(request).map { [unowned self] (localEntries) -> [ManagedEntry] in
             var remoteEntries = entries.sorted(by: { (entry1, entry2) -> Bool in
                 return entry1.ID! <  entry2.ID!
             })
-            var localEntriesMutable = localEntries
             var updatedLocalEntries = [ManagedEntry]()
 
-            while remoteEntries.count > 0 {
-                let remoteEntry = remoteEntries.first!
-                let remoteEntryID = remoteEntry.ID!
-                if localEntriesMutable.count > 0 {
-                    let localEntry = localEntriesMutable.first!
-                    let localEntryID = localEntry.ID!
-                    switch localEntryID {
-                    case remoteEntryID:
-                        localEntry.map(remoteEntry)
-                        updatedLocalEntries.append(localEntry)
-                        localEntriesMutable.removeFirst()
-                        remoteEntries.removeFirst()
-                        continue
-                    case 0..<remoteEntryID:
-                        localEntriesMutable.removeFirst()
-                        continue
-                    default: break
+            self.performAndWait {
+                var localEntriesMutable = localEntries
+                while remoteEntries.count > 0 {
+                    let remoteEntry = remoteEntries.first!
+                    let remoteEntryID = remoteEntry.ID!
+                    if localEntriesMutable.count > 0 {
+                        let localEntry = localEntriesMutable.first!
+                        let localEntryID = localEntry.ID!
+                        switch localEntryID {
+                        case remoteEntryID:
+                            localEntry.map(remoteEntry)
+                            updatedLocalEntries.append(localEntry)
+                            localEntriesMutable.removeFirst()
+                            remoteEntries.removeFirst()
+                            continue
+                        case 0..<remoteEntryID:
+                            localEntriesMutable.removeFirst()
+                            continue
+                        default: break
+                        }
                     }
-                }
 
-                let newEntry = self!.create(ManagedEntry.self)
-                newEntry.map(remoteEntry)
-                updatedLocalEntries.append(newEntry)
-                remoteEntries.removeFirst()
+                    let newEntry = self.create(ManagedEntry.self)
+                    newEntry.map(remoteEntry)
+                    updatedLocalEntries.append(newEntry)
+                    remoteEntries.removeFirst()
+                }
             }
 
             return updatedLocalEntries

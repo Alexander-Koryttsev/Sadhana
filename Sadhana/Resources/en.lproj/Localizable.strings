@@ -88,8 +88,7 @@ country = "Country";
 city = "City";
 birthday = "Birthday";
 register = "Register";
-
-
+empty_fields_warning = "Please, fill all fields";
 
 //Error
 error_session_expired = "Your session is expired";

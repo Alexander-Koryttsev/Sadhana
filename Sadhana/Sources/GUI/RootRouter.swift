@@ -38,6 +38,7 @@ class RootRouter : WindowRouter {
     }
 
     func logOut(error: Error? = nil) {
+        mainTabBarRouter = nil
         //TODO: show progress
         self.showLoginVC(error: error)
 
@@ -61,7 +62,6 @@ class RootRouter : WindowRouter {
     }
     
     private func showLoginVC(error: Error? = nil) {
-        mainTabBarRouter = MainTabBarRouter(window: window)
         let vm = LoginVM()
         setRootViewController(LoginVC(vm))
         if let error = error {

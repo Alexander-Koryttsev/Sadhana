@@ -27,6 +27,15 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
     let registerButton = UIButton(type: .system)
     let sevaLogo = UIImageView(screenSized:"v-seva-logo")
 
+    override init(_ viewModel: VM) {
+        super.init(viewModel)
+        base.defaultErrorMessagingEnabled = false
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         view.backgroundColor = .white
         setUpSubviews()
@@ -54,20 +63,6 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         setUpActivityIndicator()
         setUpErrorLabel()
         setUpRegisterButton()
-    }
-
-    func setUpRegisterButton() {
-        registerButton.tintColor = .white
-        registerButton.setAttributedTitle(NSAttributedString(string: "register".localized, attributes: [.underlineStyle: NSUnderlineStyle.styleSingle.rawValue as AnyObject]), for: .normal)
-        registerButton.titleLabel?.font = .sdTextStyle3Font()
-        registerButton.addTarget(viewModel, action: #selector(LoginVM.register), for: .touchUpInside)
-
-        view.addSubview(registerButton)
-        registerButton.easy.layout([Height(50),
-                                    CenterY().to(sevaLogo),
-                                    CenterX(),
-                                    Width().like(formContainer)])
-        registerButton.setContentHuggingPriority(.defaultLow, for: .horizontal)
     }
 
     func setUpBackground() {
@@ -216,6 +211,20 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         ])
     }
 
+    func setUpRegisterButton() {
+        registerButton.tintColor = .white
+        registerButton.setAttributedTitle(NSAttributedString(string: "register".localized, attributes: [.underlineStyle: NSUnderlineStyle.styleSingle.rawValue as AnyObject]), for: .normal)
+        registerButton.titleLabel?.font = .sdTextStyle3Font()
+        registerButton.addTarget(viewModel, action: #selector(LoginVM.register), for: .touchUpInside)
+
+        view.addSubview(registerButton)
+        registerButton.easy.layout([Height(50),
+                                    CenterY().to(sevaLogo),
+                                    CenterX(),
+                                    Width().like(formContainer)])
+        registerButton.setContentHuggingPriority(.defaultLow, for: .horizontal)
+    }
+
     func buildConstraints() {
         formArea.easy.layout([
             Top(),
@@ -277,6 +286,8 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
     
     override func bindViewModel() {
         super.bindViewModel()
+
+        //Login Form
         loginField.text = viewModel.login.value
         loginField.rx.textRequired.asDriver().distinctUntilChanged()
             .do(onNext:{ [weak self] _ in self?.errorLabel.text = nil})
@@ -287,12 +298,23 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
             .do(onNext:{ [weak self] _ in self?.errorLabel.text = nil})
             .drive(viewModel.password).disposed(by: disposeBag)
 
+
+        let tapBackground = UITapGestureRecognizer()
+        tapBackground.rx.event
+            .subscribe(onNext: { [weak self] _ in
+                self?.loginField.resignFirstResponder()
+                self?.passwordField.resignFirstResponder()
+            })
+            .disposed(by: disposeBag)
+        view.addGestureRecognizer(tapBackground)
+
         loginButton.rx.tap.asDriver()
             .do(onNext:{ [weak self] () in self?.errorLabel.text = nil})
             .drive(viewModel.tap).disposed(by: disposeBag)
 
         viewModel.canSignIn.drive(loginButton.rx.isEnabled).disposed(by: disposeBag)
 
+        //Activity
         viewModel.activityIndicator.drive(activityIndicator.rx.isAnimating).disposed(by: disposeBag)
         viewModel.activityIndicator.drive(arrow.rx.isHidden).disposed(by: disposeBag)
 
@@ -304,14 +326,15 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         enabled.map({ (flag) -> CGFloat in
             return flag ? 1.0 : 0.0
         }).drive(loginButton.titleLabel!.rx.alpha).disposed(by: disposeBag)
-        enabled.drive(registerButton.rx.isEnabled).disposed(by: disposeBag)
+        viewModel.activityIndicator.drive(registerButton.rx.isHidden).disposed(by: disposeBag)
 
+        //Errors
         viewModel.errorMessages.drive(errorLabel.rx.text).disposed(by: disposeBag)
 
         viewModel.errors.asObservable()
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (error) in
-            switch error {
+                switch error {
                 case RemoteError.invalidRequest(let type, _):
                     if type == InvalidRequestType.invalidGrant {
                         self?.form.shake()
@@ -322,14 +345,5 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
             }).disposed(by: disposeBag)
 
         viewModel.messagesUI.drive(errorLabel.rx.text).disposed(by: disposeBag)
-
-        let tapBackground = UITapGestureRecognizer()
-        tapBackground.rx.event
-            .subscribe(onNext: { [weak self] _ in
-                self?.loginField.resignFirstResponder()
-                self?.passwordField.resignFirstResponder()
-            })
-            .disposed(by: disposeBag)
-        view.addGestureRecognizer(tapBackground)
     }
 }

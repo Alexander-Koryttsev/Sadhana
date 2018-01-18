@@ -103,7 +103,7 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
     }
 }
 
-protocol EditingRouter {
+protocol EditingRouter: class {
     var plusButton: DynamicButton { get }
 
     func showSadhanaEditing(date: Date)

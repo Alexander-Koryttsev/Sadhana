@@ -50,7 +50,8 @@ class BaseTableVM : BaseVM {
 
     @available(iOS 11.0, *)
     func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        return nil
+        let configuration = UISwipeActionsConfiguration(actions: [])
+        return configuration
     }
 }
 

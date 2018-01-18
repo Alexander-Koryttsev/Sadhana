@@ -43,11 +43,11 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
             Top(iOS(11) ? 10 : 2)
         ])
         tableView.tableHeaderView = searchContainer
+        viewModel.refresh.onNext(())
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.refresh.onNext(())
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -65,7 +65,12 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
         
         Answers.logContentView(withName: "All Graph List", contentType: nil, contentId: nil, customAttributes: nil)
 
-        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { _ in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
+        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { [unowned self] _ in
+            if self.tableView.numberOfSections > 0 && self.tableView.numberOfRows(inSection: 0) > 0 {
+                self.tableView.scrollToRow(at: IndexPath(row:0, section:0), at: .top, animated: false)
+            }
+            return
+        }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
     }
     
     override func viewDidDisappear(_ animated: Bool) {

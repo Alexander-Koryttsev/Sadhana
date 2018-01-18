@@ -28,10 +28,8 @@ class OtherGraphVC : GraphVC<OtherGraphVM> {
     var userNameHeight = CGFloat(0)
 
     override func viewDidLoad() {
-        refreshControl = UIRefreshControl()
         super.viewDidLoad()
         tableView.allowsSelection = false
-        viewModel.refresh.onNext(())
 
         if let url = viewModel.info.avatarURL {
             let avatarSize = ScreenWidth
@@ -40,16 +38,17 @@ class OtherGraphVC : GraphVC<OtherGraphVM> {
 
             let gradient = LinearGradientView()
             avatarView.addSubview(gradient)
-            gradient.easy.layout([Left(), Bottom(), Right(), Height(64)])
+            gradient.easy.layout([Left(), Bottom(), Right(), Height(108)])
 
             let userNameLabel = UILabel()
             userNameLabel.text = viewModel.info.userName
             userNameLabel.textColor = .white
             userNameLabel.textAlignment = .center
+            userNameLabel.font = UIFont.systemFont(ofSize: 22)
             userNameLabel.sizeToFit()
-            userNameHeight = 10 + userNameLabel.bounds.size.height + 10
+            userNameHeight = 22 + userNameLabel.bounds.size.height + 22
             avatarView.addSubview(userNameLabel)
-            userNameLabel.easy.layout([Left(10), Bottom(10), Right(10)])
+            userNameLabel.easy.layout([Left(10), Bottom(22), Right(10)])
 
             UIView.performWithoutAnimation {
                 self.tableView.tableHeaderView = avatarView
@@ -58,6 +57,11 @@ class OtherGraphVC : GraphVC<OtherGraphVM> {
             }
         }
         updateTitle()
+        viewModel.refresh.onNext(())
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -74,7 +78,7 @@ class OtherGraphVC : GraphVC<OtherGraphVM> {
             return running
         })
 
-        viewModel.firstPageRunning.filter { !$0 }.map { _ -> Void in return () }.drive(refreshControl!.rx.endRefreshing).disposed(by: disposeBag)
+        viewModel.firstPageRunning.drive(refreshControl!.rx.isRefreshing).disposed(by: disposeBag)
 
         viewModel.dataDidReload.asDriver(onErrorJustReturn: ()).drive(onNext: { [unowned self] () in
             self.reloadData()

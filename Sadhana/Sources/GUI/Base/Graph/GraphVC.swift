@@ -13,9 +13,6 @@ import EasyPeasy
 
 class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
 
-    let errorLabel = UILabel()
-    let errorContainer = UIView()
-
     init(_ viewModel: VM) {
         super.init(viewModel, style: .plain)
     }
@@ -27,7 +24,6 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
     override func viewDidLoad() {
         
         refreshControl = UIRefreshControl()
-        setUpErrorLabel()
 
         super.viewDidLoad()
 
@@ -39,40 +35,11 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
         }
     }
 
-    func setUpErrorLabel() {
-        errorContainer.backgroundColor = UIColor.white
-        errorContainer.addSubview(errorLabel)
-        errorLabel.textAlignment = .center
-        errorLabel.numberOfLines = 0
-        errorLabel.textColor = UIColor.sdBrownishGrey
-        errorLabel.easy.layout(Edges(10).with(.high))
-    }
-
     override func bindViewModel() {
         super.bindViewModel()
 
         refreshControl!.rx.controlEvent(.valueChanged).asDriver()
-          /*  .do(onNext:{ [weak self] () in
-                self?.tableView.tableHeaderView = nil
-            })*/
             .drive(viewModel.refresh).disposed(by: disposeBag)
-/*
-        viewModel.errorMessages.drive(onNext: { [weak self] (message) in
-                self?.errorLabel.text = message
-                //TODO: fix layout bug
-                //TODO: move to the extension
-                //set the tableHeaderView so that the required height can be determined
-                self?.tableView.tableHeaderView = self?.errorContainer;
-                self?.errorContainer.setNeedsLayout()
-                self?.errorContainer.layoutIfNeeded()
-                let height = self?.errorContainer.systemLayoutSizeFitting(CGSize(width:UIScreen.main.bounds.size.width, height:CGFloat.greatestFiniteMagnitude)).height
-
-                //update the header's frame and set it again
-                var headerFrame = self?.errorContainer.frame;
-                headerFrame?.size.height = height ?? 0 + 4;
-                self?.errorContainer.frame = headerFrame ?? CGRect();
-                self?.tableView.tableHeaderView = self?.errorContainer;
-            }).disposed(by: disposeBag)*/
     }
 
     //MARK: Table Data Source

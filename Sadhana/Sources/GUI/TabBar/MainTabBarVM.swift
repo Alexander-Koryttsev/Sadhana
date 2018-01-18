@@ -9,7 +9,7 @@
 import Foundation
 
 class MainTabBarVM: BaseVM {
-    let router : MainTabBarRouter
+    private unowned let router : MainTabBarRouter
 
     init(_ router : MainTabBarRouter) {
         self.router = router

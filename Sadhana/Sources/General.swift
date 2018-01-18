@@ -21,8 +21,8 @@ struct Config {
     #endif
 
     #if DEBUG
-        static let defaultLogin = "sanio91@ya.ru"
-        static let defaultPassword = "Ale248Vai"
+        static let defaultLogin = "test@test.com"
+        static let defaultPassword = "1"
     #else
         static let defaultLogin = ""
         static let defaultPassword = ""
@@ -211,5 +211,10 @@ func remoteLog(_ items: Any..., separator: String = " ", terminator: String = "\
 
 protocol Titled {
     var title : String { get }
+    var subtitle : String? { get }
+}
+
+extension Titled {
+    var subtitle : String? { return nil }
 }
 

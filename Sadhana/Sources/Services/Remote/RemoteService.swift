@@ -73,6 +73,9 @@ class SessionDelegate : NSObject, URLSessionDelegate {
 }
 
 class RemoteService {
+
+    let networkDidAppear : Observable<Void>
+
     private let clientID = "IXndKqmEoXPTwu46f7nmTcoJ2CfIS6"
     private let clientSecret = "1A4oOPOatd8j6EOaL3i9pblOUnqa6j"
     
@@ -95,9 +98,7 @@ class RemoteService {
     private let manager : Alamofire.SessionManager
     private let running = ActivityIndicator()
     private let session : URLSession
-
-    private var cachedCountries : [Country]?
-    private var cachedCities = [Int32 : [City]]()
+    private let reachability : NetworkReachabilityManager
     
     init() {
 
@@ -124,11 +125,26 @@ class RemoteService {
         manager = SessionManager(configuration: configuration, serverTrustPolicyManager: trustManager)
 
         UIImageView.af_sharedImageDownloader = ImageDownloader(sessionManager:SessionManager(configuration: configuration, serverTrustPolicyManager: trustManager))
-        
-        restoreTokensFromCache()
-        remoteLog("host: \(Config.host)")
 
         _ = running.asDriver().drive(UIApplication.shared.rx.isNetworkActivityIndicatorVisible)
+
+        let reachability = NetworkReachabilityManager(host: Config.host)!
+        networkDidAppear = Observable<Void>.create {(observer) -> Disposable in
+            reachability.listener = { (status) in
+                if case NetworkReachabilityManager.NetworkReachabilityStatus.reachable(_) = status {
+                    observer.onNext(())
+                }
+            }
+            reachability.startListening()
+
+            return Disposables.create {
+                reachability.stopListening()
+            }
+        }.share(replay: 0)
+        self.reachability = reachability
+
+        restoreTokensFromCache()
+        remoteLog("host: \(Config.host)")
     }
     
     func restoreTokensFromCache() -> Void {
@@ -373,50 +389,82 @@ class RemoteService {
         })
     }
 
-    func loadCountries() -> Single<[Country]> {
-        if let cachedCountries = cachedCountries {
-            return Observable.of(cachedCountries).asSingle()
-        }
+    func request(
+        _ url: URLConvertible,
+        method: HTTPMethod = .get,
+        parameters: Parameters? = nil,
+        encoding: ParameterEncoding = URLEncoding.default,
+        headers: HTTPHeaders? = nil)
+        -> Single<JSON> {
+            return Single<JSON>.create { [unowned self] (observer) -> Disposable in
 
-        return baseRequest(.get, "\(Remote.URL.api.relativeString)/countries", authorise: false).map({ [unowned self] (dictionary) -> [Country] in
-            let items = dictionary["response"] as! [NSDictionary]
-            let countries = try! items.map { try Country(map: Mapper(JSON: $0)) }
-            self.cachedCountries = countries
-            return countries
-        });
+                let request = self.manager.request(url, method: method, parameters:parameters, encoding: encoding, headers:headers)
+
+                request.responseJSON(completionHandler: { (response) in
+                    switch response.result {
+                    case .success(let value):
+                        if let json = value as? JSON {
+                            observer(.success(json))
+                        }
+                        else {
+                            observer(.error(RemoteError.invalidData))
+                        }
+                        break;
+
+                    case .failure(let error):
+                        observer(.error(error))
+                        break
+                    }
+                })
+
+                return Disposables.create {
+                    request.cancel()
+                }
+            }
     }
 
-    func loadCities(countryID: Int32) -> Single<[City]> {
-        if let cachedCities = cachedCities[countryID] {
-            return Observable.of(cachedCities).asSingle()
-        }
+    func loadCountries() -> Single<[Country]> {
+        return request("https://vaishnavaseva.net/vs-api/v2/sadhana/countries",
+                       method: HTTPMethod.get,
+                       parameters: ["v": 5.69,
+                                    "need_all": 1,
+                                    "count":1000,
+                                    "lang":Locale.current.languageCode!])
+            .map { json in
+                if  let root = json["response"] as? NSDictionary,
+                    let items = root["items"] as? [NSDictionary] {
 
-        return Single<[City]>.create { [unowned self] (observer) -> Disposable in
-            let url = URL(string: "\(Remote.URL.api.fullString)/cities?country_id=\(countryID)")
-
-            let task = self.session.dataTask(with: url!) {[unowned self] (data, response, error) in
-                do {
-                    if let json = try JSONSerialization.jsonObject(with: data!) as? JSON,
-                        let response = json["response"] as? [NSDictionary] {
-
-                        let cities = try! response.map { try City(map: Mapper(JSON: $0)) }
-                        self.cachedCities[countryID] = cities
-                        observer(.success(cities))
+                    return try! items.map { try Country(map: Mapper(JSON: $0))
                     }
                 }
-                catch {
-                    print(error)
+                else {
+                    throw RemoteError.invalidData
                 }
-            }
-
-            task.resume()
-
-            return Disposables.create {
-                task.cancel()
-            }
         }
     }
-    
+
+    func loadCities(countryID: Int32, query: String? = nil) -> Single<[City]> {
+        return request("https://vaishnavaseva.net/vs-api/v2/sadhana/cities",
+                       method: HTTPMethod.get,
+                       parameters: ["country_id": countryID,
+                                    "v": 5.69,
+                                    "need_all": 1,
+                                    "count":1000,
+                                    "lang":Locale.current.languageCode!,
+                                    "q":query ?? ""])
+            .map { json in
+                if  let root = json["response"] as? NSDictionary,
+                    let items = root["items"] as? [NSDictionary] {
+                    
+                    return try! items.map { try City(map: Mapper(JSON: $0))
+                    }
+                }
+                else {
+                    throw RemoteError.invalidData
+                }
+            }
+    }
+
     func register(_ registration: Registration) -> Single<Int32> {
         return baseRequest(.post, "\(Remote.URL.api.relativeString)/registration", parameters: registration.json, authorise: false).map({ (json) -> Int32 in
             return try Int32.create(json["user_id"])

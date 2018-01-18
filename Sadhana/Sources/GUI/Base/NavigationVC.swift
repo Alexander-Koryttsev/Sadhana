@@ -11,8 +11,5 @@ import UIKit
 class NavigationVC: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        if #available(iOS 11, *) {
-            navigationBar.prefersLargeTitles = true
-        }
     }
 }

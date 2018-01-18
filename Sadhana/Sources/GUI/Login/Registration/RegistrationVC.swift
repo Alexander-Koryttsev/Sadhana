@@ -47,6 +47,7 @@ class RegistrationVC: BaseTableVC<RegistrationVM> {
 
     init(_ viewModel: VM) {
         super.init(viewModel, style: .grouped)
+        base.defaultErrorMessagingEnabled = false
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -98,6 +99,7 @@ class RegistrationVC: BaseTableVC<RegistrationVM> {
     override func bindViewModel() {
         super.bindViewModel()
 
+        //Cells setup
         var passwordCells = [TextFieldFormCell]()
         for field in viewModel.fields {
             let cell = FormFactory.cell(for: field)
@@ -122,32 +124,37 @@ class RegistrationVC: BaseTableVC<RegistrationVM> {
             last.goNext.bind(to: viewModel.register).disposed(by: disposeBag)
         }
 
+        //Registration Actions
         viewModel.canRegister.drive(onNext: { [unowned self] (can) in
             self.registerCell.textLabel?.textColor = can ? .sdTangerine : .sdSilver
             self.registerCell.selectionStyle = can ? .gray : .none
         }).disposed(by: disposeBag)
 
+        viewModel.register.asDriver(onErrorJustReturn: ()).drive(onNext: { [unowned self] in
+            self.message = nil
+            self.tableView.endEditing(true)
+        }).disposed(by: disposeBag)
+
+        //Activity Indicator
         viewModel.activityIndicator.asDriver()
             .drive(activityIndicator.rx.isAnimating)
             .disposed(by: disposeBag)
-        
+
         viewModel.activityIndicator.asDriver()
             .drive(registerCell.textLabel!.rx.isHidden)
             .disposed(by: disposeBag)
 
-        viewModel.activityIndicator.asDriver()
-            .map { (running) in return !running }
-            .drive(blocker.rx.isHidden)
+        viewModel.activityIndicator.asDriver().debounce(0.25)
+            .drive(onNext:{ [unowned self] running in
+                UIView.transition(with: self.blocker, duration: 0.25, options: .transitionCrossDissolve, animations: {
+                    self.blocker.isHidden = !running
+                }, completion: nil)
+            })
             .disposed(by: disposeBag)
 
-
+        //Error handling
         Driver.merge(viewModel.errorMessages, viewModel.messagesUI).drive(onNext:{ [unowned self] message in
             self.message = message
-        }).disposed(by: disposeBag)
-
-        viewModel.register.asDriver(onErrorJustReturn: ()).drive(onNext: { [unowned self] in
-            self.message = nil
-            self.tableView.endEditing(true)
         }).disposed(by: disposeBag)
     }
 
