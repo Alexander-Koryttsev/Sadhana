@@ -195,7 +195,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         pageVC.view.easy.layout(Edges())
         pageVC.didMove(toParentViewController: self)
         //TODO: become first responder
-        pageVC.setViewControllers([EntryEditingVC(viewModel.viewModelForEntryEditing()!)]
+        pageVC.setViewControllers([EntryEditingVC(viewModel.viewModelForEntryEditing())]
             , direction:.forward, animated: false, completion: nil)
         pageVC.dataSource = self
         pageVC.delegate = self
@@ -215,12 +215,12 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         let vc = pageVC.viewControllers?.first as! EntryEditingVC
         switch date {
         case let date where date < vc.viewModel.date:
-            pageVC.setViewControllers([EntryEditingVC(viewModel.viewModelForEntryEditing(for:date)!)]
+            pageVC.setViewControllers([EntryEditingVC(viewModel.viewModelForEntryEditing(for:date))]
                 , direction:.reverse, animated: true, completion: nil)
             break
 
         case let date where date > vc.viewModel.date:
-            pageVC.setViewControllers([EntryEditingVC(viewModel.viewModelForEntryEditing(for:date)!)]
+            pageVC.setViewControllers([EntryEditingVC(viewModel.viewModelForEntryEditing(for:date))]
                 , direction:.forward, animated: true, completion: nil)
             break
         default: break
@@ -304,24 +304,20 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         if pageViewController == pageVC {
             let viewController = viewController as! EntryEditingVC
-            if let vm = viewModel.viewModelForEntryEditing(before: viewController.viewModel) {
-                return EntryEditingVC(vm)
-            }
+            let vm = viewModel.viewModelForEntryEditing(before: viewController.viewModel)
+            return vm.enabled ? EntryEditingVC(vm) : nil
         }
         else {
             let viewController = viewController as! WeekVC
             return WeekVC(Calendar.local.date(byAdding: .weekOfYear, value: -1, to: viewController.selectedDate.value)!)
         }
-
-        return nil
     }
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         if pageViewController == pageVC {
             let viewController = viewController as! EntryEditingVC
-            if let vm = viewModel.viewModelForEntryEditing(after: viewController.viewModel) {
-                return EntryEditingVC(vm)
-            }
+            let vm = viewModel.viewModelForEntryEditing(after: viewController.viewModel)
+            return vm.enabled ? EntryEditingVC(vm) : nil
         }
         else {
             let viewController = viewController as! WeekVC

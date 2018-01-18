@@ -35,7 +35,7 @@ class EditingVM: BaseVM {
 
     init(_ router : EditingRouter, date:Date) {
         self.router = router
-        initialDate = date.trimmedTime
+        initialDate =  (date <= Date() ? date : Date()).trimmedTime
 
         super.init()
 
@@ -108,16 +108,16 @@ class EditingVM: BaseVM {
             .disposed(by: disposeBag)
     }
 
-    func viewModelForEntryEditing(before vm: EntryEditingVM) -> EntryEditingVM? {
+    func viewModelForEntryEditing(before vm: EntryEditingVM) -> EntryEditingVM {
         return viewModelForEntryEditing(for:vm.date.yesterday)
     }
 
-    func viewModelForEntryEditing(after vm: EntryEditingVM) -> EntryEditingVM? {
+    func viewModelForEntryEditing(after vm: EntryEditingVM) -> EntryEditingVM {
         return viewModelForEntryEditing(for:vm.date.tomorrow)
     }
 
-    func viewModelForEntryEditing(for date: Date? = nil) -> EntryEditingVM? {
+    func viewModelForEntryEditing(for date: Date? = nil) -> EntryEditingVM {
         let date = date ?? initialDate
-        return date <= Date() ? EntryEditingVM(date: date, context: context) : nil
+        return  EntryEditingVM(date: date, context: context, enabled: date <= Date())
     }
 }

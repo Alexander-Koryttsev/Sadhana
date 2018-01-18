@@ -14,6 +14,7 @@ import RxCocoa
 class EntryEditingVM: BaseTableVM {
 
     let date : Date
+    let enabled : Bool
     private var fieldsInternal = [FormFieldVM]()
     var fields : [FormFieldVM] {
         return fieldsInternal
@@ -28,8 +29,9 @@ class EntryEditingVM: BaseTableVM {
         return fields.count
     }
 
-    init(date: Date, context: NSManagedObjectContext) {
+    init(date: Date, context: NSManagedObjectContext, enabled: Bool) {
         self.date = date.trimmedTime
+        self.enabled = enabled
 
         if let localEntry = context.fetch(entryFor: self.date) {
             entry = localEntry
@@ -45,7 +47,8 @@ class EntryEditingVM: BaseTableVM {
 
         super.init()
 
-        add(timeField: .wakeUpTime, optional: true)
+        if enabled {
+            add(timeField: .wakeUpTime, optional: true)
 
         let japaFields = [
             self.field(for: .japa7_30, type:Int16.self, fieldType:.count),
@@ -62,8 +65,9 @@ class EntryEditingVM: BaseTableVM {
         add(field: .yoga, type:Bool.self, fieldType:.switcher)
         add(field: .lections, type:Bool.self, fieldType:.switcher)
 
-        if self.date != Date().trimmedTime {
-            add(timeField: .bedTime, optional: true)
+            if self.date != Date().trimmedTime {
+                add(timeField: .bedTime, optional: true)
+            }
         }
     }
 
