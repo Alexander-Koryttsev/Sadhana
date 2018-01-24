@@ -42,7 +42,9 @@ class OtherGraphVM : GraphVM {
 
         if indexPath.row > (numberOfRows(in: indexPath.section) - 10) {
             let nextSection = indexPath.section + 2
-            if nextSection < numberOfSections {
+            if nextSection < numberOfSections,
+                !pageRunning.has(index: nextSection),
+                 entries[self.monthDate(for: nextSection)] == nil {
                 load(pageIndex: nextSection).subscribe(onSuccess: { [unowned self] (page) in
                     self.handle(page: page, index: nextSection)
                 }).disposed(by:disposeBag)
@@ -62,12 +64,11 @@ class OtherGraphVM : GraphVM {
         page.forEach({ (entry) in
             monthDict[entry.date] = entry
         })
-        self.entries[Calendar.common.date(byAdding: .month, value: -index, to: Date().trimmedDayAndTime)!] = monthDict
+        entries[monthDate(for: index)] = monthDict
     }
 
     func load(pageIndex:Int) -> Single<[Entry]> {
-        let month = Calendar.common.date(byAdding: .month, value: -pageIndex, to:Date().trimmedDayAndTime)!
-        return Remote.service.loadEntries(for: info.userID, month: month)
+        return Remote.service.loadEntries(for: info.userID, month: monthDate(for: pageIndex))
             .track(pageRunning, index: pageIndex)
             .track(errors)
     }

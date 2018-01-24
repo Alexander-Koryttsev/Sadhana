@@ -43,7 +43,7 @@ class AllGraphListVM : GraphListVM {
         refreshDriver = refresh.asDriver(onErrorJustReturn: ())
         super.init()
         
-        let searchDriver = search.asDriver().debounce(0.5).skip(1).do(onNext: {(string) in
+        let searchDriver = search.asDriver().debounce(0.5).do(onNext: {(string) in
             Answers.logSearch(withQuery: string, customAttributes: nil)
         })
 
@@ -62,6 +62,8 @@ class AllGraphListVM : GraphListVM {
                 self.router.showGraph(of:entry)
             }
         }).disposed(by: disposeBag)
+
+        refresh.onNext(())
     }
 
     override func numberOfRows(in section: Int) -> Int {

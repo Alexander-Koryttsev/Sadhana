@@ -18,9 +18,18 @@ class OtherGraphVC : GraphVC<OtherGraphVM> {
     var headerVisible = true {
         didSet {
             if oldValue != headerVisible {
-                UIView.transition(with: navigationController!.navigationBar, duration: 0.15, options: .transitionCrossDissolve, animations:{ self.title = nil }, completion: { _ in
-                    UIView.transition(with: self.navigationController!.navigationBar, duration: 0.15, options: .transitionCrossDissolve, animations:self.updateTitle, completion: nil)
-                })
+              /*  let fadeTextAnimation = CATransition()
+                fadeTextAnimation.duration = 0.15
+                fadeTextAnimation.type = kCATransitionFade
+                navigationController?.navigationBar.layer.add(fadeTextAnimation, forKey: "fadeOutText")
+                title = nil
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .milliseconds(150), execute: {
+                    let fadeTextAnimation = CATransition()
+                    fadeTextAnimation.duration = 0.15
+                    fadeTextAnimation.type = kCATransitionFade
+                    self.navigationController?.navigationBar.layer.add(fadeTextAnimation, forKey: "fadeInText")*/
+                    self.updateTitle()
+               // })
             }
         }
     }

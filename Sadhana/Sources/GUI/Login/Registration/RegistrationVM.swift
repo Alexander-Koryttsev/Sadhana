@@ -18,23 +18,28 @@ class RegistrationVM: BaseTableVM {
     let activityIndicator = ActivityIndicator()
     let register = PublishSubject<Void>()
     let validator : Validator
+    let tapticEngine = UINotificationFeedbackGenerator()
     override init() {
 
         let localDisposeBag = DisposeBag()
         var fields = [FormFieldVM]()
         let registration = Registration()
         let validator = Validator()
+        let registerDriver = register.take(1).asDriver(onErrorJustReturn: ())
 
         let spiritNameField = KeyPathFieldVM(registration, \Registration.spiritualName, for: "spiritutal_name".localized, type:.text(.name))
         fields.append(spiritNameField)
 
         let firstNameField = KeyPathFieldVM(registration, \Registration.firstName, for: "first_name".localized, type:.text(.name), validSelector:validator.validate(string:))
+        firstNameField.beginValidation = registerDriver
         fields.append(firstNameField)
 
         let lastNameField = KeyPathFieldVM(registration, \Registration.lastName, for: "last_name".localized, type:.text(.name), validSelector:validator.validate(string:))
+        lastNameField.beginValidation = registerDriver
         fields.append(lastNameField)
 
         let emailField = KeyPathFieldVM(registration, \Registration.email, for: "email".localized, type:.text(.email), validSelector:validator.validate(email:))
+        emailField.beginValidation = registerDriver
         fields.append(emailField)
 
         let passwordField = KeyPathFieldVM(registration, \Registration.password, for: "password".localized, type:.text(.password))
@@ -46,8 +51,9 @@ class RegistrationVM: BaseTableVM {
         fields.append(passwordConfirmationField)
 
         let countryField = PickerFieldVM(Variable<Titled?>(nil), for: "country".localized, validSelector:validator.validate)
+        countryField.beginValidation = registerDriver
         let cityField = PickerFieldVM(Variable<Titled?>(nil), for: "city".localized, validSelector:validator.validate)
-
+        cityField.beginValidation = registerDriver
         cityField.action = { [unowned cityField] in
             if let country = countryField.variable.value as? Country {
                 let pickerVM = FormPickerVM(fieldVM: cityField, searchSelector:{ string in
@@ -96,6 +102,7 @@ class RegistrationVM: BaseTableVM {
                                                   default:Calendar.local.date(byAdding: .year, value: -20, to: Date()),
                                                   max:Calendar.local.date(byAdding: .year, value: -5, to: Date())),
                                        validSelector:validator.validate)
+        dateField.beginValidation = registerDriver
         fields.append(dateField)
 
         canRegister = Driver.combineLatest(firstNameField.valid!,
@@ -121,6 +128,7 @@ class RegistrationVM: BaseTableVM {
                 if !valid {
                     DispatchQueue.main.async {
                         self.messages.onNext("empty_fields_warning".localized)
+                        self.tapticEngine.notificationOccurred(.warning)
                     }
                 }
                 return valid
@@ -135,6 +143,9 @@ class RegistrationVM: BaseTableVM {
                         })
                         .asBoolObservable()
                         .catchErrorJustReturn(false)
+                        .do(onNext: { (success) in
+                            self.tapticEngine.notificationOccurred(success ? .success : .error)
+                        })
                  }
             .subscribe()
             .disposed(by: disposeBag)

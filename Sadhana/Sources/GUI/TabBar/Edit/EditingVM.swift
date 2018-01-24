@@ -97,13 +97,8 @@ class EditingVM: BaseVM {
 
             self.context.saveRecursive()
             _ = Observable.merge(signals).subscribe()
-
-            var attributes = [String:String]()
-            entries.forEach({ (entry) in
-                attributes["Date"] = entry.date.remoteDateString
-            })
             
-            Answers.logCustomEvent(withName: "Save Entries", customAttributes: attributes)
+            Answers.logCustomEvent(withName: "Save Entries", customAttributes: ["Hour": Date().hour])
         })
             .disposed(by: disposeBag)
     }

@@ -137,6 +137,7 @@ class VariableFieldVM<T> : FormFieldVM {
     let variable : Variable<T>
     let type : FormFieldType
     var valid : Driver<Bool>?
+    var beginValidation : Driver<Void>?
     init(_ variable : Variable<T>, for key : String, type: FormFieldType, validSelector: ((T) -> Bool)? = nil) {
         self.variable = variable
         self.key = key

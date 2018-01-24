@@ -10,9 +10,10 @@ import UIKit
 import EasyPeasy
 import RxCocoa
 
-class PickerFormCell: ResponsibleFormCell {
+class PickerFormCell: ResponsibleFormCell, Validable {
     let viewModel : PickerFieldVM
     let valueLabel = UILabel()
+    let beginValidation = PublishSubject<Void>()
     var validationAdded = false
 
     init(_ viewModel: PickerFieldVM) {
@@ -46,7 +47,17 @@ class PickerFormCell: ResponsibleFormCell {
                 }
             }).disposed(by: disposeBag)
         }
-
+        
+        if let validDriver = viewModel.valid {
+            var beginValidation = self.beginValidation.asDriver(onErrorJustReturn:())
+            if let viewModelBeginValidation = viewModel.beginValidation {
+                beginValidation = Driver.merge(beginValidation, viewModelBeginValidation)
+            }
+            
+            Driver.combineLatest(beginValidation, validDriver, resultSelector: { [unowned self] (_, valid) -> Void in
+                self.set(valid:valid)
+            }).drive().disposed(by: disposeBag)
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -54,10 +65,8 @@ class PickerFormCell: ResponsibleFormCell {
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
-        if isSelected && !selected && !validationAdded,
-            let valid = viewModel.valid {
-            //Deselect action + no validation added. So, need to add it
-            valid.drive(onNext:set).disposed(by: disposeBag)
+        if isSelected, !selected, !validationAdded, viewModel.valid != nil {
+            beginValidation.onNext(())
             validationAdded = true
         }
         super.setSelected(selected, animated: animated)

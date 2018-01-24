@@ -40,7 +40,7 @@ class MainService {
                 self.user = Local.service.viewContext.object(with: user.objectID) as? User
                 self.updateFabricUserData()
                 Crashlytics.sharedInstance().setUserEmail(name)
-                Answers.logLogin(withMethod: nil, success: true, customAttributes: ["Name": user.name, "ID": user.ID])
+                Answers.logLogin(withMethod: nil, success: true, customAttributes: ["Name": user.name])
             }, onError:{ (error) in
                 Answers.logLogin(withMethod: nil, success: false, customAttributes: ["Error": error.localizedDescription])
             })

@@ -5,39 +5,37 @@ import Foundation
 
 import PlaygroundSupport
 
-let loc = Locale.current.languageCode!
-print("loc : \(loc)")
-let pre = Locale.preferredLanguages.first!
-/*
-
-class GradientView: UIView {
-    override public class var layerClass: Swift.AnyClass {
-        get {
-            return CAGradientLayer.self
-        }
-    }
-
-    var gradientLayer : CAGradientLayer {
-        return layer as! CAGradientLayer
-    }
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        gradientLayer.colors = [UIColor.clear.cgColor, UIColor.black.cgColor]
-        gradientLayer.locations = [0.0, 1.0]
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
 let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 400, height: 400))
 containerView.backgroundColor = UIColor.white
-let contentView = GradientView(frame: CGRect(x: 0, y: 0, width: 400, height: 400))
-contentView.backgroundColor = UIColor.clear
-contentView.alpha = 0.8
+
+
+let contentView = UIView(frame:CGRect(x:0, y:0, width:100, height:50))
+
+let top = UIView(frame:CGRect(x:0, y:0, width:100, height:25))
+top.backgroundColor = .blue
+contentView.addSubview(top)
+
+let bottom = UIView(frame:CGRect(x:0, y:25, width:100, height:25))
+bottom.backgroundColor = .yellow
+contentView.addSubview(bottom)
+
 containerView.addSubview(contentView)
 
-PlaygroundPage.current.liveView = containerView*/
+
+var animation = CAKeyframeAnimation(keyPath: "position.y")
+
+var path = CGMutablePath()
+path.move(to: CGPoint(x:0, y:0))
+path.move(to: CGPoint(x:0, y:400))
+path.move(to: CGPoint(x:0, y:0))
+
+//animation.path = path
+//animation.path = CGPath(rect: CGRect(x:0, y:0, width:0, height:400), transform: nil)
+animation.values = [ 0, 400, 0 ]
+animation.duration = 2
+animation.repeatCount = MAXFLOAT
+animation.rotationMode = kCAAnimationRotateAuto
+
+contentView.layer.add(animation, forKey: "animation")
+
+PlaygroundPage.current.liveView = containerView

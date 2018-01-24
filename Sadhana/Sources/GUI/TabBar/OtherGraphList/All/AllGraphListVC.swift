@@ -43,7 +43,7 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
             Top(iOS(11) ? 10 : 2)
         ])
         tableView.tableHeaderView = searchContainer
-        viewModel.refresh.onNext(())
+        reloadData()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -53,6 +53,15 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        Answers.logContentView(withName: "All Graph List", contentType: nil, contentId: nil, customAttributes: nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         if base.firstAppearing {
             tableView.contentOffset = CGPoint(x:0, y: (searchBarHeight - (navigationController?.navigationBar.bounds.size.height)! - UIApplication.shared.statusBarFrame.size.height))
 
@@ -62,19 +71,6 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
             searchField.borderStyle = .none
             searchField.backgroundColor = .sdPaleGrey
         }
-        
-        Answers.logContentView(withName: "All Graph List", contentType: nil, contentId: nil, customAttributes: nil)
-
-        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { [unowned self] _ in
-            if self.tableView.numberOfSections > 0 && self.tableView.numberOfRows(inSection: 0) > 0 {
-                self.tableView.scrollToRow(at: IndexPath(row:0, section:0), at: .top, animated: false)
-            }
-            return
-        }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
     }
 
     override func bindViewModel() {
@@ -107,6 +103,13 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
         tableView.rx.itemSelected.asDriver().drive(viewModel.select).disposed(by: disposeBag)
 
         searchBar.rx.textRequired.asDriver().drive(viewModel.search).disposed(by: disposeBag)
+
+        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { [unowned self] _ in
+            if self.tableView.numberOfSections > 0 && self.tableView.numberOfRows(inSection: 0) > 0 {
+                self.tableView.scrollToRow(at: IndexPath(row:0, section:0), at: .top, animated: false)
+            }
+            return
+            }.bind(to: viewModel.refresh).disposed(by: disposeBag)
 
     }
 

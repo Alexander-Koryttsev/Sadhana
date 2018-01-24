@@ -12,12 +12,18 @@ import RxCocoa
 import EasyPeasy
 
 class FormCell : UITableViewCell {
-    func set(valid:Bool) {
-        backgroundColor = valid ? .white : UIColor(red: 1, green: 0.9, blue: 0.9, alpha: 1)
-    }
-
     var height : CGFloat {
         return 44
+    }
+}
+
+protocol Validable {
+    func set(valid:Bool)
+}
+
+extension Validable where Self : FormCell {
+    func set(valid:Bool) {
+        backgroundColor = valid ? .white : UIColor(red: 1, green: 0.9, blue: 0.9, alpha: 1)
     }
 }
 

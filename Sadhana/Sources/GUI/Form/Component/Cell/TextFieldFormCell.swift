@@ -11,7 +11,7 @@ import EasyPeasy
 import RxCocoa
 
 
-class TextFieldFormCell: FormCell, ResponsibleContainer {
+class TextFieldFormCell: FormCell, ResponsibleContainer, Validable {
 
     let type : TextFieldType
     let titleLabel = UILabel()
@@ -20,7 +20,7 @@ class TextFieldFormCell: FormCell, ResponsibleContainer {
         return textField
     }
 
-    var validDriver : Driver<Bool>?
+    let beginValidation = PublishSubject<Void>()
 
     let viewModel : VariableFieldVM<String>
     let disposeBag = DisposeBag()
@@ -61,7 +61,12 @@ class TextFieldFormCell: FormCell, ResponsibleContainer {
         textField.text = viewModel.variable.value
 
         if let validDriver = viewModel.valid {
-            Driver.combineLatest(textField.rx.controlEvent(.editingDidEnd).take(1).asDriver(onErrorJustReturn: ()), validDriver, resultSelector: { [unowned self] (_, valid) -> Void in
+            var beginValidation = textField.rx.controlEvent(.editingDidEnd).take(1).asDriver(onErrorJustReturn: ())
+            if let viewModelBeginValidation = viewModel.beginValidation {
+                beginValidation = Driver.merge(beginValidation, viewModelBeginValidation)
+            }
+            
+            Driver.combineLatest(beginValidation, validDriver, resultSelector: { [unowned self] (_, valid) -> Void in
                 self.set(valid:valid)
             }).drive().disposed(by: disposeBag)
         }

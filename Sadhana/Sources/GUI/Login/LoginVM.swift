@@ -19,6 +19,7 @@ class LoginVM : BaseVM {
     let password = Variable(Config.defaultPassword)
     let tap = PublishSubject<Void>()
     let canSignIn: Driver<Bool>
+    let taptic = UINotificationFeedbackGenerator()
 
     private let running = ActivityIndicator()
 
@@ -39,7 +40,9 @@ class LoginVM : BaseVM {
             .filter{ $0 }
             .flatMap { [unowned self] _ -> Observable<Bool> in
                 return Main.service.login(self.login.value, password: self.password.value)
+                    .observeOn(MainScheduler.instance)
                     .flatMap { [unowned self] (user) -> Single<[ManagedEntry]> in
+                        self.taptic.notificationOccurred(.success)
                         self.messages.onNext(String(format: "login_welcome".localized, user.name))
                         return Main.service.loadMyEntries()
                     }
@@ -51,6 +54,9 @@ class LoginVM : BaseVM {
                     .track(self.errors)
                     .track(self.running)
                     .catchErrorJustReturn(false)
+                    .do(onNext:{ [unowned self] success in
+                        self.taptic.notificationOccurred(success ? .success : .error)
+                    })
             }
             .subscribe()
             .disposed(by: disposeBag)

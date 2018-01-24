@@ -36,7 +36,6 @@ class MyGraphVC: GraphVC<MyGraphVM> {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { _ in return }.bind(to: viewModel.refresh).disposed(by: viewModel.disappearBag)
         
         Answers.logContentView(withName: "My Graph", contentType: nil, contentId: nil, customAttributes: nil)
     }
@@ -62,6 +61,8 @@ class MyGraphVC: GraphVC<MyGraphVM> {
         }).disposed(by: disposeBag)
 
         tableView.rx.itemSelected.asDriver().drive(viewModel.select).disposed(by: disposeBag)
+
+        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { _ in }.bind(to: viewModel.refresh).disposed(by: disposeBag)
     }
 }
 

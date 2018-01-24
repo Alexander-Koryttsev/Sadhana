@@ -215,6 +215,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         registerButton.tintColor = .white
         registerButton.setAttributedTitle(NSAttributedString(string: "register".localized, attributes: [.underlineStyle: NSUnderlineStyle.styleSingle.rawValue as AnyObject]), for: .normal)
         registerButton.titleLabel?.font = .sdTextStyle3Font()
+        registerButton.alpha = 0
         registerButton.addTarget(viewModel, action: #selector(LoginVM.register), for: .touchUpInside)
 
         view.addSubview(registerButton)
@@ -257,6 +258,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
             UIView.animate(withDuration: 1.5, animations: {
                 self.formArea.layoutIfNeeded()
                 self.formContainer.alpha = 1
+                self.registerButton.alpha = 1
             })
         })
     }

@@ -11,7 +11,7 @@ import Foundation
 import EasyPeasy
 import RxCocoa
 
-class DatePickerFormCell: ResponsibleFormCell, UITextFieldDelegate {
+class DatePickerFormCell: ResponsibleFormCell, UITextFieldDelegate, Validable {
     let viewModel : VariableFieldVM<Date?>
 
     let textField = UITextField()
@@ -36,8 +36,6 @@ class DatePickerFormCell: ResponsibleFormCell, UITextFieldDelegate {
         textLabel?.text = viewModel.key.localized
         textLabel!.font = UIFont.systemFont(ofSize: 18, weight: UIFont.Weight.regular)
 
-
-
         let backItem = UIBarButtonItem(image: #imageLiteral(resourceName: "login-arrow").upMirrored, style: .plain, target: nil, action: nil)
         backItem.rx.tap.bind(to: goBack).disposed(by: disposeBag)
 
@@ -48,7 +46,6 @@ class DatePickerFormCell: ResponsibleFormCell, UITextFieldDelegate {
 
         toolbar.items = [ backItem, spaceItem, nextItem ]
         toolbar.tintColor = .sdTangerine
-
 
         viewModel.variable.asDriver().map { (date) in
             return date?.dateShort ?? ""
@@ -96,9 +93,14 @@ class DatePickerFormCell: ResponsibleFormCell, UITextFieldDelegate {
         didEndEditing.asDriver().drive(onNext:deactivate).disposed(by: disposeBag)
 
         textField.rx.controlEvent(.editingDidBegin).asDriver().drive(onNext:activate).disposed(by: disposeBag)
-
+        
         if let validDriver = viewModel.valid {
-            Driver.combineLatest(didEndEditing.take(1).asDriver(onErrorJustReturn: ()), validDriver, resultSelector: { [unowned self] (_, valid) -> Void in
+            var beginValidation = textField.rx.controlEvent(.editingDidEnd).take(1).asDriver(onErrorJustReturn: ())
+            if let viewModelBeginValidation = viewModel.beginValidation {
+                beginValidation = Driver.merge(beginValidation, viewModelBeginValidation)
+            }
+            
+            Driver.combineLatest(beginValidation, validDriver, resultSelector: { [unowned self] (_, valid) -> Void in
                 self.set(valid:valid)
             }).drive().disposed(by: disposeBag)
         }

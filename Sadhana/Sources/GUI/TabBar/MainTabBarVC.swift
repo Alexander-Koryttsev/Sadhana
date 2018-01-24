@@ -20,10 +20,6 @@ class MainTabBarVC : BaseTabBarVC<MainTabBarVM> {
         setUpEditingButton()
         base.hasGuide = true
     }
-    
-    deinit {
-        editingButton.removeFromSuperview()
-    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

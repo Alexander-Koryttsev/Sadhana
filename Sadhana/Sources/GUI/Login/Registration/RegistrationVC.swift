@@ -110,12 +110,19 @@ class RegistrationVC: BaseTableVC<RegistrationVM> {
             }
         }
 
-        Driver.combineLatest(passwordCells.first!.textField.rx.controlEvent(.editingDidEnd).take(1).asDriver(onErrorJustReturn: ()),
-                             passwordCells.last!.textField.rx.controlEvent(.editingDidEnd).take(1).asDriver(onErrorJustReturn: ()),
-                             viewModel.passwordValid) { (_,_, valid) -> Void in
-                                passwordCells.forEach({ (cell) in
-                                    cell.set(valid: valid)
-                                })
+        
+        let didEndEditing = Driver.combineLatest (passwordCells.first!.textField.rx.controlEvent(.editingDidEnd).take(1).asDriver(onErrorJustReturn: ()),
+                                                  passwordCells.last!.textField.rx.controlEvent(.editingDidEnd).take(1).asDriver(onErrorJustReturn: ())) {
+                                                    _,_  in return
+        }
+        
+        
+        let beginValidationPassword = Driver.merge(didEndEditing, viewModel.register.asDriver(onErrorJustReturn: ()))
+        
+        Driver.combineLatest(beginValidationPassword, viewModel.passwordValid) { _, valid in
+            passwordCells.forEach({ (cell) in
+                cell.set(valid: valid)
+            })
         }.drive().disposed(by: disposeBag)
 
         FormHelper.bind(cells: cells, disposeBag: viewModel.disposeBag)
@@ -123,7 +130,7 @@ class RegistrationVC: BaseTableVC<RegistrationVM> {
         if let last = cells.last as? Responsible {
             last.goNext.bind(to: viewModel.register).disposed(by: disposeBag)
         }
-
+        
         //Registration Actions
         viewModel.canRegister.drive(onNext: { [unowned self] (can) in
             self.registerCell.textLabel?.textColor = can ? .sdTangerine : .sdSilver
