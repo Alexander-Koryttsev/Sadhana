@@ -59,6 +59,18 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if base.firstAppearing {
+            DispatchQueue.main.async {
+                if let vc = self.pageVC.viewControllers?.first as? EntryEditingVC {
+                    vc.becomeActive()
+                }
+            }
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
     }
 
     override func viewWillDisappear(_ animated: Bool) {

@@ -23,6 +23,10 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
             return countViews.last!
         }
     }
+    
+    override var isFilled: Bool {
+        return viewModel.variable.value != nil
+    }
 
     init(_ viewModel: VariableFieldVM<Time?>) {
         self.viewModel = viewModel
@@ -43,9 +47,9 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
         setUp(field: minutesView.valueField)
         minutesView.titleLabel.text = "minutes".localized
 
-        Observable.combineLatest(hoursView.valueField.rx.textRequired.asDriver().asObservable(), minutesView.valueField.rx.textRequired.asDriver().asObservable()).map({(hours, minutes) -> Time? in
+        Driver.combineLatest(hoursView.valueField.rx.textRequired.asDriver().skip(1), minutesView.valueField.rx.textRequired.asDriver().skip(1)).map({(hours, minutes) -> Time? in
             return Time(hour:hours, minute:minutes)
-        })  .bind(to: viewModel.variable)
+        })  .drive(viewModel.variable)
             .disposed(by: disposeBag)
     }
 

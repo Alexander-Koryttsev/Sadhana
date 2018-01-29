@@ -89,6 +89,8 @@ city = "City";
 birthday = "Birthday";
 register = "Register";
 empty_fields_warning = "Please, fill all fields";
+password_short = "Password should have at least 8 characters";
+passwords_not_equal = "Passwords are not equal";
 
 //Error
 error_session_expired = "Your session is expired";

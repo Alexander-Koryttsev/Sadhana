@@ -426,7 +426,7 @@ class RemoteService {
     func loadCountries() -> Single<[Country]> {
         return request("https://vaishnavaseva.net/vs-api/v2/sadhana/countries",
                        method: HTTPMethod.get,
-                       parameters: ["v": 5.69,
+                       parameters: ["v": 5.71,
                                     "need_all": 1,
                                     "count":1000,
                                     "lang":Locale.current.languageCode!])
@@ -448,8 +448,8 @@ class RemoteService {
                        method: HTTPMethod.get,
                        parameters: ["country_id": countryID,
                                     "v": 5.69,
-                                    "need_all": 1,
-                                    "count":1000,
+                                    "need_all": 0,
+                                    "count":100,
                                     "lang":Locale.current.languageCode!,
                                     "q":query ?? ""])
             .map { json in

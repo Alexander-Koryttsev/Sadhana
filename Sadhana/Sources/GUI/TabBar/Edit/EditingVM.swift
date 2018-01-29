@@ -62,7 +62,8 @@ class EditingVM: BaseVM {
 
         }).disposed(by: disposeBag)
 
-        save.subscribe(onNext:{ [unowned self] () in
+
+        save.flatMap { [unowned self] () -> Observable<Bool> in
             var signals = [Observable<Bool>]()
             //TODO:filter
             //TODO:thread safe
@@ -85,10 +86,10 @@ class EditingVM: BaseVM {
                         .subscribeOn(MainScheduler.instance)
                         .observeOn(MainScheduler.instance)
                         .do(onNext: { (ID) in
-                        entry.ID = ID
-                        entry.dateSynched = Date()
-                        strongSelf.context.saveRecursive()
-                    })
+                            entry.ID = ID
+                            entry.dateSynched = Date()
+                            strongSelf.context.saveRecursive()
+                        })
                     signals.append(signal
                         .track(self.errors)
                         .asBoolObservable())
@@ -96,10 +97,14 @@ class EditingVM: BaseVM {
             }
 
             self.context.saveRecursive()
-            _ = Observable.merge(signals).subscribe()
-            
             Answers.logCustomEvent(withName: "Save Entries", customAttributes: ["Hour": Date().hour])
-        })
+
+            return Observable.merge(signals)
+                    .observeOn(MainScheduler.instance)
+                    .do(onCompleted:{
+                        NotificationCenter.default.post(name: .local(.entriesDidSend), object: nil)
+                    })
+        }   .subscribe()
             .disposed(by: disposeBag)
     }
 

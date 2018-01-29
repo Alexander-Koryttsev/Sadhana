@@ -56,4 +56,15 @@ class EntryEditingVC : BaseTableVC<EntryEditingVM> {
             tableView.endEditing(true)
         }
     }
+    
+    func becomeActive() {
+        for cell in cells {
+            if !cell.isFilled {
+                if let responisble = cell as? Responsible {
+                    responisble.becomeActive.onNext(())
+                }
+                return
+            }
+        }
+    }
 }

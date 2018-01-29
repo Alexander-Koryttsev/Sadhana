@@ -24,6 +24,16 @@ class CountsLayoutCell: FormCell, ResponsibleChain {
     var responsibles: [Responsible] {
         return countViews
     }
+    
+    var becomeActive : PublishSubject<Void> {
+        for item in countViews {
+            if item.valueField.text == nil || item.valueField.text!.count == 0 {
+                return item.becomeActive
+            }
+        }
+        
+        return responsibles.first!.becomeActive
+    }
 
     init(fieldsCount:Int) {
         super.init(style: .default, reuseIdentifier: nil)
@@ -94,6 +104,10 @@ class CountsLayoutCell: FormCell, ResponsibleChain {
 
 class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
     private let viewModel: FieldsContainerVM
+    
+    override var isFilled : Bool {
+        return viewModel.isFilled
+    }
 
     init(_ viewModel: FieldsContainerVM) {
         self.viewModel = viewModel
@@ -109,7 +123,7 @@ class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
                 if value > 0 {
                     view.valueField.text = value.description
                 }
-                view.valueField.rx.textRequired.asDriver().skip(1).map({ (string) -> Int16 in
+                view.valueField.rx.textRequired.asDriver().skip(2).map({ (string) -> Int16 in
                     return Int16(string) ?? 0
                 }).drive(variableField.variable).disposed(by: disposeBag)
             }

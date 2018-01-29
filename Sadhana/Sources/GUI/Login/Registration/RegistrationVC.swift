@@ -12,29 +12,41 @@ import RxCocoa
 import EasyPeasy
 
 class RegistrationVC: BaseTableVC<RegistrationVM> {
-    enum Section : Int {
-        case fields = 0
-        case registerButton
-        case count
+
+    class Footer : UIView {
+        let label = UILabel()
+
+        init() {
+            label.textAlignment = .center
+            label.textColor = .sdSteel
+            label.font = .systemFont(ofSize: 12)
+            label.numberOfLines = 2
+            super.init(frame:CGRect())
+            addSubview(label)
+            label.easy.layout([Left(<=15), Right(<=15), Top(8), Bottom(<=10), CenterX()])
+        }
+
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
     }
 
-    var cells = [FormCell]()
+    struct Section  {
+        let cells : [UITableViewCell]
+        let footer : Footer?
+    }
+
+    var sections = [Section]()
     let registerCell = UITableViewCell(style: .default, reuseIdentifier: nil)
     let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-    let footer = UITableViewHeaderFooterView()
+    let footer = Footer()
     let blocker = UIView()
     var message : String? {
         set {
-            footer.textLabel!.text = newValue
-            tableView.beginUpdates()
-            tableView.endUpdates()
-            let deadlineTime = DispatchTime.now() + .milliseconds(500)
-            DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-                self.tableView.scrollRectToVisible(self.tableView.rectForFooter(inSection: 1), animated: true)
-            }
+            footer.label.text = newValue
         }
         get {
-            return footer.textLabel!.text;
+            return footer.label.text;
         }
     }
 
@@ -59,7 +71,6 @@ class RegistrationVC: BaseTableVC<RegistrationVM> {
 
         tableView.keyboardDismissMode = .interactive
         setUpRegisterCell()
-        footer.textLabel!.textAlignment = .center
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,7 +78,7 @@ class RegistrationVC: BaseTableVC<RegistrationVM> {
         tableView.reloadData()
         if base.firstAppearing {
             DispatchQueue.main.async {
-               self.cells.first!.becomeFirstResponder()
+               self.sections.first!.cells.first!.becomeFirstResponder()
             }
         }
     }
@@ -100,34 +111,59 @@ class RegistrationVC: BaseTableVC<RegistrationVM> {
         super.bindViewModel()
 
         //Cells setup
-        var passwordCells = [TextFieldFormCell]()
-        for field in viewModel.fields {
-            let cell = FormFactory.cell(for: field)
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
-            cells.append(cell)
-            if case FormFieldType.text(.password) = field.type {
-                passwordCells.append(cell as! TextFieldFormCell)
-            }
-        }
+        var passwordSection : RegistrationVC.Section?
 
+        var allCells = [FormCell]()
+        for section in viewModel.sections {
+            var sectionCells = [FormCell]()
+            for field in section.fields {
+                let cell = FormFactory.cell(for: field)
+                cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
+                sectionCells.append(cell)
+                allCells.append(cell)
+                
+            }
+
+            let uiFooter : Footer?
+            if let footerDriver = section.footer {
+                let uiFooterLocal = Footer()
+                footerDriver.drive(uiFooterLocal.label.rx.text).disposed(by: disposeBag)
+                uiFooter = uiFooterLocal
+            }
+            else {
+                uiFooter = nil
+            }
+            
+            let uiSection = Section(cells:sectionCells, footer:uiFooter)
+            if case FormFieldType.text(.password) = section.fields.first!.type {
+                passwordSection = uiSection
+            }
+
+            sections.append(uiSection)
+        }
         
-        let didEndEditing = Driver.combineLatest (passwordCells.first!.textField.rx.controlEvent(.editingDidEnd).take(1).asDriver(onErrorJustReturn: ()),
-                                                  passwordCells.last!.textField.rx.controlEvent(.editingDidEnd).take(1).asDriver(onErrorJustReturn: ())) {
+        sections.append(Section(cells: [ registerCell ], footer:footer))
+        
+        let passwordCells = passwordSection!.cells as! [TextFieldFormCell]
+        
+        let didEndEditingPassword = Driver.combineLatest (
+            passwordCells.first!.textField.rx.controlEvent(.editingDidEnd).take(1).asDriver(onErrorJustReturn: ()),
+            passwordCells.last!.textField.rx.controlEvent(.editingDidEnd).take(1).asDriver(onErrorJustReturn: ())) {
                                                     _,_  in return
         }
-        
-        
-        let beginValidationPassword = Driver.merge(didEndEditing, viewModel.register.asDriver(onErrorJustReturn: ()))
+
+        let beginValidationPassword = Driver.merge(didEndEditingPassword, viewModel.register.asDriver(onErrorJustReturn: ()))
         
         Driver.combineLatest(beginValidationPassword, viewModel.passwordValid) { _, valid in
             passwordCells.forEach({ (cell) in
                 cell.set(valid: valid)
             })
+            passwordSection!.footer?.label.textColor = .red
         }.drive().disposed(by: disposeBag)
 
-        FormHelper.bind(cells: cells, disposeBag: viewModel.disposeBag)
+        FormHelper.bind(cells: allCells, disposeBag: viewModel.disposeBag)
 
-        if let last = cells.last as? Responsible {
+        if let last = allCells.last as? Responsible {
             last.goNext.bind(to: viewModel.register).disposed(by: disposeBag)
         }
         
@@ -160,66 +196,50 @@ class RegistrationVC: BaseTableVC<RegistrationVM> {
             .disposed(by: disposeBag)
 
         //Error handling
-        Driver.merge(viewModel.errorMessages, viewModel.messagesUI).drive(onNext:{ [unowned self] message in
-            self.message = message
-        }).disposed(by: disposeBag)
+        Driver.merge(viewModel.errorMessages, viewModel.messagesUI).do(onNext:{ _ in
+            let deadlineTime = DispatchTime.now() + .milliseconds(500)
+            DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
+                self.tableView.scrollRectToVisible(self.tableView.rectForFooter(inSection: 1), animated: true)
+            }
+        }).drive(footer.label.rx.text).disposed(by: disposeBag)
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return Section.count.rawValue
+        return sections.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-            case Section.fields.rawValue: return cells.count
-            case Section.registerButton.rawValue: return 1
-            default: return 0
-        }
+        return sections[section].cells.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch Section(rawValue:indexPath.section)! {
-            case .fields:  return cells[indexPath.row]
-            case .registerButton: return registerCell
-            case .count: break
-        }
-        fatalError()
-    }
-    
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if section == 1 {
-            return message
-        }
-        return nil
+        return sections[indexPath.section].cells[indexPath.row]
     }
 
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if section == 1 {
-            return footer
-        }
-        return nil
+        return sections[section].footer
     }
 
-    override func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
-        footer.textLabel!.textAlignment = .center
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return sections[section].footer != nil ? 34 : 10
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         var shouldDeselectNow = true
-        switch Section(rawValue:indexPath.section)! {
-            case .fields:
-                let field = viewModel.fields[indexPath.row]
-                if let pickerField = field as? PickerFieldVM,
-                    let action = pickerField.action {
-                    shouldDeselectNow = !action()
-                }
-                break
-            case .registerButton:
-                viewModel.register.onNext(())
-                break
-            case .count: break
+
+        if indexPath.section == sections.count - 1 {
+            viewModel.register.onNext(())
+        }
+        else {
+            let field = viewModel.sections[indexPath.section].fields[indexPath.row]
+            
+            if let pickerField = field as? PickerFieldVM,
+                let action = pickerField.action {
+                shouldDeselectNow = !action()
+            }
+ 
         }
 
         if shouldDeselectNow {

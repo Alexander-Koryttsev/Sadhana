@@ -33,8 +33,6 @@ typealias JSON = [String: Any]
 typealias JSONArray = [JSON]
 typealias Block = () -> Void
 
-protocol OptionalProtocol {}
-extension Optional : OptionalProtocol {}
 
 enum GeneralError : Error {
     case error
@@ -51,6 +49,20 @@ let iPhone = UI_USER_INTERFACE_IDIOM() == .phone
 let iPhoneX = max(ScreenWidth, ScreenHeight) == 812.0
 let iPad = UI_USER_INTERFACE_IDIOM() == .pad
 let TopInset = CGFloat(iPhoneX ? 88 : 64)
+
+enum NotificationName : String {
+    case entriesDidSend
+
+    var value : Notification.Name {
+        return Notification.Name(rawValue)
+    }
+}
+
+extension Notification.Name {
+    static func local(_ name: NotificationName) -> Notification.Name {
+        return name.value
+    }
+}
 
 func iOS(_ version: Int) -> Bool {
     return iOS >= version

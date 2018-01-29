@@ -131,13 +131,27 @@ protocol FormFieldVM {
     var type : FormFieldType { get }
 }
 
+protocol Fillable {
+    var isFilled : Bool { get }
+}
+
 //TODO: remove this class:)
-class VariableFieldVM<T> : FormFieldVM {
+class VariableFieldVM<T> : FormFieldVM, Fillable {
     let key : String
     let variable : Variable<T>
     let type : FormFieldType
     var valid : Driver<Bool>?
     var beginValidation : Driver<Void>?
+    var isFilled: Bool {
+        if let value = variable.value as? String {
+            return value.count > 0
+        }
+        if let value = variable.value as? Int16 {
+            return value > 0
+        }
+    
+        return false
+    }
     init(_ variable : Variable<T>, for key : String, type: FormFieldType, validSelector: ((T) -> Bool)? = nil) {
         self.variable = variable
         self.key = key
@@ -176,11 +190,20 @@ class KeyPathFieldVM<Object, Value> : VariableFieldVM<Value> {
     }
 }
 
-class FieldsContainerVM : FormFieldVM {
+class FieldsContainerVM : FormFieldVM, Fillable {
     let key: String
     let fields: [FormFieldVM]
     let colors: [UIColor]?
     let type = FormFieldType.container
+    var isFilled: Bool {
+        var filled = true
+        for item in fields {
+            if let item = item as? Fillable {
+                filled = item.isFilled && filled
+            }
+        }
+        return filled
+    }
     init(_ key: String, _ fields: [FormFieldVM], colors: [UIColor]? = nil) {
         self.key = key
         self.fields = fields

@@ -104,7 +104,10 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
 
         searchBar.rx.textRequired.asDriver().drive(viewModel.search).disposed(by: disposeBag)
 
-        NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground).map { [unowned self] _ in
+
+        Observable.merge(NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground),
+                         NotificationCenter.default.rx.notification(.local(.entriesDidSend)))
+            .map { [unowned self] _ in
             if self.tableView.numberOfSections > 0 && self.tableView.numberOfRows(inSection: 0) > 0 {
                 self.tableView.scrollToRow(at: IndexPath(row:0, section:0), at: .top, animated: false)
             }

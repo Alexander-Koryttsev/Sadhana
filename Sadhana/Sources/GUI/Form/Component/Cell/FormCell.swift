@@ -12,6 +12,11 @@ import RxCocoa
 import EasyPeasy
 
 class FormCell : UITableViewCell {
+    
+    var isFilled : Bool {
+        return false
+    }
+    
     var height : CGFloat {
         return 44
     }

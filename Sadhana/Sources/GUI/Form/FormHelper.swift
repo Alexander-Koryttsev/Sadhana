@@ -31,19 +31,28 @@ class FormHelper {
                     firstResponsible = responsible
                 }
             }
+            else {
+                if let endEditingAction = endEditingAction {
+                    if let firstResponsible = firstResponsible {
+                        firstResponsible.goBack.subscribe(onNext:endEditingAction).disposed(by: disposeBag)
+                    }
+                    
+                    if let lastResponsibleCell = previousResponsible {
+                        lastResponsibleCell.goNext.subscribe(onNext:endEditingAction).disposed(by: disposeBag)
+                    }
+                }
+                firstResponsible = nil
+                previousResponsible = nil
+            }
         }
 
         if let endEditingAction = endEditingAction {
             if let firstResponsible = firstResponsible {
-                firstResponsible.goBack.subscribe(onNext:{ () in
-                    endEditingAction()
-                }).disposed(by: disposeBag)
+                firstResponsible.goBack.subscribe(onNext:endEditingAction).disposed(by: disposeBag)
             }
 
             if let lastResponsibleCell = previousResponsible {
-                lastResponsibleCell.goNext.subscribe(onNext:{ () in
-                    endEditingAction()
-                }).disposed(by: disposeBag)
+                lastResponsibleCell.goNext.subscribe(onNext:endEditingAction).disposed(by: disposeBag)
             }
         }
     }

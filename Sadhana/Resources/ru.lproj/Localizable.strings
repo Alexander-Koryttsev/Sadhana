@@ -90,6 +90,8 @@ city = "Город";
 birthday = "Дата рождения";
 register = "Зарегистрироваться";
 empty_fields_warning = "Пожалуйста, заполните все поля";
+password_short = "Пароль должен содержать минимум 8 символов";
+passwords_not_equal = "Пароли не совпадают";
 
 //Error
 error_session_expired = "Срок действия сессии истек";

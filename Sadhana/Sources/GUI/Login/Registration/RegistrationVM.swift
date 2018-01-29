@@ -10,7 +10,14 @@ import UIKit
 import RxCocoa
 
 class RegistrationVM: BaseTableVM {
+
+    struct Section {
+        let fields : [FormFieldVM]
+        let footer : Driver<String>?
+    }
+
     let fields : [FormFieldVM]
+    let sections : [Section]
     private let registration : Registration
     let canRegister : Driver<Bool>
     let passwordValid : Driver<Bool>
@@ -27,7 +34,7 @@ class RegistrationVM: BaseTableVM {
         let validator = Validator()
         let registerDriver = register.take(1).asDriver(onErrorJustReturn: ())
 
-        let spiritNameField = KeyPathFieldVM(registration, \Registration.spiritualName, for: "spiritutal_name".localized, type:.text(.name))
+        let spiritNameField = KeyPathFieldVM(registration, \Registration.spiritualName, for: "spiritutal_name".localized, type:.text(.name), validSelector:validator.validate(spirutalName:))
         fields.append(spiritNameField)
 
         let firstNameField = KeyPathFieldVM(registration, \Registration.firstName, for: "first_name".localized, type:.text(.name), validSelector:validator.validate(string:))
@@ -45,7 +52,8 @@ class RegistrationVM: BaseTableVM {
         let passwordField = KeyPathFieldVM(registration, \Registration.password, for: "password".localized, type:.text(.password))
         let passwordConfirmationField = VariableFieldVM(Variable(""), for: "confirm_password".localized, type:.text(.password))
 
-        let passwordValid = Driver.combineLatest(passwordField.variable.asDriver(), passwordConfirmationField.variable.asDriver(), resultSelector: validator.validate(password:confirmation:)).distinctUntilChanged()
+        let passwordValid = Driver.combineLatest(passwordField.variable.asDriver(), passwordConfirmationField.variable.asDriver(), resultSelector: validator.validate(password:confirmation:))
+        let passwordValidSimple = passwordValid.map { (flag, _) in flag }
 
         fields.append(passwordField)
         fields.append(passwordConfirmationField)
@@ -107,7 +115,7 @@ class RegistrationVM: BaseTableVM {
 
         canRegister = Driver.combineLatest(firstNameField.valid!,
                                            lastNameField.valid!,
-                                           passwordValid,
+                                           passwordValidSimple,
                                            emailField.valid!,
                                            countryField.valid!,
                                            cityField.valid!,
@@ -116,11 +124,27 @@ class RegistrationVM: BaseTableVM {
             return firstNameValid && lastNameValid && passwordValid && emailValid && countryValid && cityValid && dateValid
         }.distinctUntilChanged()
 
+
+        sections = [
+            Section(fields: [ spiritNameField,
+                              firstNameField,
+                              lastNameField,
+                              emailField ],
+                    footer:nil),
+            Section(fields: [ passwordField,
+                              passwordConfirmationField],
+                    footer: passwordValid.map { (_, string) in string }),
+            Section(fields: [ countryField,
+                              cityField,
+                              dateField],
+                    footer:nil),
+        ]
+
         self.fields = fields
         self.localDisposeBag = localDisposeBag
         self.registration = registration
         self.validator = validator
-        self.passwordValid = passwordValid
+        self.passwordValid = passwordValidSimple
         super.init()
 
         register.withLatestFrom(canRegister)
@@ -154,7 +178,11 @@ class RegistrationVM: BaseTableVM {
 
 class Validator {
     func validate(string:String) -> Bool {
-        return string.count > 0
+        return string.count > 2
+    }
+
+    func validate(spirutalName:String) -> Bool {
+        return spirutalName.count == 0 || spirutalName.count > 2
     }
 
     let emailTest = NSPredicate(format:"SELF MATCHES %@", "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}")
@@ -162,8 +190,17 @@ class Validator {
         return email.count > 0 && emailTest.evaluate(with: email)
     }
 
-    func validate(password:String, confirmation:String) -> Bool {
-        return password.count > 0 && password == confirmation
+    func validate(password:String, confirmation:String) -> (Bool, String) {
+
+        if password.count < 8 {
+            return (false, "password_short".localized)
+        }
+
+        if password != confirmation {
+            return (false, "passwords_not_equal".localized)
+        }
+
+        return (true, "👍")
     }
 
     func validate(_ any:Any?) -> Bool {

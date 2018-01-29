@@ -20,6 +20,10 @@ class TextFieldFormCell: FormCell, ResponsibleContainer, Validable {
         return textField
     }
 
+    override var isFilled : Bool {
+        return viewModel.isFilled
+    }
+    
     let beginValidation = PublishSubject<Void>()
 
     let viewModel : VariableFieldVM<String>
