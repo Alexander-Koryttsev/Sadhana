@@ -32,6 +32,18 @@ class MainService {
     func login(_ name:String, password:String) -> Single<ManagedUser> {
         return Remote.service.login(name: name, password: password)
             .concat(Remote.service.loadCurrentUser())
+            .catchError({ (error) -> PrimitiveSequence<SingleTrait, User> in
+
+                if case RemoteError.invalidRequest(type: .userNotFound, let description) = error {
+                    if let stringID = description.components(separatedBy: " ").last {
+                           if let ID = Int32(stringID) {
+                            return Remote.service.loadCurrentUser().after(Remote.service.initialize(ID))
+                        }
+                    }
+                }
+
+                return Single<User>.error(error)
+            })
             .flatMap { (user) -> Single<ManagedUser> in
                 return Local.service.backgroundContext.rxSave(user:user)
             }

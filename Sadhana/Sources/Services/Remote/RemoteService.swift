@@ -37,6 +37,7 @@ enum InvalidRequestType : String {
     case entryExists = "sadhana_entry_exists"
     case restForbidden = "rest_forbidden"
     case entryNotFound = "entry_not_found"
+    case userNotFound = "user_not_found"
     case unknown
 }
 
@@ -469,6 +470,10 @@ class RemoteService {
         return baseRequest(.post, "\(Remote.URL.api.relativeString)/registration", parameters: registration.json, authorise: false).map({ (json) -> Int32 in
             return try Int32.create(json["user_id"])
         });
+    }
+
+    func initialize(_ userID: Int32) -> Completable {
+        return apiRequest(.post, "initialize/\(userID)").completable()
     }
 }
 

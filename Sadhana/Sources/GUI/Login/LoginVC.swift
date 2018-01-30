@@ -83,7 +83,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         view.addSubview(sevaLogo)
         sevaLogo.easy.layout([
             Right(screenWidthSpecific(w320: 12, w375: 14, w414: 21)),
-            Bottom(screenWidthSpecific(w320: 12, w375: 14, w414: 21))
+            Bottom(screenWidthSpecific(w320: 12, w375: 14, w414: 21)).to(view, .bottomMargin)
         ])
 
         view.addSubview(darkBackground)

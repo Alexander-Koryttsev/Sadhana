@@ -113,17 +113,17 @@ class RegistrationVM: BaseTableVM {
         dateField.beginValidation = registerDriver
         fields.append(dateField)
 
-        canRegister = Driver.combineLatest(firstNameField.valid!,
+        canRegister = Driver.combineLatest(spiritNameField.valid!,
+                                           firstNameField.valid!,
                                            lastNameField.valid!,
                                            passwordValidSimple,
                                            emailField.valid!,
                                            countryField.valid!,
                                            cityField.valid!,
-                                           dateField.valid!) { firstNameValid, lastNameValid, passwordValid, emailValid, countryValid, cityValid, dateValid  in
+                                           dateField.valid!) { spiritNameValid, firstNameValid, lastNameValid, passwordValid, emailValid, countryValid, cityValid, dateValid  in
 
-            return firstNameValid && lastNameValid && passwordValid && emailValid && countryValid && cityValid && dateValid
+            return spiritNameValid && firstNameValid && lastNameValid && passwordValid && emailValid && countryValid && cityValid && dateValid
         }.distinctUntilChanged()
-
 
         sections = [
             Section(fields: [ spiritNameField,
