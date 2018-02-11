@@ -47,9 +47,10 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
         setUp(field: minutesView.valueField)
         minutesView.titleLabel.text = "minutes".localized
 
-        Driver.combineLatest(hoursView.valueField.rx.textRequired.asDriver().skip(1), minutesView.valueField.rx.textRequired.asDriver().skip(1)).map({(hours, minutes) -> Time? in
+        Driver.combineLatest(hoursView.valueField.rx.textRequired.asDriver(), minutesView.valueField.rx.textRequired.asDriver()).map({(hours, minutes) -> Time? in
             return Time(hour:hours, minute:minutes)
-        })  .drive(viewModel.variable)
+        })  .skip(1)
+            .drive(viewModel.variable)
             .disposed(by: disposeBag)
     }
 
