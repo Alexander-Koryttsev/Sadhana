@@ -37,7 +37,7 @@ class MyGraphRouter : EditingRouter {
     }
 
     func show(mailComposer: MFMailComposeViewController) {
-        mailComposer.navigationBar.tintColor = AppDelegate.shared?.window?.tintColor
+        mailComposer.navigationBar.tintColor = AppDelegate.shared.window?.tintColor
         mailComposer.mailComposeDelegate = composerDelegate
         navVC.present(mailComposer, animated: true, completion: nil)
     }

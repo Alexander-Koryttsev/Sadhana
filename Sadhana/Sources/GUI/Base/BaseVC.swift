@@ -64,8 +64,8 @@ extension ViewController where Self : UIViewController {
         }).disposed(by: disposeBag)
 
         if base.defaultErrorMessagingEnabled {
-            viewModel.errorMessages.throttle(2).drive(onNext:{ [unowned self] (message) in
-                if let window = self.view.window {
+            viewModel.errorMessages.throttle(2).drive(onNext:{ (message) in
+                if let window = AppDelegate.shared.window {
                     let container = BlurView()
                     let label = UILabel()
                     label.text = message

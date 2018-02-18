@@ -82,17 +82,19 @@ class EditingVM: BaseVM {
             for entry in entries {
                 if entry.shouldSynch {
                     let strongSelf = self
-                    let signal : Single<Int32?> = Remote.service.send(entry)
+                    let signal = Remote.service.send(entry)
                         .subscribeOn(MainScheduler.instance)
                         .observeOn(MainScheduler.instance)
                         .do(onNext: { (ID) in
                             entry.ID = ID
                             entry.dateSynched = Date()
                             strongSelf.context.saveRecursive()
+                        }, onError:{ (error) in
+                            Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: entry.json)
                         })
-                    signals.append(signal
                         .track(self.errors)
-                        .asBoolObservable())
+                        .asBoolObservable()
+                    signals.append(signal)
                 }
             }
 

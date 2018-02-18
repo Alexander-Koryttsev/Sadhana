@@ -338,18 +338,18 @@ class RemoteService {
                         return self.apiRequest(.post, path, parameters: entryJson)
                     case .entryExists:
                         let loadEntries = self.loadEntries(for: entry.userID, month: entry.date.trimmedDayAndTime)
-                        let mapEntries = loadEntries.flatMap({ [unowned self] (entries) -> Single<JSON> in
+                        let mapEntries = loadEntries.flatMap({ [unowned self] (remoteEntries) -> Single<JSON> in
 
-                            let currentEntryFilter = entries.filter({ (filterEntry) -> Bool in
+                            let currentRemoteEntryFilter = remoteEntries.filter({ (filterEntry) -> Bool in
                                 return filterEntry.date == entry.date
                             })
 
-                            if let currentEntry = currentEntryFilter.first {
-                                if currentEntry.dateUpdated > entry.dateUpdated {
-                                    return Single.just(["entry_id": currentEntry.ID!])
+                            if let remoteEntry = currentRemoteEntryFilter.first {
+                                if remoteEntry.dateUpdated > entry.dateUpdated {
+                                    return Single.just(["entry_id": remoteEntry.ID!])
                                 }
                                 var entryJson = entry.json
-                                entryJson["entry_id"] = currentEntry.ID!
+                                entryJson["entry_id"] = remoteEntry.ID!
                                 return self.apiRequest(.put, path, parameters: entryJson)
                             }
 

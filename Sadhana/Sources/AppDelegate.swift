@@ -16,14 +16,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var router: RootRouter?
-    static var shared : AppDelegate?
+    static var shared : AppDelegate {
+        return sharedInternal!
+    }
+    private static var sharedInternal : AppDelegate?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions
+        launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        
+        AppDelegate.sharedInternal = self
         Fabric.with([Crashlytics.self, Answers.self])
 
-        AppDelegate.shared = self
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.backgroundColor = .white
         window?.tintColor = .sdTangerine
