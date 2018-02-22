@@ -14,5 +14,7 @@ class GraphListVC<VM:GraphListVM> : BaseTableVC<VM> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.register(GraphCell.self, forCellReuseIdentifier: "Cell")
+        tableView.rowHeight = 64
     }
 }

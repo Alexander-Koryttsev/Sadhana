@@ -34,14 +34,14 @@ class RegistrationVM: BaseTableVM {
         let validator = Validator()
         let registerDriver = register.take(1).asDriver(onErrorJustReturn: ())
 
-        let spiritNameField = KeyPathFieldVM(registration, \Registration.spiritualName, for: "spiritutal_name".localized, type:.text(.name), validSelector:validator.validate(spirutalName:))
+        let spiritNameField = KeyPathFieldVM(registration, \Registration.spiritualName, for: "spiritutal_name".localized, type:.text(.name(.spiritual)), validSelector:validator.validate(spirutalName:))
         fields.append(spiritNameField)
 
-        let firstNameField = KeyPathFieldVM(registration, \Registration.firstName, for: "first_name".localized, type:.text(.name), validSelector:validator.validate(string:))
+        let firstNameField = KeyPathFieldVM(registration, \Registration.firstName, for: "first_name".localized, type:.text(.name(.first)), validSelector:validator.validate(string:))
         firstNameField.beginValidation = registerDriver
         fields.append(firstNameField)
 
-        let lastNameField = KeyPathFieldVM(registration, \Registration.lastName, for: "last_name".localized, type:.text(.name), validSelector:validator.validate(string:))
+        let lastNameField = KeyPathFieldVM(registration, \Registration.lastName, for: "last_name".localized, type:.text(.name(.last)), validSelector:validator.validate(string:))
         lastNameField.beginValidation = registerDriver
         fields.append(lastNameField)
 
@@ -166,12 +166,10 @@ class RegistrationVM: BaseTableVM {
                             RootRouter.shared?.commitSignIn()
                         })
                         .asBoolObservable()
-                        .catchErrorJustReturn(false)
-                        .do(onNext: { (success) in
-                            self.tapticEngine.notificationOccurred(success ? .success : .error)
-                        })
                  }
-            .subscribe()
+            .subscribe(onNext:{ [weak self] (success) in
+                 self?.tapticEngine.notificationOccurred(success ? .success : .error)
+            })
             .disposed(by: disposeBag)
     }
 }

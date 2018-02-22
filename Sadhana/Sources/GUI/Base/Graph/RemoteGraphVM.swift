@@ -1,5 +1,5 @@
 //
-//  OtherGraphVM.swift
+//  RemoteGraphVM.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 8/22/17.
@@ -10,22 +10,13 @@ import Foundation
 import RxCocoa
 
 
-class OtherGraphVM : GraphVM {
-    let firstPageRunning : Driver<Bool>
-    let pageRunning = IndexedActivityIndicator()
-    let pageDidUpdate = PublishSubject<Int>()
-    let dataDidReload = PublishSubject<Void>()
-    let info : UserBriefInfo
-
-    init(_ info:UserBriefInfo) {
-        self.info = info
-        firstPageRunning = pageRunning.asDriver(for:0)
-        super.init()
+class RemoteGraphVM : GraphVM {
+    override init(_ info:UserBriefInfo) {
+        super.init(info)
 
         refresh.flatMap { [unowned self] _ in
             self.load(pageIndex: 0).do(onNext:{ [unowned self] (page) in
-                self.reloadData()
-                self.entries.removeAll()
+                self.clearData()
                 self.map(page: page, index: 0)
                 self.dataDidReload.onNext(())
             }).concat(self.load(pageIndex: 1).do(onNext:{ [unowned self] (page) in

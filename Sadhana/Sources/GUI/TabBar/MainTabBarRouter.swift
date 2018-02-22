@@ -71,7 +71,7 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
     func showMyGraph() {
         tabBarVC?.selectedIndex = 0
     }
-
+    
     private func setUpPlusButton() {
         plusButton.isHidden = true
         plusButton.strokeColor = .white

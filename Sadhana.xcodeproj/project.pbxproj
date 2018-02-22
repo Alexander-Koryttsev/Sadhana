@@ -29,9 +29,11 @@
 		961E6BB51FE3BAE200EF86CD /* GuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961E6BB41FE3BAE200EF86CD /* GuideView.swift */; };
 		9628CC561FC055B6009D4CEA /* TextFieldFormCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9628CC551FC055B6009D4CEA /* TextFieldFormCell.swift */; };
 		9636F4711FAF07060068BB62 /* Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9636F4701FAF07060068BB62 /* Factory.swift */; };
+		963EB98A203AB041005BDB62 /* LocalGraphVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963EB989203AB041005BDB62 /* LocalGraphVM.swift */; };
+		963EB98D203AB74B005BDB62 /* RemoteGraphVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963EB98B203AB74A005BDB62 /* RemoteGraphVM.swift */; };
+		963EB990203AC939005BDB62 /* BlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963EB98F203AC939005BDB62 /* BlurView.swift */; };
 		9647A9F61FFE9C3F00FEA9DA /* RegistrationVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9647A9F51FFE9C3F00FEA9DA /* RegistrationVM.swift */; };
 		9647A9F81FFE9C5300FEA9DA /* RegistrationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9647A9F71FFE9C5300FEA9DA /* RegistrationVC.swift */; };
-		964C27CF1F4C9BFB0006593C /* OtherGraphVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C27CE1F4C9BFB0006593C /* OtherGraphVC.swift */; };
 		964C82901F17D5A200A41D8A /* NavigationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964C828F1F17D5A200A41D8A /* NavigationVC.swift */; };
 		9652C9931F45D8160065458B /* KeyboardManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9652C9921F45D8160065458B /* KeyboardManager.swift */; };
 		9652C99F1F46D4360065458B /* FormVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9652C99A1F46D4360065458B /* FormVC.swift */; };
@@ -61,7 +63,6 @@
 		96A196CB1F4AFCE800AAB635 /* OtherGraphListRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196CA1F4AFCE800AAB635 /* OtherGraphListRouter.swift */; };
 		96A196CD1F4AFE1B00AAB635 /* OtherGraphListContainerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196CC1F4AFE1B00AAB635 /* OtherGraphListContainerVC.swift */; };
 		96A196D11F4C1CDD00AAB635 /* GraphCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196D01F4C1CDD00AAB635 /* GraphCell.swift */; };
-		96A196F11F4C921100AAB635 /* OtherGraphVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196F01F4C921100AAB635 /* OtherGraphVM.swift */; };
 		96A5355F1FB1FCFF00A30215 /* CwlSysctl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A5355E1FB1FCFC00A30215 /* CwlSysctl.swift */; };
 		96A55B481F12919300FD3700 /* RootRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B471F12919300FD3700 /* RootRouter.swift */; };
 		96A55B4A1F1291D500FD3700 /* MainTabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B491F1291D500FD3700 /* MainTabBarVC.swift */; };
@@ -126,9 +127,12 @@
 		961E6BB41FE3BAE200EF86CD /* GuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideView.swift; sourceTree = "<group>"; };
 		9628CC551FC055B6009D4CEA /* TextFieldFormCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldFormCell.swift; sourceTree = "<group>"; };
 		9636F4701FAF07060068BB62 /* Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Factory.swift; sourceTree = "<group>"; };
+		963EB988203975C5005BDB62 /* Model 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 2.xcdatamodel"; sourceTree = "<group>"; };
+		963EB989203AB041005BDB62 /* LocalGraphVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalGraphVM.swift; sourceTree = "<group>"; };
+		963EB98B203AB74A005BDB62 /* RemoteGraphVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteGraphVM.swift; sourceTree = "<group>"; };
+		963EB98F203AC939005BDB62 /* BlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurView.swift; sourceTree = "<group>"; };
 		9647A9F51FFE9C3F00FEA9DA /* RegistrationVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationVM.swift; sourceTree = "<group>"; };
 		9647A9F71FFE9C5300FEA9DA /* RegistrationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationVC.swift; sourceTree = "<group>"; };
-		964C27CE1F4C9BFB0006593C /* OtherGraphVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherGraphVC.swift; sourceTree = "<group>"; };
 		964C828F1F17D5A200A41D8A /* NavigationVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationVC.swift; sourceTree = "<group>"; };
 		9652C9911F45AC5C0065458B /* Merge.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Merge.xcconfig; sourceTree = "<group>"; };
 		9652C9921F45D8160065458B /* KeyboardManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardManager.swift; sourceTree = "<group>"; };
@@ -171,7 +175,6 @@
 		96A196CA1F4AFCE800AAB635 /* OtherGraphListRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherGraphListRouter.swift; sourceTree = "<group>"; };
 		96A196CC1F4AFE1B00AAB635 /* OtherGraphListContainerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherGraphListContainerVC.swift; sourceTree = "<group>"; };
 		96A196D01F4C1CDD00AAB635 /* GraphCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphCell.swift; sourceTree = "<group>"; };
-		96A196F01F4C921100AAB635 /* OtherGraphVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtherGraphVM.swift; sourceTree = "<group>"; };
 		96A5355E1FB1FCFC00A30215 /* CwlSysctl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CwlSysctl.swift; sourceTree = "<group>"; };
 		96A55B471F12919300FD3700 /* RootRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootRouter.swift; sourceTree = "<group>"; };
 		96A55B491F1291D500FD3700 /* MainTabBarVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarVC.swift; sourceTree = "<group>"; };
@@ -409,8 +412,10 @@
 		9665AF831FE3B44100A8CFE5 /* Graph */ = {
 			isa = PBXGroup;
 			children = (
-				9665AF841FE3B44100A8CFE5 /* GraphVM.swift */,
 				9665AF851FE3B44100A8CFE5 /* GraphVC.swift */,
+				9665AF841FE3B44100A8CFE5 /* GraphVM.swift */,
+				963EB989203AB041005BDB62 /* LocalGraphVM.swift */,
+				963EB98B203AB74A005BDB62 /* RemoteGraphVM.swift */,
 			);
 			path = Graph;
 			sourceTree = "<group>";
@@ -501,8 +506,6 @@
 			children = (
 				96A196BE1F4AFB7C00AAB635 /* AllGraphListVC.swift */,
 				96A196C01F4AFB8D00AAB635 /* AllGraphListVM.swift */,
-				964C27CE1F4C9BFB0006593C /* OtherGraphVC.swift */,
-				96A196F01F4C921100AAB635 /* OtherGraphVM.swift */,
 			);
 			path = All;
 			sourceTree = "<group>";
@@ -641,6 +644,7 @@
 				9654AE991F1E656F00F75772 /* OnOffImageView.swift */,
 				960A0D411F273F5700356152 /* CircleView.swift */,
 				961E6BB41FE3BAE200EF86CD /* GuideView.swift */,
+				963EB98F203AC939005BDB62 /* BlurView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -845,6 +849,7 @@
 				96A196C51F4AFBAD00AAB635 /* FavoriteGraphListVM.swift in Sources */,
 				9602B1001FFA4F1A00502E5A /* CountView.swift in Sources */,
 				9647A9F81FFE9C5300FEA9DA /* RegistrationVC.swift in Sources */,
+				963EB98D203AB74B005BDB62 /* RemoteGraphVM.swift in Sources */,
 				9600D8B41FAEF37C0055E354 /* SettingAvatarCell.swift in Sources */,
 				96F9B24F1FFFB39700DF88E3 /* FormPickerVC.swift in Sources */,
 				9602B1031FFAA6F000502E5A /* Country.swift in Sources */,
@@ -854,6 +859,7 @@
 				96F9B2511FFFB3BE00DF88E3 /* FormPickerVM.swift in Sources */,
 				96A55B4C1F14AD6200FD3700 /* LocalDefaults.swift in Sources */,
 				9652C9A61F46DE140065458B /* BoolFormCell.swift in Sources */,
+				963EB98A203AB041005BDB62 /* LocalGraphVM.swift in Sources */,
 				961E6BB51FE3BAE200EF86CD /* GuideView.swift in Sources */,
 				96E9768D1F1734A000F6766F /* RxCocoa+Extensions.swift in Sources */,
 				9652C9A81F46DE140065458B /* FormCell.swift in Sources */,
@@ -876,17 +882,16 @@
 				967D79271F00F3E100A961D6 /* RemoteUser.swift in Sources */,
 				9654AE9A1F1E656F00F75772 /* OnOffImageView.swift in Sources */,
 				96B0708A1F0FE6D3004C9249 /* MappingHelper.swift in Sources */,
-				964C27CF1F4C9BFB0006593C /* OtherGraphVC.swift in Sources */,
 				960A0D541F2876C000356152 /* MyGraphVC.swift in Sources */,
 				9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */,
 				96B607FB1F1D01EF002B9AB5 /* EntryCell.swift in Sources */,
 				96F9B2531FFFB98B00DF88E3 /* PickerFormCell.swift in Sources */,
-				96A196F11F4C921100AAB635 /* OtherGraphVM.swift in Sources */,
 				96A9218C1F03FFF70056BC5B /* ManagedUser.swift in Sources */,
 				96F9B24C1FFFA8D300DF88E3 /* FormHelper.swift in Sources */,
 				960A0D4F1F2876C000356152 /* EditingVC.swift in Sources */,
 				96B607DC1F1BB92A002B9AB5 /* UIColor+SDAdditions.swift in Sources */,
 				967D791E1F00F10D00A961D6 /* User.swift in Sources */,
+				963EB990203AC939005BDB62 /* BlurView.swift in Sources */,
 				96A196BF1F4AFB7C00AAB635 /* AllGraphListVC.swift in Sources */,
 				96A874261F865B270097E432 /* SettingsVM.swift in Sources */,
 				96B607F91F1D01DE002B9AB5 /* EntryView.swift in Sources */,
@@ -1019,7 +1024,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Sadhana/SupportingFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1084,7 +1089,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Sadhana/SupportingFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1205,7 +1210,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Sadhana/SupportingFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1221,7 +1226,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Sadhana/SupportingFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1258,9 +1263,10 @@
 		96A9217C1F03FC9D0056BC5B /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				963EB988203975C5005BDB62 /* Model 2.xcdatamodel */,
 				96A9217D1F03FC9D0056BC5B /* Model.xcdatamodel */,
 			);
-			currentVersion = 96A9217D1F03FC9D0056BC5B /* Model.xcdatamodel */;
+			currentVersion = 963EB988203975C5005BDB62 /* Model 2.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

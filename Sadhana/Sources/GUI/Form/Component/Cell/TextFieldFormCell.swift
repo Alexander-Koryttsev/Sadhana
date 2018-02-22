@@ -36,14 +36,23 @@ class TextFieldFormCell: FormCell, ResponsibleContainer, Validable {
             case .text(let fieldType):
                 type = fieldType
                 switch fieldType {
-                    case .name:
+                    case .name(let nameType):
                         textField.autocapitalizationType = .words
+                            switch(nameType) {
+                                case .first: textField.textContentType = .name;     break
+                                case .last: textField.textContentType = .familyName; break
+                                default: break
+                            }
                         break
                     case .email:
                         textField.keyboardType = .emailAddress
+                        textField.textContentType = .emailAddress
                         break
                     case .password:
                         textField.isSecureTextEntry = true
+                        if #available(iOS 11, *) {
+                            textField.textContentType = .password
+                        }
                         break
                     default: break
                 }

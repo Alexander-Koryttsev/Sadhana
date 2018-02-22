@@ -53,6 +53,10 @@ class BaseTableVM : BaseVM {
         let configuration = UISwipeActionsConfiguration(actions: [])
         return configuration
     }
+    
+    func select(_ indexPath: IndexPath) {
+        
+    }
 }
 
 extension ObservableType {

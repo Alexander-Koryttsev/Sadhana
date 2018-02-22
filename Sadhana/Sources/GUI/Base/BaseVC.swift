@@ -255,6 +255,10 @@ class BaseTableVC<VM:BaseTableVM>: UITableViewController, ViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.numberOfRows(in: section)
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        viewModel.select(indexPath)
+    }
 
     @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -301,10 +305,4 @@ class BaseTabBarVC<VM:BaseVM>: UITabBarController, ViewController {
 
     }
 }
-
-class CellAction {
-
-}
-
-
 

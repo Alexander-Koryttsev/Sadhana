@@ -31,7 +31,7 @@ class MyGraphRouter : EditingRouter {
     func hideSadhanaEditing() {
         self.parent?.hideSadhanaEditing()
     }
-
+    
     func showSettings() {
         navVC.pushViewController(SettingsVC(SettingsVM(self)), animated: true)
     }

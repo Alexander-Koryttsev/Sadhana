@@ -52,8 +52,13 @@ class GraphCell : UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func map(entry:Entry, name:String, avatarURL:URL?) {
-        entryView.map(entry, maxRoundsCount: max(16, entry.japaSum))
+    func map(entry:Entry?, name:String, avatarURL:URL?) {
+        if let entry = entry {
+            entryView.map(entry, maxRoundsCount: max(16, entry.japaSum))
+        }
+        else {
+            entryView.clear()
+        }
         nameLabel.text = name
         avatarImageView.avatarURL = avatarURL
     }

@@ -83,28 +83,21 @@ class LocalService: NSObject {
 
 
 extension NSManagedObjectContext {
-    
-    func fetchUser() -> ManagedUser? {
-        return fetchSingle(ManagedUser.request())
-    }
-    
-    func fetch(userFor ID:Int32) -> ManagedUser? {
+    func fetchUser(for ID:Int32) -> ManagedUser? {
         let request = ManagedUser.request()
-        request.predicate = NSPredicate(format: "id = %d", ID)
+        request.predicate = NSPredicate(format: "id == %d", ID)
         return fetchSingle(request)
     }
     
-    func fetch(entryFor date:Date) -> ManagedEntry? {
+    func fetchEntry(for date:Date, userID:Int32) -> ManagedEntry? {
         let request = ManagedEntry.request()
-        //TODO: add user ID
-        //TODO: debug
-        request.predicate = NSPredicate(format: "date == %@", date as NSDate)
+        request.predicate = NSPredicate(format: "date == %@ AND userID == %d", date.trimmedTime as NSDate, userID)
         return fetchSingle(request)
     }
 
-    func fetch(entriesFrom month:Date) -> [ManagedEntry] {
+    func fetchEntries(by month:Date, userID:Int32) -> [ManagedEntry] {
         let request = ManagedEntry.request()
-        request.predicate = NSPredicate(format: "month == %@", month as NSDate)
+        request.predicate = NSPredicate(format: "month == %@ AND userID == %d", month.trimmedDayAndTime as NSDate, userID)
         return fetchHandled(request)
     }
 

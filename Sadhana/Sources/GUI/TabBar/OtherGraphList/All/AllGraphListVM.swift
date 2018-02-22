@@ -18,7 +18,6 @@ class AllGraphListVM : GraphListVM {
     let refresh = PublishSubject<Void>()
     let refreshDriver : Driver<Void>
     let search = Variable("")
-    let select = PublishSubject<IndexPath>()
     let pageDidUpdate = PublishSubject<Int>()
     let dataDidReload = PublishSubject<Void>()
     private var lastResponse : AllEntriesResponse?
@@ -57,12 +56,6 @@ class AllGraphListVM : GraphListVM {
             }).disposed(by: self.disposeBag)
         }).disposed(by: disposeBag)
 
-        select.subscribe(onNext:{ [unowned self] (indexPath) in
-            if let entry = self.entry(at: indexPath) {
-                self.router.showGraph(of:entry)
-            }
-        }).disposed(by: disposeBag)
-
         refresh.onNext(())
     }
 
@@ -88,6 +81,12 @@ class AllGraphListVM : GraphListVM {
         }
 
         return response.pageSize
+    }
+    
+    override func select(_ indexPath: IndexPath) {
+        if let entry = self.entry(at: indexPath) {
+            self.router.showGraph(of:entry)
+        }
     }
 
     func load(page:Int) -> Single<AllEntriesResponse> {
@@ -128,18 +127,41 @@ class AllGraphListVM : GraphListVM {
 
         return page.count > 0 ? page[indexPath.row] : nil
     }
-/*
+
     @available(iOS 11, *)
     override func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let action = UIContextualAction(style: .normal, title: "Закрепить") { (action, view, handler) in
-
+        var actions = [UIContextualAction]()
+        if let entry = self.entry(at: indexPath),
+            entry.userID != Local.defaults.userID! {
+            
+            let user = Main.service.currentUser!
+            
+            if let favoriteUser = user.favorite(with: entry.userID) {
+                let action = UIContextualAction(style: .normal, title: "Отписаться") { (action, view, handler) in
+                    favoriteUser.removeFromFavorites()
+                    handler(true)
+                }
+                action.backgroundColor = .sdSilver
+                //action.image = #imageLiteral(resourceName: "remove-favorite-small")
+                actions.append(action)
+            }
+            else {
+                let action = UIContextualAction(style: .normal, title:"В избранные") { (action, view, handler) in
+                    user.add(favorite: entry)
+                    _ = Local.service.viewContext.rxSave([ entry ]).subscribe()
+                    handler(true)
+                }
+                action.backgroundColor = .sdTangerine
+                //action.image = #imageLiteral(resourceName: "add-favorite-small")
+                actions.append(action)
+            }
         }
-
-        let configuration = UISwipeActionsConfiguration(actions: [action])
+    
+        let configuration = UISwipeActionsConfiguration(actions: actions)
         configuration.performsFirstActionWithFullSwipe = false
 
         return configuration
-    }*/
+    }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

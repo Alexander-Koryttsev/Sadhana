@@ -33,7 +33,7 @@ class EntryEditingVM: BaseTableVM {
         self.date = date.trimmedTime
         self.enabled = enabled
 
-        if let localEntry = context.fetch(entryFor: self.date) {
+        if let localEntry = context.fetchEntry(for: self.date, userID:Local.defaults.userID!) {
             entry = localEntry
         }
         else {
@@ -116,9 +116,15 @@ enum FormFieldType {
 
 enum TextFieldType {
     case basic
-    case name
+    case name(NameType)
     case email
     case password
+}
+
+enum NameType {
+    case first
+    case last
+    case spiritual
 }
 
 enum ActionType {

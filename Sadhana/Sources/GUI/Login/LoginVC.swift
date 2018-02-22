@@ -133,6 +133,9 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         loginField.keyboardType = .emailAddress
         loginField.returnKeyType = .next
         loginField.delegate = self
+        if #available(iOS 11, *) {
+            loginField.textContentType = .username
+        }
         loginField.easy.layout([
             Top(),
             Left(8),
@@ -162,6 +165,9 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
         passwordField.returnKeyType = .go
         passwordField.enablesReturnKeyAutomatically = true
         passwordField.delegate = self
+        if #available(iOS 11, *) {
+            loginField.textContentType = .password
+        }
         passwordField.easy.layout([
             Top().to(separator),
             Left().to(loginField, .left),

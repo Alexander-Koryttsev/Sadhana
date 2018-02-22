@@ -26,8 +26,15 @@ class OtherGraphListRouter {
             parent?.showMyGraph()
         }
         else {
-            let vm = OtherGraphVM(info)
-            let vc = OtherGraphVC(vm)
+            let vm : GraphVM
+            if let user = Local.service.viewContext.fetchUser(for: info.userID) {
+                vm = LocalGraphVM(user)
+            }
+            else {
+                vm = RemoteGraphVM(info)
+            }
+            
+            let vc = GraphVC(vm)
             navigationVC.pushViewController(vc, animated: true)
         }
     }

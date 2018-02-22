@@ -105,7 +105,7 @@ class Common {
                         month.removeAll()
                     }
 
-                    stop = dates.count == 24
+                    stop = dates.count == 12
                     date = calendar.date(byAdding: .day, value: -1, to: date)!
                 }
             }

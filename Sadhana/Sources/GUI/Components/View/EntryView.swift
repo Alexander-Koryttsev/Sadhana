@@ -62,12 +62,14 @@ class EntryView : UIView {
 
     func clear() {
         japaView.clear()
-        japaCountLabel.text = "0"
+        japaCountLabel.text = ""
         readingImageView.isOn = false
-        readingLabel.text = "0"
+        readingLabel.text = ""
         kirtanImageView.isOn = false
         updateLabelColors()
     }
+    
+    
 
     func map(_ entry: Entry, maxRoundsCount:Int16) {
         japaCountLabel.text = (entry.japaCount7_30 + entry.japaCount10 + entry.japaCount18 + entry.japaCount24).description

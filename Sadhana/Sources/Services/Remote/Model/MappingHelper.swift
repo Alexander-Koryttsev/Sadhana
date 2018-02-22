@@ -48,7 +48,7 @@ extension Date {
         return MappingHelper.shared.timeFormatter.string(from: self)
     }
 }
-
+/*
 extension Int32 : Convertible {
     public static func fromMap(_ value: Any) throws -> Int32 {
         if let object = value as? Int {
@@ -61,7 +61,7 @@ extension Int32 : Convertible {
         }
         throw MapperError.convertibleError(value: value, type: ConvertedType.self)
     }
-}
+}*/
 
 extension Int16 : Convertible {
     public static func fromMap(_ value: Any) throws -> Int16 {

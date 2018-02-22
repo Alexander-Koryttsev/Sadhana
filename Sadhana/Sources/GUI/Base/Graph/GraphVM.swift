@@ -13,15 +13,50 @@ class GraphVM : BaseTableVM {
 
     let refresh = PublishSubject<Void>()
     
+    let firstPageRunning : Driver<Bool>
+    let pageRunning = IndexedActivityIndicator()
+    let pageDidUpdate = PublishSubject<Int>()
+    let dataDidReload = PublishSubject<Void>()
+    let info : UserBriefInfo
+    var shouldShowHeader: Bool {
+        return true
+    }
+    var favorite : Bool {
+        get {
+            return Main.service.currentUser!.containsFavorite(with: info.userID)
+        }
+    }
+    
     private var maxCounts = [Int : Int16]()
     var entries = [Date : [Date : Entry]]()
+    
+    init(_ info:UserBriefInfo) {
+        self.info = info
+        firstPageRunning = pageRunning.asDriver(for:0)
+        super.init()
+    }
 
-    override var numberOfSections : Int {
-        return Common.shared.calendarDates.count
+    func toggleFavorite() {
+        if let user = Main.service.currentUser!.favorite(with: info.userID) {
+            user.removeFromFavorites()
+        }
+        else {
+            Main.service.currentUser!.add(favorite: info)
+            _ = Local.service.viewContext.rxSave(entries(for: 0)).subscribe()
+        }
+    }
+
+    func clearData() {
+        maxCounts.removeAll()
+        entries.removeAll()
     }
 
     func reloadData() {
-        maxCounts.removeAll()
+
+    }
+
+    override var numberOfSections : Int {
+        return Common.shared.calendarDates.count
     }
 
     override func numberOfRows(in section:Int) -> Int {

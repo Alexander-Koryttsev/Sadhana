@@ -29,6 +29,7 @@ class OtherGraphListContainerVC : UIViewController {
             currentVC.view.easy.layout(Edges())
             navigationItem.setLeftBarButtonItems(currentVC.navigationItem.leftBarButtonItems, animated: true)
             navigationItem.setRightBarButtonItems(currentVC.navigationItem.rightBarButtonItems, animated: true)
+            navigationItem.title = title
         }
     }
 

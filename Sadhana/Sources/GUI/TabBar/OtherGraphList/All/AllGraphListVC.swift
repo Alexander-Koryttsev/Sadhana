@@ -28,8 +28,6 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
     override func viewDidLoad() {
         refreshControl = UIRefreshControl()
         super.viewDidLoad()
-        tableView.register(GraphCell.self, forCellReuseIdentifier: "Cell")
-        tableView.rowHeight = 64
         tableView.keyboardDismissMode = .onDrag
 
         let searchContainer = UIView(frame:CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:searchBarHeight))
@@ -100,10 +98,7 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
             }
         }).disposed(by: disposeBag)
 
-        tableView.rx.itemSelected.asDriver().drive(viewModel.select).disposed(by: disposeBag)
-
         searchBar.rx.textRequired.asDriver().drive(viewModel.search).disposed(by: disposeBag)
-
 
         Observable.merge(NotificationCenter.default.rx.notification(.UIApplicationWillEnterForeground),
                          NotificationCenter.default.rx.notification(.local(.entriesDidSend)))
@@ -122,6 +117,18 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
         return cell
     }
 
+    override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let difference = searchBarHeight - (targetContentOffset.pointee.y + TopInset)
+        if difference > 0 && difference < searchBarHeight {
+            if difference < searchBarHeight/2.0 || velocity.y > 0 { //Bottom
+                targetContentOffset.initialize(to: CGPoint(x:0, y:searchBarHeight - TopInset))
+            }
+            else { //Top
+                targetContentOffset.initialize(to: CGPoint(x:0, y:searchBarHeight - TopInset - searchBarHeight))
+            }
+        }
+    }
+
     func setUp(_ cell: UITableViewCell, at indexPath: IndexPath) {
         let cell = cell as! GraphCell
         if let entry = viewModel.entry(at: indexPath) {
@@ -131,6 +138,4 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
             cell.clear()
         }
     }
-
-
 }

@@ -41,14 +41,14 @@ class SettingsVM : BaseTableVM {
     }
 
     func addUserInfoSection() {
-        if let user = Main.service.user {
+        if let user = Main.service.currentUser {
             let userInfo = SettingInfo(key: user.name, imageURL: user.avatarURL)
             addSingle(item: userInfo)
         }
     }
 
     func addCommonSection() {
-        if let user = Main.service.user as? ManagedUser {
+        if let user = Main.service.currentUser {
             //TODO: Localize
             let publicItem = KeyPathFieldVM(user, \ManagedUser.isPublic, for:"isPublic", type:.switcher)
             publicItem.variable.asDriver().drive(onNext:{ _ in

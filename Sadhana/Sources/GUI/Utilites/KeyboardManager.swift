@@ -95,6 +95,9 @@ class KeyboardContainer : UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
 
+       // translatesAutoresizingMaskIntoConstraints = false
+        //buttonContainer.translatesAutoresizingMaskIntoConstraints = false
+
         if iOS(11) {
             buttonContainer.layer.masksToBounds = true
             buttonContainer.layer.cornerRadius = 5
