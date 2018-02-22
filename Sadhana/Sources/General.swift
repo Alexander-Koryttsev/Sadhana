@@ -6,12 +6,12 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import UIKit
 import AlamofireImage
 import Fabric
 import Crashlytics
 
 @_exported import RxSwift
+@_exported import UIKit
 
 struct Config {
     #if DEV

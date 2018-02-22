@@ -43,6 +43,7 @@ class FavoriteGraphListVC : GraphListVC<FavoriteGraphListVM> {
     
         emptyView.backgroundColor = .white
         emptyView.isHidden = true
+        emptyView.isUserInteractionEnabled = false
         emptyView.addSubview(label)
         
         label.easy.layout(Edges(10))
