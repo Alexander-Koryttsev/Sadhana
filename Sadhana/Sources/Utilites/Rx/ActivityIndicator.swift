@@ -8,7 +8,7 @@
 
 #if !RX_NO_MODULE
 
-import RxCocoa
+
 #endif
 
 private struct ActivityToken<E> : ObservableConvertibleType, Disposable {

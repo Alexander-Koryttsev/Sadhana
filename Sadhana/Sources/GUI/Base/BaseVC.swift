@@ -6,11 +6,11 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import UIKit
+
 import CoreData
 
 import EasyPeasy
-import RxCocoa
+
 
 class ViewControllerBaseVars<VM:BaseVM> {
     var viewModel:VM
@@ -25,16 +25,24 @@ class ViewControllerBaseVars<VM:BaseVM> {
 }
 
 protocol ViewController {
+    func tabBarItemAction()
+}
+
+extension ViewController {
+
+}
+
+protocol ViewControllerProtected : ViewController where Self : UIViewController  {
     associatedtype VM:BaseVM
     var base : ViewControllerBaseVars<VM> { get set }
-    
+
     var viewModel:VM { get }
-    
+
     func createGuide()
     func alertDidDismiss()
 }
 
-extension ViewController where Self : UIViewController {
+extension ViewControllerProtected {
     var disposeBag:DisposeBag {
         return viewModel.disposeBag
     }
@@ -144,10 +152,6 @@ extension ViewController where Self : UIViewController {
         }
     }
 
-    func alertDidDismiss() {
-
-    }
-
     func setUpDefaultActivityIndicator(with driver: Driver<Bool>) {
         let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         activityIndicator.hidesWhenStopped = true
@@ -157,7 +161,7 @@ extension ViewController where Self : UIViewController {
     }
 }
 
-class BaseVC<VM:BaseVM>: UIViewController, ViewController {
+class BaseVC<VM:BaseVM>: UIViewController, ViewControllerProtected {
     var base: ViewControllerBaseVars<VM>
 
     init(_ viewModel:VM) {
@@ -196,10 +200,16 @@ class BaseVC<VM:BaseVM>: UIViewController, ViewController {
 
     }
 
-    
+    func alertDidDismiss() {
+
+    }
+
+    func tabBarItemAction() {
+
+    }
 }
 
-class BaseTableVC<VM:BaseTableVM>: UITableViewController, ViewController {
+class BaseTableVC<VM:BaseTableVM>: UITableViewController, ViewControllerProtected {
     var base: ViewControllerBaseVars<VM>
     
     init(_ viewModel:VM, style:UITableViewStyle = .plain) {
@@ -248,6 +258,10 @@ class BaseTableVC<VM:BaseTableVM>: UITableViewController, ViewController {
 
     }
 
+    func tabBarItemAction() {
+
+    }
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         return viewModel.numberOfSections
     }
@@ -266,7 +280,7 @@ class BaseTableVC<VM:BaseTableVM>: UITableViewController, ViewController {
     }
 }
 
-class BaseTabBarVC<VM:BaseVM>: UITabBarController, ViewController {
+class BaseTabBarVC<VM:BaseVM>: UITabBarController, ViewControllerProtected {
     var base: ViewControllerBaseVars<VM>
     
     init(_ viewModel:VM) {
@@ -302,6 +316,14 @@ class BaseTabBarVC<VM:BaseVM>: UITabBarController, ViewController {
     }
 
     func createGuide() {
+
+    }
+
+    func alertDidDismiss() {
+
+    }
+
+    func tabBarItemAction() {
 
     }
 }

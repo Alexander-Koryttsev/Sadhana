@@ -6,7 +6,7 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import Foundation
+
 
 import Alamofire
 import Mapper
@@ -171,7 +171,7 @@ class RemoteService {
             ["grant_type" : GrantType.refreshToken.rawValue,
              "refresh_token" : tokenRefresh,
              "client_id" : clientID,
-             "client_secret" : clientSecret]).do(onNext: { [weak self] (json) in
+             "client_secret" : clientSecret]).do(onSuccess: { [weak self] (json) in
                 self?.mapAndCache(tokens: json)
              }).completable()
     }
@@ -183,7 +183,7 @@ class RemoteService {
              "client_id" : clientID,
              "client_secret" : clientSecret,
              "username" : name,
-             "password" : password]).do(onNext: { [weak self] (json) in
+             "password" : password]).do(onSuccess: { [weak self] (json) in
                 self?.mapAndCache(tokens: json)
              }).completable()
     }
@@ -230,17 +230,17 @@ class RemoteService {
                     guard (200..<300).contains(statusCode) else {
                         //TODO: test in postman when tokens are not valid (for example login, check tokens,logout, check tokens)
 
-                        guard   let errorType = (result["error"] ?? result["code"]) as? String,
+                        guard   let errorTypeRawValue = (result["error"] ?? result["code"]) as? String,
                                 let errorDescription = (result["error_description"] ?? result["message"]) as? String
                         else {
                             observer(.error(RemoteError.invalidResponse))
                             return
                         }
 
-                        let type = InvalidRequestType(rawValue: errorType) ?? .unknown
-                        var error = RemoteError.invalidRequest(type:type, description:errorDescription)
+                        let errorType = InvalidRequestType(rawValue: errorTypeRawValue) ?? .unknown
+                        var error = RemoteError.invalidRequest(type:errorType, description:errorDescription)
 
-                        switch type {
+                        switch errorType {
                             case .notLoggedIn, .restForbidden:
                                 error = authorise ? RemoteError.tokensExpired : RemoteError.authorisationRequired
                             break

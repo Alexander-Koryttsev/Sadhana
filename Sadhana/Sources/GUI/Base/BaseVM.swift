@@ -6,7 +6,7 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import RxCocoa
+
 
 class BaseVM {
     let errorMessages : Driver<String>
@@ -27,8 +27,11 @@ class BaseVM {
                     let message = "error_session_expired".localized
                     RootRouter.shared?.logOut(error:error)
                     return message
-                case RemoteError.invalidRequest(_, let description):
-                    return description
+                case RemoteError.invalidRequest(let errorType, let description):
+                    switch (errorType) {
+                        case .invalidGrant: return "invalid_credentials".localized
+                        default: return description
+                    }
                 default:
                     return error.localizedDescription
                 }

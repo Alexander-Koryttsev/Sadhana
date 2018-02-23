@@ -6,9 +6,9 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import UIKit
+
 import EasyPeasy
-import RxCocoa
+
 
 
 class TextFieldFormCell: FormCell, ResponsibleContainer, Validable {

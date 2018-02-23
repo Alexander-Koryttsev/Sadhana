@@ -6,8 +6,8 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import Foundation
-import RxCocoa
+
+
 
 typealias RowChange = (RowChangeType, IndexPath)
 
@@ -36,12 +36,12 @@ class FavoriteGraphListVM : GraphListVM {
         self.router = router
         super.init()
 
-        refresh.flatMap { [unowned self] _ -> Observable<Bool> in
+        refresh.flatMapLatest { [unowned self] _ -> Observable<Bool> in
             let signals = self.favorites.map({ (any) -> Observable<Bool> in
                  let user = any as! ManagedUser
                 return Main.service.loadEntries(for: user)
                     .observeOn(MainScheduler.instance)
-                    .do(onNext:{ [unowned self] _ in
+                    .do(onSuccess:{ [unowned self] _ in
                         self.changeInternal.onNext((.update, IndexPath(row: self.favorites.index(of: user), section: 0)))
                     })
                     .track(self.errors)

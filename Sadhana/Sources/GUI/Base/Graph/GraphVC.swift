@@ -6,10 +6,10 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import UIKit
+
 
 import Crashlytics
-import RxCocoa
+
 import EasyPeasy
 
 class GraphVC<VM:GraphVM>: BaseTableVC <VM> {

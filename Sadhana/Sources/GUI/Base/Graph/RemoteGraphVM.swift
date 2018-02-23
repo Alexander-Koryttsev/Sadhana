@@ -6,8 +6,8 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import Foundation
-import RxCocoa
+
+
 
 
 class RemoteGraphVM : GraphVM {
@@ -15,11 +15,11 @@ class RemoteGraphVM : GraphVM {
         super.init(info)
 
         refresh.flatMap { [unowned self] _ in
-            self.load(pageIndex: 0).do(onNext:{ [unowned self] (page) in
+            self.load(pageIndex: 0).do(onSuccess:{ [unowned self] (page) in
                 self.clearData()
                 self.map(page: page, index: 0)
                 self.dataDidReload.onNext(())
-            }).concat(self.load(pageIndex: 1).do(onNext:{ [unowned self] (page) in
+            }).concat(self.load(pageIndex: 1).do(onSuccess:{ [unowned self] (page) in
                 self.handle(page: page, index: 1)
             }))
         }   .subscribe()

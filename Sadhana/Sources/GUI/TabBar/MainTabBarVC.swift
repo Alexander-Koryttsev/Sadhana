@@ -6,9 +6,9 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import UIKit
 
-import RxCocoa
+
+
 import EasyPeasy
 
 class MainTabBarVC : BaseTabBarVC<MainTabBarVM> {
@@ -203,4 +203,14 @@ class MainTabBarVC : BaseTabBarVC<MainTabBarVM> {
             label.easy.layout([Left(42), Right(42), Bottom(10).to(arrow)])
         }
     }
+
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        let index = tabBar.items!.index(of: item)!
+        if index == selectedIndex {
+            if let vc = viewControllers![index] as? ViewController {
+                vc.tabBarItemAction()
+            }
+        }
+    }
+
 }

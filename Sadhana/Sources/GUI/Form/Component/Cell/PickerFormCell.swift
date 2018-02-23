@@ -6,9 +6,9 @@
 //  Copyright © 2018 Alexander Koryttsev. All rights reserved.
 //
 
-import UIKit
+
 import EasyPeasy
-import RxCocoa
+
 
 class PickerFormCell: ResponsibleFormCell, Validable {
     let viewModel : PickerFieldVM

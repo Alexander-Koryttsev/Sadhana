@@ -17,10 +17,11 @@ minutes = "minutes";
 begin = "Begin";
 
 //Login
-login = "Login";
+login = "Login or email";
 password = "Password";
 signIn = "Sign In";
 login_welcome = "Hare Krishna, %@!\nLoading your sadhana...";
+invalid_credentials = "Invalid username or password";
 
 //My Graph
 myGraph = "My Graph";

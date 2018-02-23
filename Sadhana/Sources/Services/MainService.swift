@@ -6,7 +6,7 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import Foundation
+
 
 import Crashlytics
 
@@ -42,7 +42,7 @@ class MainService {
             signal = Remote.service.loadEntries(for: user.userID, lastUpdatedDate: user.entriesUpdatedDate)
                 .flatMap({ (entries) -> Single<[ManagedEntry]> in
                     return Local.service.backgroundContext.rxSave(entries)
-                }).do(onNext: { [unowned self] (_) in
+                }).do(onSuccess: { [unowned self] (_) in
                     user.managedObjectContext?.perform {
                         user.entriesUpdatedDate = Date()
                         user.managedObjectContext?.saveHanlded()
@@ -73,7 +73,7 @@ class MainService {
             .flatMap { (user) -> Single<ManagedUser> in
                 return Local.service.backgroundContext.rxSave(user:user)
             }
-            .do(onNext:{ [unowned self] (user) in
+            .do(onSuccess:{ [unowned self] (user) in
                 Local.defaults.userID = user.ID
                 self.currentUser = Local.service.viewContext.object(with: user.objectID) as? ManagedUser
                 self.currentUser!.resetEntriesUpdatedDate()

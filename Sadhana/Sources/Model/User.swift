@@ -6,7 +6,7 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import Foundation
+
 
 protocol User: UserBriefInfo, JSONConvertible {
     var ID : Int32 { get }

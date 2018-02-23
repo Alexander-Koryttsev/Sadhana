@@ -6,7 +6,7 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import Foundation
+
 
 class MainTabBarVM: BaseVM {
     private unowned let router : MainTabBarRouter

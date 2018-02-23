@@ -6,7 +6,7 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import Foundation
+
 
 import Crashlytics
 
@@ -85,7 +85,7 @@ class EditingVM: BaseVM {
                     let signal = Remote.service.send(entry)
                         .subscribeOn(MainScheduler.instance)
                         .observeOn(MainScheduler.instance)
-                        .do(onNext: { (ID) in
+                        .do(onSuccess: { (ID) in
                             entry.ID = ID
                             entry.dateSynched = Date()
                             strongSelf.context.saveRecursive()

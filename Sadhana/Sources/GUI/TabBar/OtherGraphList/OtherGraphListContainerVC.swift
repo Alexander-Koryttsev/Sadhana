@@ -6,12 +6,9 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import UIKit
-import RxCocoa
-
 import EasyPeasy
 
-class OtherGraphListContainerVC : UIViewController {
+class OtherGraphListContainerVC : UIViewController, ViewController {
     let viewControllers : [UIViewController]
     let segmentedControl : UISegmentedControl
 
@@ -30,6 +27,7 @@ class OtherGraphListContainerVC : UIViewController {
             navigationItem.setLeftBarButtonItems(currentVC.navigationItem.leftBarButtonItems, animated: true)
             navigationItem.setRightBarButtonItems(currentVC.navigationItem.rightBarButtonItems, animated: true)
             navigationItem.title = title
+
         }
     }
 
@@ -54,17 +52,20 @@ class OtherGraphListContainerVC : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.titleView = segmentedControl
+        segmentedControl.rx.selectedSegmentIndex.asDriver().drive(onNext:selectVC).disposed(by: disposeBag)
+    }
 
-        segmentedControl.rx.selectedSegmentIndex.asDriver().distinctUntilChanged().drive(onNext:{ [unowned self] (index) in
-            self.currentVC = self.viewControllers[index]
-        }).disposed(by: disposeBag)
-
-        if #available(iOS 11, *) {
-            navigationItem.largeTitleDisplayMode = .never
-        }
+    func selectVC(at index: Int) {
+        currentVC = viewControllers[index]
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func tabBarItemAction() {
+        let index = segmentedControl.selectedSegmentIndex == 0 ? 1 : 0
+        segmentedControl.selectedSegmentIndex = index
+        selectVC(at: index)
     }
 }

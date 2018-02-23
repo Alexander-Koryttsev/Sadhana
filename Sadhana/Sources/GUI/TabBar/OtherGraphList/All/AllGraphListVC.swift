@@ -6,8 +6,8 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import UIKit
-import RxCocoa
+
+
 
 import EasyPeasy
 import Crashlytics
@@ -118,15 +118,35 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
     }
 
     override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let searchBarHiddenY = searchBarHeight - TopInset
+        let searchBarShownY = searchBarHiddenY - searchBarHeight
+        if targetContentOffset.pointee.y == searchBarShownY,
+            scrollView.contentOffset.y > searchBarHiddenY {
+            targetContentOffset.initialize(to: CGPoint(x:0, y:searchBarHiddenY))
+        }
+
+
         let difference = searchBarHeight - (targetContentOffset.pointee.y + TopInset)
         if difference > 0 && difference < searchBarHeight {
-            if difference < searchBarHeight/2.0 || velocity.y > 0 { //Bottom
-                targetContentOffset.initialize(to: CGPoint(x:0, y:searchBarHeight - TopInset))
+            if difference < searchBarHeight/2.0 || velocity.y > 0 { //Bottom. Hide search bar
+                targetContentOffset.initialize(to: CGPoint(x:0, y:searchBarHiddenY))
             }
-            else { //Top
-                targetContentOffset.initialize(to: CGPoint(x:0, y:searchBarHeight - TopInset - searchBarHeight))
+            else { //Top. Show search bar
+                targetContentOffset.initialize(to: CGPoint(x:0, y:searchBarShownY))
             }
         }
+
+        if targetContentOffset.pointee.y == searchBarShownY {
+            _ = searchBar.becomeFirstResponder()
+        }
+    }
+
+    override func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+        if  tableView.numberOfSections > 0,
+            tableView.numberOfRows(inSection: 0) > 0 {
+            tableView.scrollToRow(at: IndexPath(row:0, section:0), at: .top, animated: true)
+        }
+        return false
     }
 
     func setUp(_ cell: UITableViewCell, at indexPath: IndexPath) {

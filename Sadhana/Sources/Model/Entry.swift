@@ -6,7 +6,7 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import Foundation
+
 
 enum EntryFieldKey : String, FieldKey {
     case wakeUpTime

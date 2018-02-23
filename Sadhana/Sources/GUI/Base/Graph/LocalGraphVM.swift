@@ -6,8 +6,8 @@
 //  Copyright © 2018 Alexander Koryttsev. All rights reserved.
 //
 
-import Foundation
-import RxCocoa
+
+
 
 class LocalGraphVM : GraphVM {
     let user : ManagedUser
@@ -19,7 +19,7 @@ class LocalGraphVM : GraphVM {
     
         refresh.flatMap { [unowned self] _ in
             return Main.service.loadEntries(for: user)
-                .do(onNext: {[weak self] _ in
+                .do(onSuccess: {[weak self] _ in
                     self?.reloadData()	
                     self?.dataDidReload.onNext(())
                 })

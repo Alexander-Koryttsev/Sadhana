@@ -6,7 +6,7 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import UIKit
+
 
 class MyGraphVC: GraphVC<MyGraphVM> {
     
@@ -21,5 +21,12 @@ class MyGraphVC: GraphVC<MyGraphVM> {
         tabBarItem = UITabBarItem(title: title, image:UIImage(named:"tab-bar-icon-my"), tag:0)
         tableView.allowsSelection = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "settings-button"), style: .plain, target: viewModel, action: #selector(MyGraphVM.showSettings))
+    }
+
+    override func tabBarItemAction() {
+        if  tableView.numberOfSections > 0,
+            tableView.numberOfRows(inSection: 0) > 0 {
+            tableView.scrollToRow(at: IndexPath(row:0, section:0), at: .top, animated: true)
+        }
     }
 }

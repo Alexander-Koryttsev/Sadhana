@@ -5,7 +5,7 @@
 //  Copyright (c) 2017 __MyCompanyName__. All rights reserved. 
 //
 
-import UIKit
+
 
 extension UIColor {
     class var sdTangerine: UIColor {

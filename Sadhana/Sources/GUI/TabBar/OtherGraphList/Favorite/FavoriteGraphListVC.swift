@@ -6,8 +6,8 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import UIKit
-import RxCocoa
+
+
 
 import Crashlytics
 import EasyPeasy
@@ -70,6 +70,11 @@ class FavoriteGraphListVC : GraphListVC<FavoriteGraphListVM> {
     override func bindViewModel() {
         super.bindViewModel()
         viewModel.change.subscribe(onNext: { [unowned self] (type, indexPath) in
+            if type == .update {
+                self.reloadCell(at: indexPath)
+                return
+            }
+
             self.tableView.beginUpdates()
 
             switch type {
@@ -109,11 +114,23 @@ class FavoriteGraphListVC : GraphListVC<FavoriteGraphListVM> {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for:indexPath) as! GraphCell
+        setUp(cell: cell, at: indexPath)
+        return cell
+    }
+
+    func reloadCell(at indexPath: IndexPath) {
+        if tableView.numberOfSections > 0,
+           indexPath.row < tableView.numberOfRows(inSection: 0) {
+            let cell = tableView.cellForRow(at: indexPath) as! GraphCell
+            setUp(cell: cell, at: indexPath)
+        }
+    }
+
+    func setUp(cell: GraphCell, at indexPath: IndexPath) {
         let (user, entry) = viewModel.userAndEntry(at: indexPath)
 
         cell.map(entry: entry, name: user.name, avatarURL: user.avatarURL)
         cell.shouldIndentWhileEditing = false
-        return cell
     }
 
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {

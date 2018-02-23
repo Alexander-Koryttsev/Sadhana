@@ -6,10 +6,10 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import Foundation
+
 
 import CoreData
-import RxCocoa
+
 
 class EntryEditingVM: BaseTableVM {
 

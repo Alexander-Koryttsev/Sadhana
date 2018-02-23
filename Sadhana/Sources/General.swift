@@ -11,6 +11,7 @@ import Fabric
 import Crashlytics
 
 @_exported import RxSwift
+@_exported import RxCocoa
 @_exported import UIKit
 
 struct Config {

@@ -6,9 +6,9 @@
 //  Copyright © 2018 Alexander Koryttsev. All rights reserved.
 //
 
-import UIKit
 
-import RxCocoa
+
+
 
 class FormPickerVM: BaseTableVM {
     let title : String

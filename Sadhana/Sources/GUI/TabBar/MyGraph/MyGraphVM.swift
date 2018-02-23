@@ -6,10 +6,10 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import RxCocoa
+
 
 import CoreData
-import Foundation
+
 
 class MyGraphVM: LocalGraphVM {
     private unowned let router: MyGraphRouter

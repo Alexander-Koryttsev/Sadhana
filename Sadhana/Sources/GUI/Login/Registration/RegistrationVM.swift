@@ -6,8 +6,8 @@
 //  Copyright © 2018 Alexander Koryttsev. All rights reserved.
 //
 
-import UIKit
-import RxCocoa
+
+
 
 class RegistrationVM: BaseTableVM {
 
@@ -162,7 +162,7 @@ class RegistrationVM: BaseTableVM {
                         .observeOn(MainScheduler.instance)
                         .track(self.errors)
                         .track(self.activityIndicator)
-                        .do(onNext: { _ in
+                        .do(onSuccess: { _ in
                             RootRouter.shared?.commitSignIn()
                         })
                         .asBoolObservable()

@@ -6,10 +6,15 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import UIKit
 
-class NavigationVC: UINavigationController {
+class NavigationVC: UINavigationController, ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+
+    func tabBarItemAction() {
+        if let vc = topViewController as? ViewController {
+            vc.tabBarItemAction()
+        }
     }
 }

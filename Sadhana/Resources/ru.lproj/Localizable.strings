@@ -17,10 +17,11 @@ minutes = "минут";
 begin = "Начать";
 
 //Login
-login = "Логин";
+login = "Логин или email";
 password = "Пароль";
 signIn = "Войти";
 login_welcome = "Харе Кришна, %@!\nЗагружаем Вашу садхану...";
+invalid_credentials = "Неправильный логин или пароль";
 
 //My Graph
 myGraph = "Мой график";

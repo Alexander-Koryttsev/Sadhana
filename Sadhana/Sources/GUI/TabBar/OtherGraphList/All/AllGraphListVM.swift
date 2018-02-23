@@ -6,8 +6,8 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-import Foundation
-import RxCocoa
+
+
 import Alamofire
 
 import Crashlytics
@@ -90,7 +90,7 @@ class AllGraphListVM : GraphListVM {
     }
 
     func load(page:Int) -> Single<AllEntriesResponse> {
-        return Remote.service.loadAllEntries(searchString:search.value, page:page).do(onNext: {[unowned self] (response) in
+        return Remote.service.loadAllEntries(searchString:search.value, page:page).do(onSuccess: {[unowned self] (response) in
             self.lastResponse = response
         })  .track(pageRunning, index:page)
             .track(self.errors)
