@@ -276,7 +276,24 @@ class BaseTableVC<VM:BaseTableVM>: UITableViewController, ViewControllerProtecte
 
     @available(iOS 11.0, *)
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        return viewModel.trailingSwipeActionsConfiguration(forRowAt:indexPath)
+
+        let configuration = viewModel.trailingSwipeActionsConfiguration(forRowAt:indexPath)
+/*
+        if configuration.actions.count > 0 {
+            DispatchQueue.main.async {
+                tableView.subviews.forEach({ (subview) in
+                    if subview.isKind(of: NSClassFromString("UISwipeActionPullView")!) {
+                        subview.subviews.forEach({ (subSubView) in
+                            if subSubView.isKind(of: NSClassFromString("UISwipeActionStandardButton")) {
+                                let button
+                            }
+                        })
+                    }
+                })
+            }
+        }
+*/
+        return configuration
     }
 }
 

@@ -67,6 +67,7 @@ class EditingVM: BaseVM {
             var signals = [Observable<Bool>]()
             //TODO:filter
             //TODO:thread safe
+            //TODO: move to the MainService
             var entries = [ManagedEntry]()
             for entry in self.context.registeredObjects {
                 if let entry = entry as? ManagedEntry {
@@ -88,7 +89,7 @@ class EditingVM: BaseVM {
                         .do(onSuccess: { (ID) in
                             entry.ID = ID
                             entry.dateSynched = Date()
-                            strongSelf.context.saveRecursive()
+                            strongSelf.context.saveHandledRecursive()
                         }, onError:{ (error) in
                             Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: entry.json)
                         })
@@ -98,7 +99,7 @@ class EditingVM: BaseVM {
                 }
             }
 
-            self.context.saveRecursive()
+            self.context.saveHandledRecursive()
             Answers.logCustomEvent(withName: "Save Entries", customAttributes: ["Hour": Date().hour])
 
             return Observable.merge(signals)

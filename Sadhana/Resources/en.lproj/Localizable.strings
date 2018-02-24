@@ -54,7 +54,11 @@ favorites = "Favorites";
 profile = "Profile";
 
 //Favorites
-letsPrayForFavorites = "The favorite graphs are not manifested. Let's pray together to Krishna so that they manifest. 🙏";
+favorites_add_list = "Add to favorites";
+favorites_add_profile = "Add to favorites";
+favorites_remove_list = "Remove from favorites";
+favorites_remove_profile = "Remove from favorites";
+favorites_empty = "No favorites";
 
 //Settings
 settings = "Settings";

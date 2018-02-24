@@ -54,7 +54,7 @@ class SettingsVC : BaseTableVC <SettingsVM> {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let field = self.field(at: indexPath)
 
-        return FormFactory.cell(for: field) //TODO: implement reuse
+        return FormFactory.cell(for: field)
     }
 
     // MARK: - Table Delegate

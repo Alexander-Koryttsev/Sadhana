@@ -206,7 +206,6 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         view.addSubview(pageVC.view)
         pageVC.view.easy.layout(Edges())
         pageVC.didMove(toParentViewController: self)
-        //TODO: become first responder
         pageVC.setViewControllers([EntryEditingVC(viewModel.viewModelForEntryEditing())]
             , direction:.forward, animated: false, completion: nil)
         pageVC.dataSource = self

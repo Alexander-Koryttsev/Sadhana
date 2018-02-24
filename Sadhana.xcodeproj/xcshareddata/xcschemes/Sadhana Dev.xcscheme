@@ -28,7 +28,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "sed -i -e &apos;s/&quot;&#x421;&#x430;&#x434;&#x445;&#x430;&#x43d;&#x430; Dev&quot;/&quot;&#x421;&#x430;&#x434;&#x445;&#x430;&#x43d;&#x430;&quot;/&apos; &quot;${SRCROOT}/Sadhana/SupportingFiles/ru.lproj/InfoPlist.strings&quot;&#10;sed -i -e &apos;s/&quot;Sadhana Dev&quot;/&quot;Sadhana&quot;/&apos; &quot;${SRCROOT}/Sadhana/SupportingFiles/en.lproj/InfoPlist.strings&quot;">
+               scriptText = "sed -i -e &apos;s/&quot;&#x421;&#x430;&#x434;&#x445;&#x430;&#x43d;&#x430; Dev&quot;/&quot;&#x421;&#x430;&#x434;&#x445;&#x430;&#x43d;&#x430;&quot;/&apos; &quot;${SRCROOT}/Sadhana/SupportingFiles/ru.lproj/InfoPlist.strings&quot;&#10;sed -i -e &apos;s/&quot;Sadhana Dev&quot;/&quot;Sadhana&quot;/&apos; &quot;${SRCROOT}/Sadhana/SupportingFiles/en.lproj/InfoPlist.strings&quot;&#10;&#10;find &quot;${SRCROOT}/Sadhana/SupportingFiles/&quot; \( -name &apos;InfoPlist *.strings&apos; -or -name &apos;InfoPlist.strings-e&apos; \) -delete&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"

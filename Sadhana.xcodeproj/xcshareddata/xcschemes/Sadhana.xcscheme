@@ -23,6 +23,24 @@
             </ActionContent>
          </ExecutionAction>
       </PreActions>
+      <PostActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "find &quot;${SRCROOT}/Sadhana/SupportingFiles/&quot; \( -name &apos;InfoPlist *.strings&apos; -or -name &apos;InfoPlist.strings-e&apos; \) -delete">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "96F6004F1EC996AC006DAECE"
+                     BuildableName = "Sadhana.app"
+                     BlueprintName = "Sadhana"
+                     ReferencedContainer = "container:Sadhana.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PostActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"

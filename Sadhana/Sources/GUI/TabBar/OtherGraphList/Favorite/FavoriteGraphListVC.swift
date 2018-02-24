@@ -36,8 +36,7 @@ class FavoriteGraphListVC : GraphListVC<FavoriteGraphListVM> {
         tableView.contentInset = UIEdgeInsetsMake(TopInset, 0, 50, 0)
         
         let label = UILabel()
-        //TODO: Localize
-        label.text = "No Favorites"
+        label.text = "favorites_empty".localized
         label.numberOfLines = 0
         label.textAlignment = .center
     

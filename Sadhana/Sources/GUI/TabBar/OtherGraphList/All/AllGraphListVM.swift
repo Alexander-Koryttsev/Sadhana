@@ -129,7 +129,7 @@ class AllGraphListVM : GraphListVM {
     }
 
     @available(iOS 11, *)
-    override func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    override func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration {
         var actions = [UIContextualAction]()
         if let entry = self.entry(at: indexPath),
             entry.userID != Local.defaults.userID! {
@@ -137,7 +137,7 @@ class AllGraphListVM : GraphListVM {
             let user = Main.service.currentUser!
             
             if let favoriteUser = user.favorite(with: entry.userID) {
-                let action = UIContextualAction(style: .normal, title: "Отписаться") { (action, view, handler) in
+                let action = UIContextualAction(style: .normal, title: "favorites_remove_list".localized) { (action, view, handler) in
                     favoriteUser.removeFromFavorites()
                     handler(true)
                 }
@@ -146,7 +146,7 @@ class AllGraphListVM : GraphListVM {
                 actions.append(action)
             }
             else {
-                let action = UIContextualAction(style: .normal, title:"В избранные") { (action, view, handler) in
+                let action = UIContextualAction(style: .normal, title:"favorites_add_list".localized) { (action, view, handler) in
                     user.add(favorite: entry)
                     _ = Local.service.viewContext.rxSave([ entry ]).subscribe()
                     handler(true)

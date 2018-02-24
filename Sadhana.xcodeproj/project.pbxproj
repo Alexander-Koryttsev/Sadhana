@@ -119,6 +119,18 @@
 		96F9B2531FFFB98B00DF88E3 /* PickerFormCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F9B2521FFFB98B00DF88E3 /* PickerFormCell.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildRule section */
+		9657951D2041DD2000D62F4D /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+			);
+			script = "";
+		};
+/* End PBXBuildRule section */
+
 /* Begin PBXFileReference section */
 		9600D8B31FAEF37C0055E354 /* SettingAvatarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingAvatarCell.swift; sourceTree = "<group>"; };
 		9602B0FE1FFA4F1900502E5A /* CountView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CountView.swift; sourceTree = "<group>"; };
@@ -768,6 +780,7 @@
 				968F9E8E203F033E00981D0E /* ShellScript */,
 			);
 			buildRules = (
+				9657951D2041DD2000D62F4D /* PBXBuildRule */,
 			);
 			dependencies = (
 			);

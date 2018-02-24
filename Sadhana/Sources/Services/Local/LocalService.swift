@@ -24,7 +24,6 @@ class LocalService: NSObject {
     var backgroundContext: NSManagedObjectContext
     
     init(completionClosure: @escaping () -> ()) {
-        //TODO: clear data base on migration
         persistentContainer = NSPersistentContainer(name: "Model")
         persistentContainer.loadPersistentStores() { (description, error) in
             if let error = error {
@@ -123,17 +122,17 @@ extension NSManagedObjectContext {
         return nil
     }
 
-    func saveRecursive() {
+    func saveHandledRecursive() {
         saveHanlded()
 
         if self.parent != nil {
             if Thread.isMainThread,
                 self.parent?.concurrencyType == .mainQueueConcurrencyType {
-                self.parent?.saveRecursive()
+                self.parent?.saveHandledRecursive()
             }
             else {
                 self.parent?.performAndWait {
-                    self.parent?.saveRecursive()
+                    self.parent?.saveHandledRecursive()
                 }
             }
         }
@@ -175,7 +174,9 @@ extension NSManagedObjectContext {
                     }
                 } catch {
                     observer(.error(error))
+                    #if DEBUG
                     fatalError("Failure to fetch data: \(error)")
+                    #endif
                 }
             }
             return Disposables.create {}
@@ -208,8 +209,10 @@ extension NSManagedObjectContext {
                     }
                 } catch {
                     observer(.error(error))
-                    //TODO: Remove on release
-                    fatalError("Failure to save context: \(error)")
+
+                    #if DEBUG
+                        fatalError("Failure to save context: \(error)")
+                    #endif
                 }
             }
 
@@ -234,7 +237,6 @@ extension NSManagedObjectContext {
     }
 
     func rxSave(_ entries:[Entry]) -> Single<[ManagedEntry]> {
-        //TODO: make thread-safe
         let request = ManagedEntry.request()
         let IDs = entries.flatMap { (entry) -> Int32 in
             return entry.ID!

@@ -82,13 +82,11 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
             favoriteButton.imageEdgeInsets = UIEdgeInsetsMake(0, -14, 0, 14)
             
             favoriteButton.setImage(#imageLiteral(resourceName: "add-favorite-big"), for: .normal)
-            //TODO: Localize
-            favoriteButton.setTitle("Добавить в избранное", for: .normal)
+            favoriteButton.setTitle("favorites_add_profile".localized, for: .normal)
             favoriteButton.setTitleColor(.white, for: .normal)
             
             favoriteButton.setImage(#imageLiteral(resourceName: "remove-favorite-big"), for: .selected)
-            //TODO: Localize
-            favoriteButton.setTitle("Убрать из избранных", for: .selected)
+            favoriteButton.setTitle("favorites_remove_profile".localized, for: .selected)
             favoriteButton.setTitleColor(.sdTangerine, for: .selected)
             favoriteButton.setTitleColor(.sdSilver, for: .highlighted)
             favoriteButton.setTitleColor(.sdSilver, for: [.highlighted, .selected])

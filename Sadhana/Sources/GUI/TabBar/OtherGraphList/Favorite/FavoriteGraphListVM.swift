@@ -80,10 +80,10 @@ class FavoriteGraphListVM : GraphListVM {
     }
     
     @available(iOS 11, *)
-    override func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    override func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration {
         let favoriteUser = self.user(at: indexPath)
         
-        let action = UIContextualAction(style: .normal, title: "Отписаться") { [weak self] (action, view, handler) in
+        let action = UIContextualAction(style: .normal, title: "favorites_remove_list".localized) { [weak self] (action, view, handler) in
             favoriteUser.removeFromFavorites()
             self?.changeInternal.onNext((.delete, indexPath))
             handler(true)

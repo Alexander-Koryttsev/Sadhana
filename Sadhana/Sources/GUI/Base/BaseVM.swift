@@ -52,9 +52,8 @@ class BaseTableVM : BaseVM {
     }
 
     @available(iOS 11.0, *)
-    func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let configuration = UISwipeActionsConfiguration(actions: [])
-        return configuration
+    func trailingSwipeActionsConfiguration(forRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration {
+        return UISwipeActionsConfiguration(actions: [])
     }
     
     func select(_ indexPath: IndexPath) {
