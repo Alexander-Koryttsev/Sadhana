@@ -11,32 +11,31 @@ import EasyPeasy
 
 
 class PickerFormCell: ResponsibleFormCell, Validable {
-    let viewModel : PickerFieldVM
+    let viewModel : DataFormFieldVM<Titled?>
     let valueLabel = UILabel()
     let beginValidation = PublishSubject<Void>()
     var validationAdded = false
 
-    init(_ viewModel: PickerFieldVM) {
+    init(_ viewModel: DataFormFieldVM<Titled?>) {
         self.viewModel = viewModel
         super.init(style: .value1, reuseIdentifier: nil)
 
-        textLabel?.text = viewModel.key.localized
+        textLabel?.text = viewModel.title.localized
         textLabel?.font = UIFont.systemFont(ofSize: 18, weight: UIFont.Weight.regular)
         
         valueLabel.textColor = .sdSteel
         valueLabel.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)
         valueLabel.textAlignment = .right
-        viewModel.variable.asDriver().map({ (titled) -> String in
+        viewModel.variable.map({ (titled) -> String in
             return titled?.title ?? ""
-        }).drive(valueLabel.rx.text).disposed(by: disposeBag)
+        }).bind(to:valueLabel.rx.text).disposed(by: disposeBag)
         contentView.addSubview(valueLabel)
         valueLabel.easy.layout([CenterY(-1), Right()])
 
-        viewModel.variable.asDriver()
-            .skip(1)
+        viewModel.variable
             .filter { $0 != nil }
             .map { _ -> Void in }
-            .drive(goNext).disposed(by: disposeBag)
+            .bind(to:goNext).disposed(by: disposeBag)
 
         accessoryType = .disclosureIndicator
 

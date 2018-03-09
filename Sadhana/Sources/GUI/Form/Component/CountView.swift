@@ -29,7 +29,8 @@ class CountView: UIView, ResponsibleContainer {
         valueField.easy.layout([
             Top(-8),
             CenterX(),
-            Width(60),
+            Left(16),
+            Right(16),
             Height(44),
             
         ])

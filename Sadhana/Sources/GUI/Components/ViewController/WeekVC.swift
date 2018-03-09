@@ -22,14 +22,14 @@ class WeekVC: UIViewController {
             return stackView.arrangedSubviews as! [UILabel]
         }
     }
-    let selectedDate : Variable<Date>
+    let selectedDate : RxSwift.Variable<Date>
 
     let firstDate : Date
     let lastDate : Date
 
     init(_ selectedDate: Date) {
         let trimmedSelectedDate = selectedDate.trimmedTime
-        self.selectedDate = Variable(trimmedSelectedDate)
+        self.selectedDate = RxSwift.Variable(trimmedSelectedDate)
         firstDate = Calendar.local.date(byAdding: .day, value: -trimmedSelectedDate.weekDayIndex, to: trimmedSelectedDate)!
         lastDate = Calendar.local.date(byAdding: .day, value: 6 - trimmedSelectedDate.weekDayIndex, to: trimmedSelectedDate)!
 

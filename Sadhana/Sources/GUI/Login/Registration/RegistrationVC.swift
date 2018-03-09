@@ -234,12 +234,9 @@ class RegistrationVC: BaseTableVC<RegistrationVM> {
         }
         else {
             let field = viewModel.sections[indexPath.section].fields[indexPath.row]
-            
-            if let pickerField = field as? PickerFieldVM,
-                let action = pickerField.action {
+            if let action = field.action {
                 shouldDeselectNow = !action()
             }
- 
         }
 
         if shouldDeselectNow {

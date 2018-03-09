@@ -12,7 +12,7 @@ import EasyPeasy
 
 
 class DatePickerFormCell: ResponsibleFormCell, UITextFieldDelegate, Validable {
-    let viewModel : VariableFieldVM<Date?>
+    let viewModel : DataFormFieldVM<Date?>
 
     let textField = UITextField()
     let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: Screen.bounds.width, height: 44))
@@ -29,11 +29,11 @@ class DatePickerFormCell: ResponsibleFormCell, UITextFieldDelegate, Validable {
         }
     }
 
-    init(_ viewModel: VariableFieldVM<Date?>) {
+    init(_ viewModel: DataFormFieldVM<Date?>) {
         self.viewModel = viewModel
         super.init(style: .default, reuseIdentifier: nil)
 
-        textLabel?.text = viewModel.key.localized
+        textLabel?.text = viewModel.title.localized
         textLabel!.font = UIFont.systemFont(ofSize: 18, weight: UIFont.Weight.regular)
 
         let backItem = UIBarButtonItem(image: #imageLiteral(resourceName: "login-arrow").upMirrored, style: .plain, target: nil, action: nil)
@@ -47,9 +47,9 @@ class DatePickerFormCell: ResponsibleFormCell, UITextFieldDelegate, Validable {
         toolbar.items = [ backItem, spaceItem, nextItem ]
         toolbar.tintColor = .sdTangerine
 
-        viewModel.variable.asDriver().map { (date) in
+        viewModel.variable.map { (date) in
             return date?.dateShort ?? ""
-        }.drive(textField.rx.text).disposed(by: disposeBag)
+            }.bind(to:textField.rx.text).disposed(by: disposeBag)
 
         textField.textAlignment = .right
         textField.tintColor = .clear
@@ -58,6 +58,7 @@ class DatePickerFormCell: ResponsibleFormCell, UITextFieldDelegate, Validable {
         textField.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)
         textField.inputView = datePicker
         textField.inputAccessoryView = toolbar
+        textField.isEnabled = viewModel.enabled
         contentView.addSubview(textField)
         textField.easy.layout([
             Top(),

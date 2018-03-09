@@ -27,6 +27,7 @@ extension DateFormatter {
     static func create() -> DateFormatter {
         let formatter = DateFormatter()
         formatter.timeZone = TimeZone.zero()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
     }
 }

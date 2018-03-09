@@ -22,7 +22,7 @@ class MainService {
             //entriesUpdatedDate migration from Local Defaults to the Core Data
             if let updateDate = Local.defaults.entriesUpdatedDate {
                 currentUser!.entriesUpdatedDate  = updateDate
-                Local.service.viewContext.saveHanlded()
+                Local.service.viewContext.saveHandled()
                 Local.defaults.entriesUpdatedDate = nil
             }
         }
@@ -45,7 +45,7 @@ class MainService {
                 }).do(onSuccess: { [unowned self] (_) in
                     user.managedObjectContext?.perform {
                         user.entriesUpdatedDate = Date()
-                        user.managedObjectContext?.saveHanlded()
+                        user.managedObjectContext?.saveHandled()
                     }
                     self.loadEntriesSharedSignals.removeValue(forKey: user.ID)
                 }).asObservable().share(replay: 1, scope: .whileConnected).asSingle()
@@ -77,7 +77,7 @@ class MainService {
                 Local.defaults.userID = user.ID
                 self.currentUser = Local.service.viewContext.object(with: user.objectID) as? ManagedUser
                 self.currentUser!.resetEntriesUpdatedDate()
-                Local.service.viewContext.saveHanlded()
+                Local.service.viewContext.saveHandled()
                 self.updateFabricUserData()
                 Crashlytics.sharedInstance().setUserEmail(name)
                 Answers.logLogin(withMethod: nil, success: true, customAttributes: ["Name": user.name])

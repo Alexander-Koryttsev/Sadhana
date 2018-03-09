@@ -84,8 +84,9 @@
 		96A55B481F12919300FD3700 /* RootRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B471F12919300FD3700 /* RootRouter.swift */; };
 		96A55B4A1F1291D500FD3700 /* MainTabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B491F1291D500FD3700 /* MainTabBarVC.swift */; };
 		96A55B4C1F14AD6200FD3700 /* LocalDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A55B4B1F14AD6200FD3700 /* LocalDefaults.swift */; };
-		96A874241F865B1E0097E432 /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A874231F865B1E0097E432 /* SettingsVC.swift */; };
-		96A874261F865B270097E432 /* SettingsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A874251F865B270097E432 /* SettingsVM.swift */; };
+		96A874241F865B1E0097E432 /* RootSettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A874231F865B1E0097E432 /* RootSettingsVC.swift */; };
+		96A874261F865B270097E432 /* RootSettingsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A874251F865B270097E432 /* RootSettingsVM.swift */; };
+		96A90D422049A06C0066F9E7 /* Variable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A90D412049A06C0066F9E7 /* Variable.swift */; };
 		96A9217E1F03FC9D0056BC5B /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 96A9217C1F03FC9D0056BC5B /* Model.xcdatamodeld */; };
 		96A921891F03FF360056BC5B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A921881F03FF360056BC5B /* CoreData.framework */; };
 		96A9218C1F03FFF70056BC5B /* ManagedUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A9218A1F03FFF70056BC5B /* ManagedUser.swift */; };
@@ -105,6 +106,10 @@
 		96B607F81F1D01DE002B9AB5 /* JapaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607F41F1D01DE002B9AB5 /* JapaView.swift */; };
 		96B607F91F1D01DE002B9AB5 /* EntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607F51F1D01DE002B9AB5 /* EntryView.swift */; };
 		96B607FB1F1D01EF002B9AB5 /* EntryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B607FA1F1D01EF002B9AB5 /* EntryCell.swift */; };
+		96B7096F2046FBD600B4BB16 /* BaseSettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B7096E2046FBD600B4BB16 /* BaseSettingsVC.swift */; };
+		96B709712046FC6D00B4BB16 /* BaseSettingsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B709702046FC6D00B4BB16 /* BaseSettingsVM.swift */; };
+		96B709732046FDD700B4BB16 /* GraphEditingSettingsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B709722046FDD700B4BB16 /* GraphEditingSettingsVM.swift */; };
+		96B7097520471C6500B4BB16 /* ProfileSettingsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B7097420471C6500B4BB16 /* ProfileSettingsVM.swift */; };
 		96B9A5651F25C04C000673B7 /* Time.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B9A5641F25C04C000673B7 /* Time.swift */; };
 		96B9A5671F25DAAA000673B7 /* ManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B9A5661F25DAAA000673B7 /* ManagedObject.swift */; };
 		96CFC2EA1FEBBFED000472BA /* AudioService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CFC2E91FEBBFED000472BA /* AudioService.swift */; };
@@ -224,8 +229,9 @@
 		96A55B471F12919300FD3700 /* RootRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootRouter.swift; sourceTree = "<group>"; };
 		96A55B491F1291D500FD3700 /* MainTabBarVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabBarVC.swift; sourceTree = "<group>"; };
 		96A55B4B1F14AD6200FD3700 /* LocalDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDefaults.swift; sourceTree = "<group>"; };
-		96A874231F865B1E0097E432 /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
-		96A874251F865B270097E432 /* SettingsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVM.swift; sourceTree = "<group>"; };
+		96A874231F865B1E0097E432 /* RootSettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootSettingsVC.swift; sourceTree = "<group>"; };
+		96A874251F865B270097E432 /* RootSettingsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootSettingsVM.swift; sourceTree = "<group>"; };
+		96A90D412049A06C0066F9E7 /* Variable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Variable.swift; sourceTree = "<group>"; };
 		96A9217D1F03FC9D0056BC5B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		96A921881F03FF360056BC5B /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		96A9218A1F03FFF70056BC5B /* ManagedUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagedUser.swift; sourceTree = "<group>"; };
@@ -246,6 +252,10 @@
 		96B607F41F1D01DE002B9AB5 /* JapaView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JapaView.swift; sourceTree = "<group>"; };
 		96B607F51F1D01DE002B9AB5 /* EntryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntryView.swift; sourceTree = "<group>"; };
 		96B607FA1F1D01EF002B9AB5 /* EntryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntryCell.swift; sourceTree = "<group>"; };
+		96B7096E2046FBD600B4BB16 /* BaseSettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSettingsVC.swift; sourceTree = "<group>"; };
+		96B709702046FC6D00B4BB16 /* BaseSettingsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseSettingsVM.swift; sourceTree = "<group>"; };
+		96B709722046FDD700B4BB16 /* GraphEditingSettingsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphEditingSettingsVM.swift; sourceTree = "<group>"; };
+		96B7097420471C6500B4BB16 /* ProfileSettingsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingsVM.swift; sourceTree = "<group>"; };
 		96B9A5641F25C04C000673B7 /* Time.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Time.swift; sourceTree = "<group>"; };
 		96B9A5661F25DAAA000673B7 /* ManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagedObject.swift; sourceTree = "<group>"; };
 		96CFC2E91FEBBFED000472BA /* AudioService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioService.swift; sourceTree = "<group>"; };
@@ -254,6 +264,7 @@
 		96E976801F1548E600F6766F /* LoginVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVM.swift; sourceTree = "<group>"; };
 		96E976841F16463B00F6766F /* BaseVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseVC.swift; sourceTree = "<group>"; };
 		96E9768C1F1734A000F6766F /* RxCocoa+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RxCocoa+Extensions.swift"; sourceTree = "<group>"; };
+		96F50F08204D932B0049AFFD /* Model 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 3.xcdatamodel"; sourceTree = "<group>"; };
 		96F600501EC996AC006DAECE /* Sadhana Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sadhana Dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		96F9B24B1FFFA8D300DF88E3 /* FormHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormHelper.swift; sourceTree = "<group>"; };
 		96F9B24E1FFFB39700DF88E3 /* FormPickerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormPickerVC.swift; sourceTree = "<group>"; };
@@ -450,6 +461,7 @@
 				96B607D41F1A39C5002B9AB5 /* DateUtility.swift */,
 				96A5355E1FB1FCFC00A30215 /* CwlSysctl.swift */,
 				9696D2581FE798FF0014CA44 /* Alert.swift */,
+				96A90D412049A06C0066F9E7 /* Variable.swift */,
 			);
 			path = Utilites;
 			sourceTree = "<group>";
@@ -610,8 +622,12 @@
 			isa = PBXGroup;
 			children = (
 				9600D8B21FAEF3260055E354 /* Cell */,
-				96A874231F865B1E0097E432 /* SettingsVC.swift */,
-				96A874251F865B270097E432 /* SettingsVM.swift */,
+				96B7096E2046FBD600B4BB16 /* BaseSettingsVC.swift */,
+				96B709702046FC6D00B4BB16 /* BaseSettingsVM.swift */,
+				96A874231F865B1E0097E432 /* RootSettingsVC.swift */,
+				96A874251F865B270097E432 /* RootSettingsVM.swift */,
+				96B709722046FDD700B4BB16 /* GraphEditingSettingsVM.swift */,
+				96B7097420471C6500B4BB16 /* ProfileSettingsVM.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -935,15 +951,17 @@
 				96A196C31F4AFBA400AAB635 /* FavoriteGraphListVC.swift in Sources */,
 				96CFC2EA1FEBBFED000472BA /* AudioService.swift in Sources */,
 				96B070861F0FDB78004C9249 /* Entry.swift in Sources */,
+				96B7096F2046FBD600B4BB16 /* BaseSettingsVC.swift in Sources */,
 				960A0D511F2876C000356152 /* EntryEditingVC.swift in Sources */,
 				96A196C71F4AFBB800AAB635 /* GraphListVC.swift in Sources */,
-				96A874241F865B1E0097E432 /* SettingsVC.swift in Sources */,
+				96A874241F865B1E0097E432 /* RootSettingsVC.swift in Sources */,
 				96B9A5671F25DAAA000673B7 /* ManagedObject.swift in Sources */,
 				96A196CD1F4AFE1B00AAB635 /* OtherGraphListContainerVC.swift in Sources */,
 				960A0D501F2876C000356152 /* EditingVM.swift in Sources */,
 				967D79271F00F3E100A961D6 /* RemoteUser.swift in Sources */,
 				9654AE9A1F1E656F00F75772 /* OnOffImageView.swift in Sources */,
 				96B0708A1F0FE6D3004C9249 /* MappingHelper.swift in Sources */,
+				96B709712046FC6D00B4BB16 /* BaseSettingsVM.swift in Sources */,
 				960A0D541F2876C000356152 /* MyGraphVC.swift in Sources */,
 				9612BD891F02BD3400336A1B /* RxSwift+Extensions.swift in Sources */,
 				96B607FB1F1D01EF002B9AB5 /* EntryCell.swift in Sources */,
@@ -955,12 +973,14 @@
 				967D791E1F00F10D00A961D6 /* User.swift in Sources */,
 				963EB990203AC939005BDB62 /* BlurView.swift in Sources */,
 				96A196BF1F4AFB7C00AAB635 /* AllGraphListVC.swift in Sources */,
-				96A874261F865B270097E432 /* SettingsVM.swift in Sources */,
+				96A874261F865B270097E432 /* RootSettingsVM.swift in Sources */,
 				96B607F91F1D01DE002B9AB5 /* EntryView.swift in Sources */,
+				96B709732046FDD700B4BB16 /* GraphEditingSettingsVM.swift in Sources */,
 				967D79241F00F3CD00A961D6 /* LocalService.swift in Sources */,
 				9665AF871FE3B44100A8CFE5 /* GraphVC.swift in Sources */,
 				96B607C41F18E7A1002B9AB5 /* ActivityIndicator.swift in Sources */,
 				96A196CB1F4AFCE800AAB635 /* OtherGraphListRouter.swift in Sources */,
+				96B7097520471C6500B4BB16 /* ProfileSettingsVM.swift in Sources */,
 				960A0D451F2770D000356152 /* WeekVC.swift in Sources */,
 				964C82901F17D5A200A41D8A /* NavigationVC.swift in Sources */,
 				96A5355F1FB1FCFF00A30215 /* CwlSysctl.swift in Sources */,
@@ -988,6 +1008,7 @@
 				96E976851F16463B00F6766F /* BaseVC.swift in Sources */,
 				9667E4511F1148AC002589AE /* ManagedEntry.swift in Sources */,
 				961B0EB720079CB700865A6C /* DatePickerFormCell.swift in Sources */,
+				96A90D422049A06C0066F9E7 /* Variable.swift in Sources */,
 				96A55B4A1F1291D500FD3700 /* MainTabBarVC.swift in Sources */,
 				96E976811F1548E600F6766F /* LoginVM.swift in Sources */,
 				960A0D531F2876C000356152 /* MyGraphRouter.swift in Sources */,
@@ -1345,10 +1366,11 @@
 		96A9217C1F03FC9D0056BC5B /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				96F50F08204D932B0049AFFD /* Model 3.xcdatamodel */,
 				963EB988203975C5005BDB62 /* Model 2.xcdatamodel */,
 				96A9217D1F03FC9D0056BC5B /* Model.xcdatamodel */,
 			);
-			currentVersion = 963EB988203975C5005BDB62 /* Model 2.xcdatamodel */;
+			currentVersion = 96F50F08204D932B0049AFFD /* Model 3.xcdatamodel */;
 			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

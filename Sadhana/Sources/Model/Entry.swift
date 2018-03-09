@@ -16,6 +16,7 @@ enum EntryFieldKey : String, FieldKey {
     case japa18 = "japaCount18"
     case japa24 = "japaCount24"
     case reading
+    case readingInMinutes
     case kirtan
     case service
     case yoga

@@ -12,13 +12,26 @@
 import EasyPeasy
 
 class FormCell : UITableViewCell {
+
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        clipsToBounds = true
+    }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     var isFilled : Bool {
         return false
     }
     
     var height : CGFloat {
         return 44
+    }
+    
+    func reloadData() {
+        
     }
 }
 

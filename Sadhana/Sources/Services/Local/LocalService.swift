@@ -94,6 +94,21 @@ extension NSManagedObjectContext {
         return fetchSingle(request)
     }
 
+    func fetchOrCreateEntry(for date:Date, userID:Int32) -> ManagedEntry {
+        if let localEntry = fetchEntry(for: date, userID:userID) {
+            return localEntry
+        }
+        else {
+            let newEntry = create(ManagedEntry.self)
+            newEntry.userID = userID
+            newEntry.date = date
+            newEntry.month = date.trimmedDayAndTime
+            newEntry.dateCreated = Date()
+            newEntry.dateUpdated = newEntry.dateCreated
+            return newEntry
+        }
+    }
+
     func fetchEntries(by month:Date, userID:Int32) -> [ManagedEntry] {
         let request = ManagedEntry.request()
         request.predicate = NSPredicate(format: "month == %@ AND userID == %d", month.trimmedDayAndTime as NSDate, userID)
@@ -123,7 +138,7 @@ extension NSManagedObjectContext {
     }
 
     func saveHandledRecursive() {
-        saveHanlded()
+        saveHandled()
 
         if self.parent != nil {
             if Thread.isMainThread,
@@ -138,7 +153,7 @@ extension NSManagedObjectContext {
         }
     }
 
-    func saveHanlded() {
+    func saveHandled() {
         if self.concurrencyType == .mainQueueConcurrencyType,
             !Thread.isMainThread {
             self.performAndWait {
@@ -229,7 +244,7 @@ extension NSManagedObjectContext {
 
             self.performAndWait {
                 localUser = localUsers.count > 0 ? localUsers.first! : self.create(ManagedUser.self)
-                localUser!.map(user)
+                localUser!.map(user:user)
             }
 
             return localUser!

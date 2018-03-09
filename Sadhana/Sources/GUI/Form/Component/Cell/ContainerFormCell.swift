@@ -114,18 +114,18 @@ class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
         super.init(fieldsCount:viewModel.fields.count)
 
         set(colors: viewModel.colors)
-        titleLabel.text = viewModel.key.localized
+        titleLabel.text = viewModel.title.localized
         for (vm, view) in zip(viewModel.fields, countViews) {
-            view.titleLabel.text = vm.key.localized
+            view.titleLabel.text = vm.title.localized
             view.valueField.delegate = self
-            if let variableField = vm as? VariableFieldVM<Int16> {
+            if let variableField = vm as? DataFormFieldVM<Int16> {
                 let value = variableField.variable.value
                 if value > 0 {
                     view.valueField.text = value.description
                 }
-                view.valueField.rx.textRequired.asDriver().skip(2).map({ (string) -> Int16 in
-                    return Int16(string) ?? 0
-                }).drive(variableField.variable).disposed(by: disposeBag)
+                view.valueField.rx.textRequired.asDriver().distinctUntilChanged().skip(2).map {
+                    Int16($0) ?? 0
+                } .drive(variableField.variable).disposed(by: disposeBag)
             }
         }
     }
@@ -142,12 +142,20 @@ class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
                 return true
             }
 
-            if Int16(resultString) != nil {
-                if resultString.count > 1 {
-                    DispatchQueue.main.async {
-                        textField.goNext.onNext(())
+            if Int(resultString) != nil {
+                let field = viewModel.fields[countViews.index(of: textField.superview as! CountView)!]
+
+                if case FormFieldType.count(let digitsLimit) = field.type {
+                    if resultString.count == digitsLimit {
+                        DispatchQueue.main.async {
+                            textField.goNext.onNext(())
+                        }
+                    }
+                    else if resultString.count > digitsLimit {
+                        return false
                     }
                 }
+
                 return true
             }
         }

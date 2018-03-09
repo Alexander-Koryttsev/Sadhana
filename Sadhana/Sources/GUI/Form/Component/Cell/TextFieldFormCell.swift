@@ -10,7 +10,6 @@
 import EasyPeasy
 
 
-
 class TextFieldFormCell: FormCell, ResponsibleContainer, Validable {
 
     let type : TextFieldType
@@ -21,15 +20,15 @@ class TextFieldFormCell: FormCell, ResponsibleContainer, Validable {
     }
 
     override var isFilled : Bool {
-        return viewModel.isFilled
+        return viewModel.variable.value.count > 0
     }
     
     let beginValidation = PublishSubject<Void>()
 
-    let viewModel : VariableFieldVM<String>
+    let viewModel : DataFormFieldVM<String>
     let disposeBag = DisposeBag()
 
-    init(_ viewModel: VariableFieldVM<String>) {
+    init(_ viewModel: DataFormFieldVM<String>) {
         self.viewModel = viewModel
 
         switch viewModel.type {
@@ -63,7 +62,7 @@ class TextFieldFormCell: FormCell, ResponsibleContainer, Validable {
 
         super.init(style: .default, reuseIdentifier: TextFieldFormCell.classString)
 
-        titleLabel.text = viewModel.key.localized
+        titleLabel.text = viewModel.title.localized
         titleLabel.font = UIFont.systemFont(ofSize: 18, weight: UIFont.Weight.regular)
         contentView.addSubview(titleLabel)
         titleLabel.easy.layout([
@@ -71,7 +70,7 @@ class TextFieldFormCell: FormCell, ResponsibleContainer, Validable {
             CenterY()
         ])
 
-        textField.text = viewModel.variable.value
+        reloadData()
 
         if let validDriver = viewModel.valid {
             var beginValidation = textField.rx.controlEvent(.editingDidEnd).take(1).asDriver(onErrorJustReturn: ())
@@ -84,7 +83,8 @@ class TextFieldFormCell: FormCell, ResponsibleContainer, Validable {
             }).drive().disposed(by: disposeBag)
         }
 
-        textField.rx.textRequired.asDriver().drive(viewModel.variable).disposed(by: disposeBag)
+        textField.rx.textRequired.bind(to:viewModel.variable).disposed(by: disposeBag)
+        textField.isEnabled = viewModel.enabled
         textField.returnKeyType = .next
         textField.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)
         contentView.addSubview(textField)
@@ -114,5 +114,8 @@ class TextFieldFormCell: FormCell, ResponsibleContainer, Validable {
     override func becomeFirstResponder() -> Bool {
         return textField.becomeFirstResponder()
     }
-
+    
+    override func reloadData() {
+        textField.text = viewModel.variable.value
+    }
 }

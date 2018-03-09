@@ -10,8 +10,7 @@
 import CoreData
 
 @objc(ManagedUser)
-class ManagedUser: ManagedObject, User {
-    
+class ManagedUser: ManagedObject, User, Profile {
     @NSManaged var id: Int32
     var ID: Int32 { get {
         return id
@@ -20,7 +19,21 @@ class ManagedUser: ManagedObject, User {
         }
     }
     
-    @NSManaged var name: String
+    var name: String {
+        get {
+            if spiritualName.count > 0 {
+                return spiritualName
+            }
+            
+            if firstName.count > 0  {
+                return "\(firstName) \(lastName)"
+            }
+            
+            return customValue(forRawKey: "name") as! String
+        } set {
+            customSet(value: newValue, forRawKey: "name")
+        }
+    }
 
     @NSManaged var avatarURLString: String?
     var avatarURL: URL? { get {
@@ -32,7 +45,22 @@ class ManagedUser: ManagedObject, User {
             avatarURLString = newValue?.absoluteString
         }
     }
-    
+
+    @NSManaged var firstName : String
+    @NSManaged var lastName : String
+    @NSManaged var spiritualName : String
+    @NSManaged var login : String
+    @NSManaged var email : String
+    @NSManaged var registrationDate : Date
+    var registrationDateOptional : Date? {
+        get {
+            return registrationDate
+        }
+        set {
+            registrationDate = newValue ?? Date()
+        }
+    }
+
     @NSManaged var isPublic : Bool
     @NSManaged var showMore16 : Bool
     
@@ -48,7 +76,7 @@ class ManagedUser: ManagedObject, User {
     @NSManaged var favoriteBy: ManagedUser?
     
     @discardableResult
-    func map(_ user: User) -> Self {
+    func map(user: User) -> Self {
         ID = user.ID
         name = user.name
         avatarURL = user.avatarURL
@@ -62,6 +90,20 @@ class ManagedUser: ManagedObject, User {
         lectionsEnabled = user.lectionsEnabled
         bedTimeEnabled = user.bedTimeEnabled
         
+        return self
+    }
+
+    @discardableResult
+    func map(profile: Profile) -> Self {
+        firstName = profile.firstName
+        lastName = profile.lastName
+
+        spiritualName = profile.spiritualName
+        login = profile.login
+
+        email = profile.email
+        registrationDate = profile.registrationDate
+
         return self
     }
     
@@ -101,7 +143,7 @@ class ManagedUser: ManagedObject, User {
             fatalError("User's MO context is nil")
         }
         addToFavorites(favorite)
-        context.saveHanlded()
+        context.saveHandled()
 
         _ = Main.service.loadEntries(for: favorite).subscribe()
     }
@@ -111,7 +153,7 @@ class ManagedUser: ManagedObject, User {
             fatalError("User's MO context is nil")
         }
         favoriteBy = nil
-        context.saveHanlded()
+        context.saveHandled()
     }
     
     func resetEntriesUpdatedDate() {

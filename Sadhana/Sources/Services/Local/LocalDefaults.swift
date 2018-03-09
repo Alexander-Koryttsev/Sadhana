@@ -6,8 +6,6 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-
-
 class LocalDefaults {
     enum Key : String {
         case prefix = "LocalDefaults"
@@ -17,6 +15,8 @@ class LocalDefaults {
         case optionFields
         case otherGraphsEnabled
         case guidesShown
+        case showBedTimeForYesterday
+        case readingOnlyInMinutes
 
         var string : String {
             get {
@@ -72,6 +72,24 @@ class LocalDefaults {
         }
     }
 
+    var showBedTimeForYesterday: Bool {
+        get {
+            return bool(for: .showBedTimeForYesterday)
+        }
+        set {
+            set(newValue, for:.showBedTimeForYesterday)
+        }
+    }
+
+    var readingOnlyInMinutes: Bool {
+        get {
+            return bool(for: .readingOnlyInMinutes)
+        }
+        set {
+            set(newValue, for:.readingOnlyInMinutes)
+        }
+    }
+
     var shouldShowGuideCompletion = false
 
     func set(field:EntryFieldKey, enabled:Bool) {
@@ -93,6 +111,7 @@ class LocalDefaults {
     func isGuideShown(_ guide:NSObject) -> Bool {
         return guidesShown[guide.classString] ?? false
     }
+
 
     func resetGuide() {
         guidesShown = [:]

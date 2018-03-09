@@ -15,8 +15,8 @@ enum LoginErrorMessage: String {
 }
 
 class LoginVM : BaseVM {
-    let login = Variable(Config.defaultLogin)
-    let password = Variable(Config.defaultPassword)
+    let login = RxSwift.Variable(Config.defaultLogin)
+    let password = RxSwift.Variable(Config.defaultPassword)
     let tap = PublishSubject<Void>()
     let canSignIn: Driver<Bool>
     let taptic = UINotificationFeedbackGenerator()

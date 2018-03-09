@@ -34,35 +34,63 @@ class RegistrationVM: BaseTableVM {
         let validator = Validator()
         let registerDriver = register.take(1).asDriver(onErrorJustReturn: ())
 
-        let spiritNameField = KeyPathFieldVM(registration, \Registration.spiritualName, for: "spiritutal_name".localized, type:.text(.name(.spiritual)), validSelector:validator.validate(spirutalName:))
+        let spiritNameField = DataFormFieldVM(title: "spiritutal_name".localized,
+                                                  type: .text(.name(.spiritual)),
+                                                  variable: KeyPathVariable(registration, \Registration.spiritualName),
+                                                  validSelector: validator.validate(spirutalName:))
+
         fields.append(spiritNameField)
 
-        let firstNameField = KeyPathFieldVM(registration, \Registration.firstName, for: "first_name".localized, type:.text(.name(.first)), validSelector:validator.validate(string:))
-        firstNameField.beginValidation = registerDriver
+        let firstNameField = DataFormFieldVM(title: "first_name".localized,
+                                                 type: .text(.name(.first)),
+                                                 variable: KeyPathVariable(registration, \Registration.firstName),
+                                                 validSelector: validator.validate(string:),
+                                                 beginValidation: registerDriver)
+
         fields.append(firstNameField)
 
-        let lastNameField = KeyPathFieldVM(registration, \Registration.lastName, for: "last_name".localized, type:.text(.name(.last)), validSelector:validator.validate(string:))
-        lastNameField.beginValidation = registerDriver
+        let lastNameField = DataFormFieldVM(title: "last_name".localized,
+                                                 type: .text(.name(.last)),
+                                                 variable: KeyPathVariable(registration, \Registration.lastName),
+                                                 validSelector: validator.validate(string:),
+                                                 beginValidation: registerDriver)
         fields.append(lastNameField)
 
-        let emailField = KeyPathFieldVM(registration, \Registration.email, for: "email".localized, type:.text(.email), validSelector:validator.validate(email:))
-        emailField.beginValidation = registerDriver
+        let emailField = DataFormFieldVM(title: "email".localized,
+                                                type: .text(.email),
+                                                variable: KeyPathVariable(registration, \Registration.email),
+                                                validSelector: validator.validate(email:),
+                                                beginValidation: registerDriver)
         fields.append(emailField)
 
-        let passwordField = KeyPathFieldVM(registration, \Registration.password, for: "password".localized, type:.text(.password))
-        let passwordConfirmationField = VariableFieldVM(Variable(""), for: "confirm_password".localized, type:.text(.password))
+        let passwordField = DataFormFieldVM(title: "password".localized,
+                                             type: .text(.password),
+                                             variable: KeyPathVariable(registration, \Registration.password))
 
-        let passwordValid = Driver.combineLatest(passwordField.variable.asDriver(), passwordConfirmationField.variable.asDriver(), resultSelector: validator.validate(password:confirmation:))
-        let passwordValidSimple = passwordValid.map { (flag, _) in flag }
+        let passwordConfirmationField = DataFormFieldVM(title: "password".localized,
+                                                type: .text(.password),
+                                                variable: StoredVariable(""))
+
+        let passwordValid = Observable.combineLatest(passwordField.variable.asObservable(), passwordConfirmationField.variable.asObservable(), resultSelector: validator.validate(password:confirmation:))
+        let passwordValidSimple = passwordValid.map { (flag, _) in flag }.asDriver(onErrorJustReturn: false)
 
         fields.append(passwordField)
         fields.append(passwordConfirmationField)
 
-        let countryField = PickerFieldVM(Variable<Titled?>(nil), for: "country".localized, validSelector:validator.validate)
-        countryField.beginValidation = registerDriver
-        let cityField = PickerFieldVM(Variable<Titled?>(nil), for: "city".localized, validSelector:validator.validate)
-        cityField.beginValidation = registerDriver
-        cityField.action = { [unowned cityField] in
+
+        var countryField = DataFormFieldVM(title: "country".localized,
+                                    type: .picker,
+                                    variable: StoredVariable<Titled?>(nil),
+                                    validSelector:validator.validate,
+                                    beginValidation:registerDriver)
+
+        var cityField = DataFormFieldVM(title: "city".localized,
+                                           type: .picker,
+                                           variable: StoredVariable<Titled?>(nil),
+                                           validSelector:validator.validate,
+                                           beginValidation:registerDriver)
+
+        cityField.action = {
             if let country = countryField.variable.value as? Country {
                 let pickerVM = FormPickerVM(fieldVM: cityField, searchSelector:{ string in
                     return Remote.service.loadCities(countryID: country.ID, query:string)
@@ -77,13 +105,13 @@ class RegistrationVM: BaseTableVM {
             return false
         }
 
-        countryField.action = { [unowned countryField] in
+        countryField.action = {
             let pickerVM = FormPickerVM(fieldVM: countryField, load:Remote.service.loadCountries())
             RootRouter.shared?.show(picker: pickerVM)
             return true
         }
 
-        countryField.variable.asDriver().distinctUntilChanged({ (country1, country2) -> Bool in
+        countryField.variable.distinctUntilChanged({ (country1, country2) -> Bool in
             guard let country1 = country1,
                 let country2 = country2
             else {
@@ -92,25 +120,27 @@ class RegistrationVM: BaseTableVM {
             return country1.title == country2.title
         }).map { _ in
             return nil
-        }.drive(cityField.variable).disposed(by: localDisposeBag)
+            }.bind(to:cityField.variable).disposed(by: localDisposeBag)
 
-        countryField.variable.asDriver().drive(onNext:{ (country) in
+        countryField.variable.subscribe(onNext:{ (country) in
             registration.country = country?.title ?? ""
         }).disposed(by: localDisposeBag);
         fields.append(countryField)
 
-        cityField.variable.asDriver().drive(onNext:{ (city) in
+        cityField.variable.subscribe(onNext:{ (city) in
             registration.city = city?.title ?? ""
         }).disposed(by: localDisposeBag);
         fields.append(cityField)
 
-        let dateField = KeyPathFieldVM(registration, \Registration.birthday,
-                                       for: "birthday".localized,
-                                       type:.date(min:Calendar.local.date(byAdding: .year, value: -100, to: Date()),
-                                                  default:Calendar.local.date(byAdding: .year, value: -20, to: Date()),
-                                                  max:Calendar.local.date(byAdding: .year, value: -5, to: Date())),
-                                       validSelector:validator.validate)
-        dateField.beginValidation = registerDriver
+
+        let dateField = DataFormFieldVM(title: "birthday".localized,
+                                            type: .date(min:Calendar.local.date(byAdding: .year, value: -100, to: Date()),
+                                                        default:Calendar.local.date(byAdding: .year, value: -20, to: Date()),
+                                                        max:Calendar.local.date(byAdding: .year, value: -5, to: Date())),
+                                        variable: KeyPathVariable(registration, \Registration.birthday),
+                                        validSelector: validator.validate,
+                                        beginValidation: registerDriver)
+
         fields.append(dateField)
 
         canRegister = Driver.combineLatest(spiritNameField.valid!,
@@ -133,7 +163,7 @@ class RegistrationVM: BaseTableVM {
                     footer:nil),
             Section(fields: [ passwordField,
                               passwordConfirmationField],
-                    footer: passwordValid.map { (_, string) in string }),
+                    footer: passwordValid.map { (_, string) in string }.asDriver(onErrorJustReturn: "")),
             Section(fields: [ countryField,
                               cityField,
                               dateField],

@@ -10,9 +10,8 @@
 import EasyPeasy
 
 
-
 class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
-    private let viewModel: VariableFieldVM<Time?>
+    private let viewModel: DataFormFieldVM<Time?>
     private var hoursView: CountView {
         get {
             return countViews.first!
@@ -28,7 +27,7 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
         return viewModel.variable.value != nil
     }
 
-    init(_ viewModel: VariableFieldVM<Time?>) {
+    init(_ viewModel: DataFormFieldVM<Time?>) {
         self.viewModel = viewModel
         super.init(fieldsCount:2)
 
@@ -39,7 +38,7 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
             }
         }
 
-        titleLabel.text = viewModel.key.localized
+        titleLabel.text = viewModel.title.localized
 
         setUp(field: hoursView.valueField)
         hoursView.titleLabel.text = "hours".localized
@@ -49,7 +48,21 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
 
         Driver.combineLatest(hoursView.valueField.rx.textRequired.asDriver(), minutesView.valueField.rx.textRequired.asDriver()).map({(hours, minutes) -> Time? in
             return Time(hour:hours, minute:minutes)
-        })  .skip(1)
+        })
+            .distinctUntilChanged({ (time1, time2) -> Bool in
+                if let time1 = time1,
+                    let time2 = time2 {
+                    return time1.rawValue == time2.rawValue
+                }
+
+                if time1 == nil,
+                    time2 == nil {
+                    return true
+                }
+
+                return false
+            })
+            .skip(1)
             .drive(viewModel.variable)
             .disposed(by: disposeBag)
     }

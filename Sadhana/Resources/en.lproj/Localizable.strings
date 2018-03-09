@@ -40,6 +40,7 @@ service = "Service";
 yoga = "Yoga";
 lections = "Lections";
 bedTime = "Bed time";
+bedTimeYesterday = "Yesterday's bed time";
 
 //Editing
 editingGuideDay = "Here you can choose the day you want to fill.";

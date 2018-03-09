@@ -12,10 +12,13 @@
 import EasyPeasy
 import Crashlytics
 
+fileprivate let searchBarHeight : CGFloat = 46.0
+fileprivate let searchBarHiddenY = searchBarHeight - TopInset
+fileprivate let searchBarShownY = searchBarHiddenY - searchBarHeight
+
 class AllGraphListVC: GraphListVC<AllGraphListVM> {
 
     let searchBar = UISearchBar()
-    let searchBarHeight : CGFloat = 46.0
     var observer : NSObjectProtocol?
 
     override var title:String? {
@@ -34,6 +37,7 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
         searchContainer.addSubview(searchBar)
         searchBar.searchBarStyle = .minimal
         searchBar.searchTextPositionAdjustment = UIOffsetMake(10.0, 0.0)
+        searchBar.setPositionAdjustment(UIOffsetMake(-4, 0), for: .clear)
         searchBar.easy.layout([
             Left(2),
             Bottom(),
@@ -118,9 +122,9 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
     }
 
     override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        let searchBarHiddenY = searchBarHeight - TopInset
-        let searchBarShownY = searchBarHiddenY - searchBarHeight
-        if targetContentOffset.pointee.y == searchBarShownY,
+
+        if  (searchBar.text == nil || searchBar.text!.count == 0),
+            targetContentOffset.pointee.y == searchBarShownY,
             scrollView.contentOffset.y > searchBarHiddenY {
             targetContentOffset.initialize(to: CGPoint(x:0, y:searchBarHiddenY))
         }
@@ -142,9 +146,12 @@ class AllGraphListVC: GraphListVC<AllGraphListVM> {
     }
 
     override func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-        if  tableView.numberOfSections > 0,
-            tableView.numberOfRows(inSection: 0) > 0 {
-            tableView.scrollToRow(at: IndexPath(row:0, section:0), at: .top, animated: true)
+        let hasSearchText = searchBar.text != nil && searchBar.text!.count > 0
+        tableView.setContentOffset(CGPoint(x:0, y:hasSearchText ? searchBarShownY : searchBarHiddenY), animated: true)
+        if hasSearchText {
+            dispatch(after:0.5) {
+                _ = self.searchBar.becomeFirstResponder()
+            }
         }
         return false
     }

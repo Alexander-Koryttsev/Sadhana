@@ -22,6 +22,13 @@ class MyGraphVM: LocalGraphVM {
         self.router = router
 
         super.init(Main.service.currentUser!)
+
+        Remote.service.loadProfile(Local.defaults.userID!)
+            .observeOn(MainScheduler.instance)
+            .subscribe(onSuccess:{ (profile) in
+                Main.service.currentUser!.map(profile: profile)
+                Local.service.viewContext.saveHandled()
+            }).disposed(by: disposeBag)
     }
     
     override func select(_ indexPath: IndexPath) {

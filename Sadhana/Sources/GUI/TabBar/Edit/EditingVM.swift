@@ -23,9 +23,17 @@ class EditingVM: BaseVM {
         get {
             for entry in context.registeredObjects {
                 if let entry = entry as? ManagedEntry {
-                    if entry.dateUpdated > openingDate,
-                        entry.shouldSynch {
-                        return true
+                    if entry.dateUpdated == entry.dateCreated {
+                        //New
+                        if !entry.empty {
+                            return true
+                        }
+                    }
+                    else {
+                        //Updated
+                        if entry.hasPersistentChangedValues {
+                            return true
+                        }
                     }
                 }
             }
@@ -71,8 +79,7 @@ class EditingVM: BaseVM {
             var entries = [ManagedEntry]()
             for entry in self.context.registeredObjects {
                 if let entry = entry as? ManagedEntry {
-                    if entry.dateCreated == entry.dateUpdated,
-                        entry.ID == nil {
+                    if entry.empty {
                         self.context.delete(entry)
                         continue
                     }
@@ -81,21 +88,24 @@ class EditingVM: BaseVM {
             }
 
             for entry in entries {
-                if entry.shouldSynch {
-                    let strongSelf = self
-                    let signal = Remote.service.send(entry)
-                        .subscribeOn(MainScheduler.instance)
-                        .observeOn(MainScheduler.instance)
-                        .do(onSuccess: { (ID) in
-                            entry.ID = ID
-                            entry.dateSynched = Date()
-                            strongSelf.context.saveHandledRecursive()
-                        }, onError:{ (error) in
-                            Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: entry.json)
-                        })
-                        .track(self.errors)
-                        .asBoolObservable()
-                    signals.append(signal)
+                if entry.hasPersistentChangedValues {
+                    entry.dateUpdated = Date()
+                    if entry.shouldSynch {
+                        let strongSelf = self
+                        let signal = Remote.service.send(entry)
+                            .subscribeOn(MainScheduler.instance)
+                            .observeOn(MainScheduler.instance)
+                            .do(onSuccess: { (ID) in
+                                entry.ID = ID
+                                entry.dateSynched = Date()
+                                strongSelf.context.saveHandledRecursive()
+                            }, onError:{ (error) in
+                                Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: entry.json)
+                            })
+                            .track(self.errors)
+                            .asBoolObservable()
+                        signals.append(signal)
+                    }
                 }
             }
 

@@ -29,11 +29,26 @@ class ManagedEntry: ManagedSynchable, Entry {
     @NSManaged public var japaCount24: Int16
     @NSManaged public var kirtan: Bool
     @NSManaged public var lections: Bool
+    var readingInMinutes: Int16 {
+        get {
+            return customValue(forKey: Key.reading) as! Int16
+        } set {
+            customSet(value: newValue, forKey: Key.reading)
+        }
+    }
     var reading: Time {
         get {
             return timeValue(forKey: Key.reading)
         } set {
             set(time: newValue, forKey: Key.reading)
+        }
+    }
+
+    var readingTimeOptional: Time? {
+        get {
+            return timeValue(forKey: Key.reading)
+        } set {
+            set(time: newValue ?? Time(rawValue:0), forKey: Key.reading)
         }
     }
     @NSManaged public var service: Bool
@@ -54,6 +69,21 @@ class ManagedEntry: ManagedSynchable, Entry {
     }
 
     var user : User?
+
+    var empty : Bool {
+        return bedTime == nil &&
+            yoga == false &&
+            id == nil &&
+            japaCount7_30 == 0 &&
+            japaCount10 == 0 &&
+            japaCount18 == 0 &&
+            japaCount24 == 0 &&
+            kirtan == false &&
+            lections == false &&
+            readingInMinutes == 0 &&
+            service == false &&
+            wakeUpTime == nil
+    }
 
     @discardableResult
     func map(_ entry: Entry) -> Self {
@@ -79,6 +109,8 @@ class ManagedEntry: ManagedSynchable, Entry {
 
         return self
     }
+
+
     
     static let entityName = NSStringFromClass(ManagedEntry.self)
     

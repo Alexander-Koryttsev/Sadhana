@@ -43,6 +43,36 @@ enum ConvertibleError : Error {
     case error
 }
 
+struct RemoteProfile : Profile, Mappable {
+    var ID : Int32
+    var firstName : String
+    var lastName : String
+    var spiritualName : String
+    var registrationDate : Date
+    var login : String
+    var email : String
+
+    init(map: Mapper) throws {
+        try ID = map.from("userid", transformation: extractID)
+
+        try firstName = map.from("first_name")
+        try lastName = map.from("last_name")
+        try spiritualName = map.from("spiritual_name") ?? ""
+
+        try login = map.from("login")
+        try email = map.from("email")
+        try registrationDate = map.from("registration_date", transformation: extractDateAndTime)
+    }
+
+    /*
+     "userid": "2",
+     "first_name": "Mykola",
+     "last_name": "Kutsyi",
+     "spiritual_name": null,
+     "login": "adminus",
+     "email": "n.p.kutsyy@gmail.com",
+     "registration_date": "2014-08-14 18:58:58",*/
+}
 
 class Registration: JSONConvertible {
     var spiritualName = ""

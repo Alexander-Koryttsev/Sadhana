@@ -40,7 +40,7 @@ public class ActivityIndicator : SharedSequenceConvertibleType {
     public typealias SharingStrategy = DriverSharingStrategy
 
     private let _lock = NSRecursiveLock()
-    private let _variable = Variable(0)
+    private let _variable = RxSwift.Variable(0)
     private let _loading: SharedSequence<SharingStrategy, Bool>
 
     var isRunning : Bool {

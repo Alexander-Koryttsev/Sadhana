@@ -26,7 +26,7 @@ extension PrimitiveSequence where Trait == SingleTrait {
     func map<T>(array:T.Type) -> Single<[T]> where T:Mappable {
         return self.asObservable().map(array:array).asSingle()
     }
-    func cast<T>(_ type: T.Type) -> Single<T> {
+    func cast<T>(to type: T.Type) -> Single<T> {
         return self.asObservable().cast(type).asSingle()
     }
     func cast<T>(array elementType: T.Type) -> Single<[T]> {
@@ -56,7 +56,7 @@ extension PrimitiveSequence where Trait == CompletableTrait {
     }
 
     func concat(_ second: Completable) -> Completable {
-        return self.asObservable().concat(second).completable()
+        return self.asObservable().concat(second).completable
     }
 
     func concat<T>(_ second: Observable<T>) -> Observable<T> {
@@ -77,17 +77,8 @@ extension ObservableType {
         return self.concat(second.asObservable().cast(Self.E.self))
     }
     
-    func completable() -> Completable {
-        let completable = Completable.create { (completable) -> Disposable in
-            return self.subscribe(onNext: { (object) in
-            }, onError: { (error) in
-                completable(.error(error))
-            }, onCompleted: {
-                completable(.completed)
-            })
-        }
-        
-        return completable
+    var completable : Completable {
+        return ignoreElements()
     }
     
     func after<O>(_ first: O) -> RxSwift.Observable<Self.E> where O : ObservableConvertibleType {
@@ -114,8 +105,8 @@ extension ObservableType {
 }
 
 extension PrimitiveSequence {
-    func completable() -> Completable {
-        return self.asObservable().completable()
+    var completable : Completable {
+        return asObservable().completable
     }
 }
 

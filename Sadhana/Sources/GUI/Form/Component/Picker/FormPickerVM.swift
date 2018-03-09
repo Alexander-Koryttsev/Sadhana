@@ -12,14 +12,14 @@
 
 class FormPickerVM: BaseTableVM {
     let title : String
-    let search = Variable("")
+    let search = RxSwift.Variable("")
     let select = PublishSubject<IndexPath>()
     private(set) var dataDidReload : Driver<[Titled]>
     let refresh = PublishSubject<Void>()
     let activity = ActivityIndicator()
 
-    init<T:Titled>(fieldVM: PickerFieldVM, load:Single<[T]>? = nil, searchSelector: ((String?) -> Single<[T]>)? = nil) {
-        self.title = fieldVM.key
+    init<T:Titled>(fieldVM: DataFormFieldVM<Titled?>, load:Single<[T]>? = nil, searchSelector: ((String?) -> Single<[T]>)? = nil) {
+        self.title = fieldVM.title
         
         dataDidReload = Driver.of([])
         super.init()

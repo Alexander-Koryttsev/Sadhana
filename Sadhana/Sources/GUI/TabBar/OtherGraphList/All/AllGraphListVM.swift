@@ -17,7 +17,7 @@ class AllGraphListVM : GraphListVM {
     let pageRunning = IndexedActivityIndicator()
     let refresh = PublishSubject<Void>()
     let refreshDriver : Driver<Void>
-    let search = Variable("")
+    let search = RxSwift.Variable("")
     let pageDidUpdate = PublishSubject<Int>()
     let dataDidReload = PublishSubject<Void>()
     private var lastResponse : AllEntriesResponse?

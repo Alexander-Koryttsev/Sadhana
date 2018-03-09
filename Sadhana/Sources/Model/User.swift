@@ -7,7 +7,6 @@
 //
 
 
-
 protocol User: UserBriefInfo, JSONConvertible {
     var ID : Int32 { get }
     var name : String { get }
@@ -22,8 +21,13 @@ protocol User: UserBriefInfo, JSONConvertible {
     var lectionsEnabled : Bool { get }
     var bedTimeEnabled : Bool { get }
 }
+protocol UserBriefInfo {
+    var userID : Int32 { get }
+    var userName : String { get }
+    var avatarURL : URL? { get }
+}
 
-extension User {
+extension User { // UserBriefInfo
     var userID : Int32 {
         return ID
     }
@@ -32,13 +36,7 @@ extension User {
     }
 }
 
-protocol UserBriefInfo {
-    var userID : Int32 { get }
-    var userName : String { get }
-    var avatarURL : URL? { get }
-}
-
-extension User {
+extension User { // JSONConvertible
     var json : JSON {
         get {
             return ["userid": ID,
@@ -54,6 +52,26 @@ extension User {
                     "opt_lections": lectionsEnabled,
                     "opt_sleep": bedTimeEnabled]
         }
+    }
+}
+
+protocol Profile {
+    var ID : Int32 { get }
+    var firstName : String { get }
+    var lastName : String { get }
+    var spiritualName : String { get }
+    var login : String { get }
+    var email : String { get }
+    var registrationDate : Date { get }
+}
+
+extension Profile { // JSONConvertible
+    var profileJson : JSON {
+    return [
+        "first_name": firstName,
+        "last_name": lastName,
+        "spiritual_name": spiritualName
+        ]
     }
 }
 

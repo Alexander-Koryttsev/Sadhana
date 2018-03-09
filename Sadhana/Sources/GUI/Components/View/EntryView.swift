@@ -31,7 +31,7 @@ class EntryView : UIView {
         addSubview(readingImageView)
         readingImageView.easy.layout([
             CenterY(),
-            Right(32).to(kirtanImageView),
+            Right(38).to(kirtanImageView),
         ])
 
         addSubview(readingLabel)
@@ -62,9 +62,9 @@ class EntryView : UIView {
 
     func clear() {
         japaView.clear()
-        japaCountLabel.text = ""
+        japaCountLabel.text = "0"
         readingImageView.isOn = false
-        readingLabel.text = ""
+        readingLabel.text = "0"
         kirtanImageView.isOn = false
         updateLabelColors()
     }
@@ -75,7 +75,7 @@ class EntryView : UIView {
         japaCountLabel.text = (entry.japaCount7_30 + entry.japaCount10 + entry.japaCount18 + entry.japaCount24).description
 
         readingImageView.isOn = entry.reading.rawValue > 0
-        readingLabel.text = entry.reading.rawValue.description
+        readingLabel.text = Local.defaults.readingOnlyInMinutes ? entry.reading.rawValue.description : entry.reading.shortString
         kirtanImageView.isOn = entry.kirtan
 
         japaView.map(entry, maxCount: maxRoundsCount)

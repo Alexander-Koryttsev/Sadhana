@@ -6,10 +6,7 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-
-
 import CoreData
-
 
 class EntryEditingVM: BaseTableVM {
 
@@ -20,6 +17,9 @@ class EntryEditingVM: BaseTableVM {
         return fieldsInternal
     }
     private let entry : ManagedEntry
+    private lazy var yesterdayEntry = {
+        return self.entry.managedObjectContext!.fetchOrCreateEntry(for: self.date.yesterday.trimmedTime, userID: Local.defaults.userID!)
+    }()
 
     override var numberOfSections: Int {
         return 1
@@ -32,79 +32,100 @@ class EntryEditingVM: BaseTableVM {
     init(date: Date, context: NSManagedObjectContext, enabled: Bool) {
         self.date = date.trimmedTime
         self.enabled = enabled
-
-        if let localEntry = context.fetchEntry(for: self.date, userID:Local.defaults.userID!) {
-            entry = localEntry
-        }
-        else {
-            entry = context.create(ManagedEntry.self)
-            entry.userID = Local.defaults.userID!
-            entry.date = self.date
-            entry.month = self.date.trimmedDayAndTime
-            entry.dateCreated = Date()
-            entry.dateUpdated = entry.dateCreated
-        }
-
+        entry = context.fetchOrCreateEntry(for: self.date, userID:Local.defaults.userID!)
         super.init()
 
         if enabled {
-            add(timeField: .wakeUpTime, optional: true)
+            let user = Main.service.currentUser!
+            if user.bedTimeEnabled,
+               Local.defaults.showBedTimeForYesterday {
+                let field = DataFormFieldVM<Time?>(title: "bedTimeYesterday".localized,
+                                                       type: .time,
+                                                       variable: KeyPathVariable(yesterdayEntry, \ManagedEntry.bedTime))
+                fieldsInternal.append(field)
+            }
 
-        let japaFields = [
-            self.field(for: .japa7_30, type:Int16.self, fieldType:.count),
-            self.field(for: .japa10, type:Int16.self, fieldType:.count),
-            self.field(for: .japa18, type:Int16.self, fieldType:.count),
-            self.field(for: .japa24, type:Int16.self, fieldType:.count),
-        ]
-        let japaContainer = FieldsContainerVM(EntryFieldKey.japa.rawValue, japaFields, colors: [.sdSunflowerYellow, .sdTangerine, .sdNeonRed, .sdBrightBlue])
-        fieldsInternal.append(japaContainer)
+            if user.wakeUpTimeEnabled {
+                let field = DataFormFieldVM<Time?>(title: EntryFieldKey.wakeUpTime.rawValue.localized,
+                                                       type: .time,
+                                                       variable: KeyPathVariable(entry, \ManagedEntry.wakeUpTime))
+                fieldsInternal.append(field)
+            }
 
-        add(timeField: .reading, optional: false)
-        add(field: .kirtan, type:Bool.self, fieldType:.switcher)
-        add(field: .service, type:Bool.self, fieldType:.switcher)
-        add(field: .yoga, type:Bool.self, fieldType:.switcher)
-        add(field: .lections, type:Bool.self, fieldType:.switcher)
+            let japaFields = [
+                DataFormFieldVM<Int16>(title: EntryFieldKey.japa7_30.rawValue.localized,
+                                        type: .count(digitsLimit:2),
+                                           variable: KeyPathVariable(entry, \ManagedEntry.japaCount7_30)),
+                DataFormFieldVM<Int16>(title: EntryFieldKey.japa10.rawValue.localized,
+                                           type: .count(digitsLimit:2),
+                                           variable: KeyPathVariable(entry, \ManagedEntry.japaCount10)),
+                DataFormFieldVM<Int16>(title: EntryFieldKey.japa18.rawValue.localized,
+                                           type: .count(digitsLimit:2),
+                                           variable: KeyPathVariable(entry, \ManagedEntry.japaCount18)),
+                DataFormFieldVM<Int16>(title: EntryFieldKey.japa24.rawValue.localized,
+                                           type: .count(digitsLimit:2),
+                                           variable: KeyPathVariable(entry, \ManagedEntry.japaCount24)),
+            ]
+            let japaContainer = FieldsContainerVM(EntryFieldKey.japa.rawValue, japaFields, colors: [.sdSunflowerYellow, .sdTangerine, .sdNeonRed, .sdBrightBlue])
+            fieldsInternal.append(japaContainer)
 
-            if self.date != Date().trimmedTime {
-                add(timeField: .bedTime, optional: true)
+            if Local.defaults.readingOnlyInMinutes {
+                let reading = DataFormFieldVM<Int16>(title: "minutes".localized,
+                                                     type: .count(digitsLimit:4),
+                                                         variable: KeyPathVariable(entry, \ManagedEntry.readingInMinutes))
+                let readingContainer = FieldsContainerVM(EntryFieldKey.reading.rawValue.localized, [reading], colors: [.black])
+
+                fieldsInternal.append(readingContainer)
+            }
+            else {
+                let reading = DataFormFieldVM<Time?>(title: EntryFieldKey.reading.rawValue.localized,
+                                                         type: .time,
+                                                         variable: KeyPathVariable(entry, \ManagedEntry.readingTimeOptional))
+                fieldsInternal.append(reading)
+            }
+
+            fieldsInternal.append(
+                DataFormFieldVM<Bool>(title: EntryFieldKey.kirtan.rawValue.localized,
+                                           type: .switcher,
+                                           variable: KeyPathVariable(entry, \ManagedEntry.kirtan))
+            )
+
+            if user.serviceEnabled {
+                fieldsInternal.append(
+                    DataFormFieldVM<Bool>(title: EntryFieldKey.service.rawValue.localized,
+                                              type: .switcher,
+                                              variable: KeyPathVariable(entry, \ManagedEntry.service))
+                )
+            }
+            if user.exerciseEnabled {
+                fieldsInternal.append(
+                    DataFormFieldVM<Bool>(title: EntryFieldKey.yoga.rawValue.localized,
+                                              type: .switcher,
+                                              variable: KeyPathVariable(entry, \ManagedEntry.yoga))
+                )
+            }
+            if user.lectionsEnabled {
+                fieldsInternal.append(
+                    DataFormFieldVM<Bool>(title: EntryFieldKey.lections.rawValue.localized,
+                                              type: .switcher,
+                                              variable: KeyPathVariable(entry, \ManagedEntry.lections))
+                )
+            }
+            if user.bedTimeEnabled,
+                !Local.defaults.showBedTimeForYesterday {
+                fieldsInternal.append(
+                    DataFormFieldVM<Time?>(title: EntryFieldKey.bedTime.rawValue.localized,
+                                              type: .time,
+                                              variable: KeyPathVariable(entry, \ManagedEntry.bedTime))
+                )
             }
         }
-    }
-
-    private func add<T>(field: EntryFieldKey, type:T.Type, fieldType:FormFieldType) {
-        //if Local.defaults.isFieldEnabled(field) {
-            fieldsInternal.append(self.field(for:field, type: T.self, fieldType:fieldType))
-        //}
-    }
-
-    private func add(timeField: EntryFieldKey, optional:Bool) {
-       // if Local.defaults.isFieldEnabled(timeField) {
-
-            let variable = Variable(entry.timeOptionalValue(forKey: timeField))
-            variable.asDriver().skip(2).drive(onNext: { [unowned entry] (next) in
-                if entry.managedObjectContext == nil { return }
-                entry.set(time: next ?? (optional ? nil : Time(rawValue: "0")), forKey: timeField)
-                entry.dateUpdated = Date()
-            }).disposed(by: disposeBag)
-
-        fieldsInternal.append(VariableFieldVM<Time?>(variable, for: timeField.rawValue, type:.time))
-       // }
-    }
-
-    private func field<T>(for key: EntryFieldKey, type:T.Type, fieldType: FormFieldType) -> VariableFieldVM<T> {
-        let variable = Variable(entry.value(forKey: key.rawValue) as! T)
-        variable.asDriver().skip(1).drive(onNext: { [unowned entry] (next) in
-            entry.setValue(next is NSNull ? nil : next, forKey: key.rawValue)
-            entry.dateUpdated = Date()
-        }).disposed(by: disposeBag)
-
-        return VariableFieldVM<T>(variable, for: key.rawValue, type: fieldType)
     }
 }
 
 enum FormFieldType {
     case text(TextFieldType)
-    case count
+    case count(digitsLimit:Int)
     case time
     case date(min:Date?, default:Date?, max:Date?)
     case switcher
@@ -130,77 +151,67 @@ enum NameType {
 enum ActionType {
     case basic
     case destructive
+    case detail
 }
 
 protocol FormFieldVM {
-    var key : String { get }
+    var title : String { get }
     var type : FormFieldType { get }
+    var action : (() -> Bool)? { get }
+}
+
+extension FormFieldVM {
+    var isValid : Bool {
+        return true
+    }
+}
+
+struct DataFormFieldVM<T> : FormFieldVM {
+    let title : String
+    let type : FormFieldType
+    var variable : Variable<T>
+    var action : (() -> Bool)?
+    var valid : Driver<Bool>?
+    var beginValidation : Driver<Void>?
+    var isValid = true
+    var enabled = true
+
+    init(title: String,
+         type: FormFieldType,
+         variable: Variable<T>,
+         action: (() -> Bool)? = nil,
+         valid : Driver<Bool>? = nil,
+         validSelector: ((T) -> Bool)? = nil,
+         beginValidation: Driver<Void>? = nil,
+         enabled : Bool? = true) {
+
+        self.title = title
+        self.type = type
+        self.variable = variable
+        self.action = action
+        self.valid = valid
+        if valid == nil,
+            let selector = validSelector {
+            self.valid = variable.map(selector).asDriver(onErrorJustReturn: false).distinctUntilChanged()
+        }
+        self.beginValidation = beginValidation
+        
+        if let enabled = enabled {
+            self.enabled = enabled
+        }
+    }
 }
 
 protocol Fillable {
     var isFilled : Bool { get }
 }
 
-//TODO: remove this class:)
-class VariableFieldVM<T> : FormFieldVM, Fillable {
-    let key : String
-    let variable : Variable<T>
-    let type : FormFieldType
-    var valid : Driver<Bool>?
-    var beginValidation : Driver<Void>?
-    var isFilled: Bool {
-        if let value = variable.value as? String {
-            return value.count > 0
-        }
-        if let value = variable.value as? Int16 {
-            return value > 0
-        }
-    
-        return false
-    }
-    init(_ variable : Variable<T>, for key : String, type: FormFieldType, validSelector: ((T) -> Bool)? = nil) {
-        self.variable = variable
-        self.key = key
-        self.type = type
-
-        if let selector = validSelector {
-            valid = variable.asDriver().map(selector).distinctUntilChanged()
-        }
-    }
-}
-
-class PickerFieldVM: VariableFieldVM<Titled?> {
-    var action : (() -> Bool)?
-    init(_ variable : Variable<Titled?>, for key : String, validSelector: ((Titled?) -> Bool)? = nil) {
-        super.init(variable, for: key, type: .picker, validSelector: validSelector)
-    }
-}
-
-class KeyPathFieldVM<Object, Value> : VariableFieldVM<Value> {
-    typealias KP = ReferenceWritableKeyPath <Object, Value>
-    private var object : Object
-    let keyPath : KP
-    let disposeBag = DisposeBag()
-
-    init(_ object : Object, _ keyPath : KP, for key : String, type: FormFieldType, validSelector: ((Value) -> Bool)? = nil) {
-        self.object = object
-        self.keyPath = keyPath
-
-        let aVariable = Variable(object[keyPath: keyPath])
-
-        aVariable.asDriver().drive(onNext: { (value) in
-           object[keyPath: keyPath] = value
-        }).disposed(by: disposeBag)
-
-        super.init(aVariable, for: key, type: type, validSelector: validSelector)
-    }
-}
-
 class FieldsContainerVM : FormFieldVM, Fillable {
-    let key: String
+    let title: String
     let fields: [FormFieldVM]
     let colors: [UIColor]?
     let type = FormFieldType.container
+    let action : (() -> Bool)? = nil
     var isFilled: Bool {
         var filled = true
         for item in fields {
@@ -211,7 +222,7 @@ class FieldsContainerVM : FormFieldVM, Fillable {
         return filled
     }
     init(_ key: String, _ fields: [FormFieldVM], colors: [UIColor]? = nil) {
-        self.key = key
+        self.title = key
         self.fields = fields
         self.colors = colors
     }

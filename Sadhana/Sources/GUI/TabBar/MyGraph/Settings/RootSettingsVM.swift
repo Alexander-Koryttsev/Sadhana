@@ -1,30 +1,23 @@
 //
-//  SettingsVM.swift
+//  RootSettingsVM.swift
 //  Sadhana
 //
 //  Created by Alexander Koryttsev on 10/5/17.
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-
-
-
 import MessageUI
 import Crashlytics
 
+class RootSettingsVM : BaseSettingsVM {
+    override var title : String? { return "settings".localized }
 
-class SettingsVM : BaseTableVM {
-
-    unowned let router : MyGraphRouter
-    var sections = [SettingsSection]()
-
-    init(_ router: MyGraphRouter) {
-        self.router = router
-        super.init()
+    override init(_ router: MyGraphRouter) {
+        super.init(router)
 
         addUserInfoSection()
-        //addCommonSection()
-       // addMyGraphSection()
+        addCommonSection()
+        addMyGraphSection()
         addFeedbackItem()
 
         #if DEV
@@ -35,54 +28,50 @@ class SettingsVM : BaseTableVM {
     }
 
     deinit {
-      //  if let user = Main.service.user as? ManagedUser {
-        //    _ = Remote.service.send(user).subscribe()
-        //}
+        //TODO: make user Syncable
+        if let user = Main.service.currentUser {
+            _ = Remote.service.send(user).subscribe()
+        }
+        Local.service.viewContext.saveHandled()
     }
 
     func addUserInfoSection() {
         if let user = Main.service.currentUser {
-            let userInfo = SettingInfo(key: user.name, imageURL: user.avatarURL)
+            let userInfo = SettingInfo(title: "", variable: KeyPathVariable(user, \ManagedUser.name), imageURL: user.avatarURL, action:{ [weak self] () -> Bool in
+                self?.router.showProfileSettings()
+                return false
+            })
             addSingle(item: userInfo)
         }
     }
 
     func addCommonSection() {
-        if let user = Main.service.currentUser {
-            //TODO: Localize
-            let publicItem = KeyPathFieldVM(user, \ManagedUser.isPublic, for:"isPublic", type:.switcher)
-            publicItem.variable.asDriver().drive(onNext:{ _ in
-                user.managedObjectContext?.saveHanlded()
-            }).disposed(by: disposeBag)
+        let user = Main.service.currentUser!
+        //   Localize
+        let items = [
+            DataFormFieldVM(title: "isPublic",
+                            type: .switcher,
+                            variable: AutoSaveKeyPathVariable(user, \ManagedUser.isPublic)),
+            DataFormFieldVM(title: "setting_show_more_16".localized,
+                            type: .switcher,
+                            variable: AutoSaveKeyPathVariable(user, \ManagedUser.showMore16))
+        ]
 
-            sections.append(SettingsSection(title: "Common Settings", items: [publicItem]))
-        }
+        sections.append(SettingsSection(title: "Common Settings", items: items))
     }
 
     func addMyGraphSection() {
-       // if let user = Main.service.user as? ManagedUser {
-            let items = [
-                myGraphItem(for: .wakeUpTime),
-                myGraphItem(for: .bedTime),
-                myGraphItem(for: .yoga),
-                myGraphItem(for: .service),
-                myGraphItem(for: .lections)
-            ]
+        //TODO: localize
+        let action = FormAction(title: "Graph Editing Settings", actionType: .detail, presenter: false) { [weak self] in
+            self?.router.showGraphEditingSettings()
+            return true
+        }
 
-            sections.append(SettingsSection(title: "My Graph", items: items))
-       // }
-    }
-
-    func myGraphItem(for key: EntryFieldKey) -> FormFieldVM {
-        let variable = Variable(Local.defaults.isFieldEnabled(key))
-        variable.asDriver().drive(onNext: { (value) in
-            Local.defaults.set(field: key, enabled: value)
-        }).disposed(by: disposeBag)
-        return VariableFieldVM(variable, for: key.rawValue, type:.switcher)
+        addSingle(item: action)
     }
 
     func addFeedbackItem() {
-        let action = FormAction(key: "letterToDevs".localized, actionType:.basic, presenter:true) { [unowned self] in
+        let action = FormAction(title: "letterToDevs".localized, actionType:.basic, presenter:true) { [unowned self] in
             let address = "feedback.sadhana@gmail.com"
             if MFMailComposeViewController.canSendMail() {
                 let mailComposerVC = MFMailComposeViewController()
@@ -114,22 +103,24 @@ class SettingsVM : BaseTableVM {
                 alert.addCancelAction()
                 self.alerts.onNext(alert)
             }
+            return false
         }
 
         addSingle(item: action)
     }
 
     func addDevSection() {
-        let restartGuide = FormAction(key: "Restart Guide", actionType:.basic, presenter: false) { [unowned self] () in
+        let restartGuide = FormAction(title: "Restart Guide", actionType:.basic, presenter: false) { [unowned self] () in
             Local.defaults.resetGuide()
             self.router.parent?.tabBarVC?.viewDidAppear(true)
+            return true
         }
 
         addSingle(item: restartGuide, title: "Developer")
     }
 
     func addSignOutItem() {
-        let logoutAction = FormAction(key: "signOut".localized, actionType:.destructive, presenter: false) { [unowned self] in
+        let logoutAction = FormAction(title: "signOut".localized, actionType:.destructive, presenter: false) { [unowned self] in
             let alert = Alert()
             alert.add(action:"signOut".localized, style: .destructive, handler: {
                 RootRouter.shared?.logOut()
@@ -137,33 +128,8 @@ class SettingsVM : BaseTableVM {
 
             alert.addCancelAction()
             self.alerts.onNext(alert)
+            return false
         }
         addSingle(item: logoutAction)
     }
-
-    func addSingle(item: FormFieldVM, title: String? = "") {
-        sections.append(SettingsSection(title: title!, items: [item]))
-    }
-}
-
-struct SettingsSection {
-    let title : String
-    let items : [FormFieldVM]
-}
-
-struct FormAction : FormFieldVM {
-    let key : String
-    let actionType : ActionType
-    let presenter : Bool
-    let action : Block
-
-    var type : FormFieldType {
-        return .action(actionType)
-    }
-}
-
-struct SettingInfo : FormFieldVM {
-    let key : String
-    let imageURL : URL?
-    let type = FormFieldType.profileInfo
 }

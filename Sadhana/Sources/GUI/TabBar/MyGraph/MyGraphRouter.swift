@@ -33,7 +33,15 @@ class MyGraphRouter : EditingRouter {
     }
     
     func showSettings() {
-        navVC.pushViewController(SettingsVC(SettingsVM(self)), animated: true)
+        navVC.pushViewController(RootSettingsVC(RootSettingsVM(self)), animated: true)
+    }
+
+    func showGraphEditingSettings() {
+        navVC.pushViewController(BaseSettingsVC(GraphEditingSettingsVM(self)), animated: true)
+    }
+
+    func showProfileSettings() {
+        navVC.pushViewController(BaseSettingsVC(ProfileEditingSettingsVM(self)), animated: true)
     }
 
     func show(mailComposer: MFMailComposeViewController) {

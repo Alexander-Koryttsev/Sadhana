@@ -7,33 +7,47 @@
 //
 
 
-
 class FormFactory {
     static func cell(for viewModel:FormFieldVM) -> FormCell {
+        if let boolModel = viewModel as? DataFormFieldVM<Bool> {
+            return BoolFormCell(boolModel)
+        }
+
+        if let textModel = viewModel as? DataFormFieldVM<String> {
+            return TextFieldFormCell(textModel)
+        }
+
         switch viewModel.type {
-            case .text(_): return TextFieldFormCell(viewModel as! VariableFieldVM<String>)
-            case .time: return TimeKeyboardFormCell(viewModel as! VariableFieldVM<Time?>)
-            case .date(_): return DatePickerFormCell(viewModel as! VariableFieldVM<Date?>)
-            case .switcher: return BoolFormCell(viewModel as! VariableFieldVM<Bool>)
+            case .time: return TimeKeyboardFormCell(viewModel as! DataFormFieldVM<Time?>)
+            case .date(_): return DatePickerFormCell(viewModel as! DataFormFieldVM<Date?>)
             case .container: return CountContainerCell(viewModel as! FieldsContainerVM)
             case .action(let type):
                 let cell = FormCell(style: .default, reuseIdentifier: nil)
+                cell.textLabel?.text = viewModel.title
                 cell.textLabel?.textAlignment = .center
-                cell.textLabel?.text = viewModel.key
-                cell.textLabel?.textColor = type == ActionType.destructive ? .red : .sdTangerine
+                switch type {
+                    case .basic:
+                        cell.textLabel?.textColor = .sdTangerine
+                        break
+                    case .destructive:
+                        cell.textLabel?.textColor = .red
+                        cell.textLabel?.textAlignment = type == .detail ? .left : .center
+                        break
+                    case .detail:
+                        cell.textLabel?.textColor = .black
+                        cell.accessoryType = .disclosureIndicator
+                        cell.textLabel?.textAlignment = .left
+                        break
+                }
                 return cell
 
             case .profileInfo:
-                let cell = SettingAvatarCell()
-                let profileVM = viewModel as! SettingInfo
-                cell.nameLabel.text = profileVM.key
-                cell.avatarView.avatarURL = profileVM.imageURL
-                cell.selectionStyle = .none
-                return cell
+                return SettingAvatarCell(viewModel as! SettingInfo)
 
-            case .picker: return PickerFormCell(viewModel as! PickerFieldVM)
-            case .count: break;
+            case .picker: return PickerFormCell(viewModel as! DataFormFieldVM<Titled?>)
+            case .count(_): break;
+            default: break;
         }
-        fatalError()
+        fatalError("can't find cell for \(viewModel)")
     }
 }

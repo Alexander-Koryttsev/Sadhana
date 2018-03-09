@@ -173,7 +173,7 @@ class RemoteService {
              "client_id" : clientID,
              "client_secret" : clientSecret]).do(onSuccess: { [weak self] (json) in
                 self?.mapAndCache(tokens: json)
-             }).completable()
+             }).completable
     }
 
     func login(name:String, password:String) -> Completable {
@@ -185,7 +185,7 @@ class RemoteService {
              "username" : name,
              "password" : password]).do(onSuccess: { [weak self] (json) in
                 self?.mapAndCache(tokens: json)
-             }).completable()
+             }).completable
     }
     
     func baseRequest(_ method: Alamofire.HTTPMethod,
@@ -289,12 +289,12 @@ class RemoteService {
     }
     // MARK: API Methods
     func loadCurrentUser() -> Single <User> {
-        return apiRequest(.get, "me").map(object: RemoteUser.self).cast(User.self)
+        return apiRequest(.get, "me").map(object: RemoteUser.self).cast(to: User.self)
     }
     
     @discardableResult
     func send(_ user: User) -> Completable {
-        return apiRequest(.post, "options/\(user.ID)", parameters: user.json).completable()
+        return apiRequest(.post, "options/\(user.ID)", parameters: user.json).completable
     }
 
     func loadEntries(for userID:Int32, lastUpdatedDate:Date? = nil, month:Date? = nil) -> Single <[Entry]> {
@@ -313,7 +313,7 @@ class RemoteService {
                 throw RemoteError.invalidData
             }
             return entries
-        }).map(array:RemoteEntry.self).cast([Entry].self)
+        }).map(array:RemoteEntry.self).cast(to: [Entry].self)
     }
 
     func loadAllEntries(country:String = "all", city:String = "", searchString:String = "", page:Int = 0, pageSize:Int = 30) -> Single<AllEntriesResponse> {
@@ -473,7 +473,15 @@ class RemoteService {
     }
 
     func initialize(_ userID: Int32) -> Completable {
-        return apiRequest(.post, "initialize/\(userID)").completable()
+        return apiRequest(.post, "initialize/\(userID)").completable
+    }
+
+    func loadProfile(_ userID: Int32) -> Single<Profile> {
+        return apiRequest(.get, "userProfile/\(userID)").map(object: RemoteProfile.self).cast(to: Profile.self)
+    }
+
+    func send(profile: Profile) -> Completable {
+        return apiRequest(.post, "userProfile/\(profile.ID)", parameters: profile.profileJson).completable
     }
 }
 

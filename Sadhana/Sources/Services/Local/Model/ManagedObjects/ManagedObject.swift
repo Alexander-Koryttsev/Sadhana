@@ -13,14 +13,22 @@ import CoreData
 class ManagedObject: NSManagedObject {
     func customValue(forKey key:FieldKey) -> Any? {
         let rawKey = key.rawValue
+        return customValue(forRawKey: rawKey)
+    }
+    
+    func customSet<T>(value:T?, forKey key:FieldKey) {
+        let rawKey = key.rawValue
+        customSet(value: value, forRawKey: rawKey)
+    }
+    
+    func customValue(forRawKey rawKey:String) -> Any? {
         willAccessValue(forKey: rawKey)
         let value = primitiveValue(forKey: rawKey)
         didAccessValue(forKey: rawKey)
         return value
     }
-
-    func customSet<T>(value:T?, forKey key:FieldKey) {
-        let rawKey = key.rawValue
+    
+    func customSet<T>(value:T?, forRawKey rawKey:String) {
         willChangeValue(forKey: rawKey)
         let newValue : T? = (value != nil) ? value : nil
         setPrimitiveValue(newValue, forKey: rawKey)

@@ -8,34 +8,33 @@
 
 
 
-struct Time {
+struct Time : Equatable {
     var hour: Int16 {
-        get {
-            return (rawValue - minute)/60
-        }
+        return (rawValue - minute)/60
     }
 
     var hourString: String {
-        get {
-            return String(format:"%02d", hour)
-        }
+        return String(format:"%02d", hour)
     }
 
     var minute: Int16 {
-        get {
-            return rawValue % 60
-        }
+        return rawValue % 60
     }
 
     var minuteString: String {
-        get {
-            return String(format:"%02d", minute)
-        }
+        return String(format:"%02d", minute)
     }
 
     var string: String {
-        get {
-            return String(format:"%02d:%02d", hour, minute)
+        return String(format:"%02d:%02d", hour, minute)
+    }
+
+    var shortString: String {
+        if hour > 0 {
+            return "\(hour):\(minuteString)"
+        }
+        else {
+            return minute.description
         }
     }
 
@@ -104,5 +103,9 @@ struct Time {
             else { return nil }
 
         self.init(hour: hour, minute: minute)
+    }
+
+    public static func ==(lhs: Time, rhs: Time) -> Bool {
+        return lhs.rawValue == rhs.rawValue
     }
 }

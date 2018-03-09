@@ -222,6 +222,11 @@ func remoteLog(_ items: Any..., separator: String = " ", terminator: String = "\
     #endif
 }
 
+func dispatch(after timeInterval: TimeInterval, execute block: @escaping Block) {
+    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .milliseconds(Int(timeInterval*1000.0)), execute: block)
+}
+
+
 protocol Titled {
     var title : String { get }
     var subtitle : String? { get }
