@@ -46,16 +46,16 @@ class EntryCell: UITableViewCell {
     }
 
     func map(_ entry: Entry, maxRoundsCount:Int16) {
-        set(date: entry.date)
+        set(date: entry.localDate)
         entryView.map(entry, maxRoundsCount: maxRoundsCount)
     }
 
-    func clear(_ date: Date) {
+    func clear(_ date: LocalDate) {
         set(date: date)
         entryView.clear()
     }
 
-    func set(date:Date) {
+    func set(date:LocalDate) {
         let isSunday = date.weekDay == 1
 
         dateLabel.text = date.day.description

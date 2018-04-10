@@ -62,9 +62,9 @@ class EntryView : UIView {
 
     func clear() {
         japaView.clear()
-        japaCountLabel.text = ""
+        japaCountLabel.text = "0"
         readingImageView.isOn = false
-        readingLabel.text = ""
+        readingLabel.text = "0"
         kirtanImageView.isOn = false
         updateLabelColors()
     }

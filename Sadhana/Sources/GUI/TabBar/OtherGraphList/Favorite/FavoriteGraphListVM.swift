@@ -72,7 +72,7 @@ class FavoriteGraphListVM : GraphListVM {
 
     func userAndEntry(at indexPath: IndexPath) -> (ManagedUser, Entry?) {
         let user = self.user(at: indexPath)
-        return (user, Local.service.viewContext.fetchEntry(for: Date(), userID: user.ID))
+        return (user, Local.service.viewContext.fetchEntry(for: LocalDate(), userID: user.ID))
     }
     
     override func select(_ indexPath: IndexPath) {

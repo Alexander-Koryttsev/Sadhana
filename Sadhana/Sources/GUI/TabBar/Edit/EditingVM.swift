@@ -14,7 +14,7 @@ class EditingVM: BaseVM {
     unowned let router : EditingRouter
     let save = PublishSubject<Void>()
     let cancel = PublishSubject<Void>()
-    let initialDate : Date
+    let initialDate : LocalDate
     let openingDate = Date()
 
     private let context = Local.service.newSubViewForegroundContext()
@@ -33,9 +33,9 @@ class EditingVM: BaseVM {
         }
     }
 
-    init(_ router : EditingRouter, date:Date) {
+    init(_ router : EditingRouter, date:LocalDate) {
         self.router = router
-        initialDate =  (date <= Date() ? date : Date()).trimmedTime
+        initialDate =  (date <= LocalDate() ? date : LocalDate())
 
         super.init()
 
@@ -112,15 +112,15 @@ class EditingVM: BaseVM {
     }
 
     func viewModelForEntryEditing(before vm: EntryEditingVM) -> EntryEditingVM {
-        return viewModelForEntryEditing(for:vm.date.yesterday)
+        return viewModelForEntryEditing(for:vm.date.add(days: -1))
     }
 
     func viewModelForEntryEditing(after vm: EntryEditingVM) -> EntryEditingVM {
-        return viewModelForEntryEditing(for:vm.date.tomorrow)
+        return viewModelForEntryEditing(for:vm.date.add(days: 1))
     }
 
-    func viewModelForEntryEditing(for date: Date? = nil) -> EntryEditingVM {
+    func viewModelForEntryEditing(for date: LocalDate? = nil) -> EntryEditingVM {
         let date = date ?? initialDate
-        return  EntryEditingVM(date: date, context: context, enabled: date <= Date())
+        return  EntryEditingVM(date: date, context: context, enabled: date <= LocalDate())
     }
 }

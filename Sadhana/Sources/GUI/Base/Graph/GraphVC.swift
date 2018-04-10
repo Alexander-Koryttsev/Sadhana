@@ -126,14 +126,16 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
     override func bindViewModel() {
         super.bindViewModel()
         
-        refreshControl!.rx.controlEvent(.valueChanged).asDriver()
+        refreshControl!.rx.controlEvent(.valueChanged).asDriver().do(onNext:{ [weak self] in
+            self?.refreshControl?.beginRefreshing()
+        })
             .drive(viewModel.refresh).disposed(by: disposeBag)
         
-        setUpDefaultActivityIndicator(with: viewModel.pageRunning.asDriver().map { running, _ -> Bool in
+        setUpDefaultActivityIndicator(with: viewModel.pageRunning.asDriver().map { running, _ in
             return running
         })
         
-        viewModel.firstPageRunning.drive(refreshControl!.rx.isRefreshing).disposed(by: disposeBag)
+        viewModel.firstPageRunning.filter{ !$0 }.drive(refreshControl!.rx.isRefreshing).disposed(by: disposeBag)
         
         viewModel.dataDidReload.asDriver(onErrorJustReturn: ()).drive(onNext:reloadData).disposed(by: disposeBag)
         

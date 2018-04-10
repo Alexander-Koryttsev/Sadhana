@@ -106,9 +106,9 @@ class RegistrationVM: BaseTableVM {
 
         let dateField = KeyPathFieldVM(registration, \Registration.birthday,
                                        for: "birthday".localized,
-                                       type:.date(min:Calendar.local.date(byAdding: .year, value: -100, to: Date()),
-                                                  default:Calendar.local.date(byAdding: .year, value: -20, to: Date()),
-                                                  max:Calendar.local.date(byAdding: .year, value: -5, to: Date())),
+                                       type:.date(min:Calendar.current.date(byAdding: .year, value: -100, to: Date()),
+                                                  default:Calendar.current.date(byAdding: .year, value: -20, to: Date()),
+                                                  max:Calendar.current.date(byAdding: .year, value: -5, to: Date())),
                                        validSelector:validator.validate)
         dateField.beginValidation = registerDriver
         fields.append(dateField)

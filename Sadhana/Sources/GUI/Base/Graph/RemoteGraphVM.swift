@@ -26,9 +26,9 @@ class RemoteGraphVM : GraphVM {
             .disposed(by: disposeBag)
     }
 
-    override func entry(at indexPath:IndexPath) -> (Entry?, Date) {
+    override func entry(at indexPath:IndexPath) -> (Entry?, LocalDate) {
         let date = self.date(at:indexPath)
-        let monthDate = date.trimmedDayAndTime
+        let monthDate = date.trimDay
         var monthEntries = entries[monthDate]
 
         if indexPath.row > (numberOfRows(in: indexPath.section) - 10) {
@@ -51,9 +51,9 @@ class RemoteGraphVM : GraphVM {
     }
 
     func map(page: [Entry], index: Int) {
-        var monthDict = [Date: Entry]()
+        var monthDict = [LocalDate: Entry]()
         page.forEach({ (entry) in
-            monthDict[entry.date] = entry
+            monthDict[entry.localDate] = entry
         })
         entries[monthDate(for: index)] = monthDict
     }

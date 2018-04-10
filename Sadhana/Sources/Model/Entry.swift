@@ -74,7 +74,7 @@ extension Entry {
                     "created_at": dateCreated.remoteDateTimeString,
                     "updated_at": dateUpdated.remoteDateTimeString,
                     "user_id": userID,
-                    "entrydate": date.remoteDateString,
+                    "entrydate": date.remoteLocalDateString,
                     "jcount_730": japaCount7_30,
                     "jcount_1000": japaCount10,
                     "jcount_1800": japaCount18,
@@ -87,6 +87,11 @@ extension Entry {
                     "opt_service": service,
                     "opt_lections": lections]
         }
+    }
+
+
+    var localDate : LocalDate {
+        return LocalDate(local:date)
     }
 }
 

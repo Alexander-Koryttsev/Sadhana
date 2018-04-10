@@ -35,12 +35,12 @@ class LocalGraphVM : GraphVM {
         clearData()
     }
     
-    override func entries(for monthDate:Date) -> [Date : Entry] {
+    override func entries(for monthDate:LocalDate) -> [LocalDate : Entry] {
         var month = entries[monthDate]
         if month == nil {
-            month = [Date: Entry]()
+            month = [LocalDate: Entry]()
             Local.service.viewContext.fetchEntries(by: monthDate, userID: user.ID).forEach({ (entry) in
-                month![entry.date] = entry
+                month![entry.localDate] = entry
             })
             
             entries[monthDate] = month!
@@ -48,9 +48,9 @@ class LocalGraphVM : GraphVM {
         return month!
     }
     
-    override func entry(at indexPath:IndexPath) -> (Entry?, Date) {
+    override func entry(at indexPath:IndexPath) -> (Entry?, LocalDate) {
         let date = self.date(at:indexPath)
-        var month = entries(for: date.trimmedDayAndTime)
+        var month = entries(for: date.trimDay)
         
         return (month[date], date)
     }

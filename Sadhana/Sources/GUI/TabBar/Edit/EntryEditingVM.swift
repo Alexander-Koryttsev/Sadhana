@@ -13,7 +13,7 @@ import CoreData
 
 class EntryEditingVM: BaseTableVM {
 
-    let date : Date
+    let date : LocalDate
     let enabled : Bool
     private var fieldsInternal = [FormFieldVM]()
     var fields : [FormFieldVM] {
@@ -29,18 +29,18 @@ class EntryEditingVM: BaseTableVM {
         return fields.count
     }
 
-    init(date: Date, context: NSManagedObjectContext, enabled: Bool) {
-        self.date = date.trimmedTime
+    init(date: LocalDate, context: NSManagedObjectContext, enabled: Bool) {
+        self.date = date
         self.enabled = enabled
 
-        if let localEntry = context.fetchEntry(for: self.date, userID:Local.defaults.userID!) {
+        if let localEntry = context.fetchEntry(for: date, userID:Local.defaults.userID!) {
             entry = localEntry
         }
         else {
             entry = context.create(ManagedEntry.self)
             entry.userID = Local.defaults.userID!
-            entry.date = self.date
-            entry.month = self.date.trimmedDayAndTime
+            entry.date = date.date
+            entry.month = date.trimDay.date
             entry.dateCreated = Date()
             entry.dateUpdated = entry.dateCreated
         }
@@ -65,7 +65,7 @@ class EntryEditingVM: BaseTableVM {
         add(field: .yoga, type:Bool.self, fieldType:.switcher)
         add(field: .lections, type:Bool.self, fieldType:.switcher)
 
-            if self.date != Date().trimmedTime {
+            if !self.date.isToday {
                 add(timeField: .bedTime, optional: true)
             }
         }
