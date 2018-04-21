@@ -14,11 +14,14 @@ class MappingHelper {
     
     let dateTimeFormatter = DateFormatter.create()
     let dateFormatter = DateFormatter.create()
+    let localDateFormatter = DateFormatter()
     let timeFormatter = DateFormatter.create()
     
     init() {
         dateTimeFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         dateFormatter.dateFormat = "yyyy-MM-dd"
+        localDateFormatter.dateFormat = "yyyy-MM-dd"
+        localDateFormatter.timeZone = TimeZone.current
         timeFormatter.dateFormat = "HH:mm"
     }
 }
@@ -26,20 +29,23 @@ class MappingHelper {
 extension DateFormatter {
     static func create() -> DateFormatter {
         let formatter = DateFormatter()
-        formatter.timeZone = TimeZone.zero()
+        formatter.timeZone = TimeZone.zero
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
     }
 }
 
 extension TimeZone {
-    static func zero() -> TimeZone {
+    static var zero : TimeZone {
         return TimeZone(secondsFromGMT:0)!
     }
 }
 
 extension Date {
     var remoteDateString : String {
+        return MappingHelper.shared.dateFormatter.string(from: self)
+    }
+    var remoteLocalDateString : String {
         return MappingHelper.shared.dateFormatter.string(from: self)
     }
     var remoteDateTimeString : String {

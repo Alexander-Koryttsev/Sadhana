@@ -68,7 +68,7 @@ class DatePickerFormCell: ResponsibleFormCell, UITextFieldDelegate, Validable {
             Right(16)
         ])
 
-        datePicker.timeZone = TimeZone.zero()
+        datePicker.timeZone = TimeZone.zero
         datePicker.datePickerMode = .date
         switch viewModel.type {
             case .date(let min, let defaultDate, let max):

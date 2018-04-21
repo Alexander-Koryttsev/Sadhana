@@ -120,8 +120,9 @@ class FavoriteGraphListVC : GraphListVC<FavoriteGraphListVM> {
     func reloadCell(at indexPath: IndexPath) {
         if tableView.numberOfSections > 0,
            indexPath.row < tableView.numberOfRows(inSection: 0) {
-            let cell = tableView.cellForRow(at: indexPath) as! GraphCell
-            setUp(cell: cell, at: indexPath)
+            if let cell = tableView.cellForRow(at: indexPath) as? GraphCell {
+                setUp(cell: cell, at: indexPath)
+            }
         }
     }
 

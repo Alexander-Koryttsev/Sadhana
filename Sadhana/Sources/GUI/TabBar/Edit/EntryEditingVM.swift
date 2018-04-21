@@ -10,7 +10,7 @@ import CoreData
 
 class EntryEditingVM: BaseTableVM {
 
-    let date : Date
+    let date : LocalDate
     let enabled : Bool
     private var fieldsInternal = [FormFieldVM]()
     var fields : [FormFieldVM] {
@@ -18,7 +18,7 @@ class EntryEditingVM: BaseTableVM {
     }
     private let entry : ManagedEntry
     private lazy var yesterdayEntry = {
-        return self.entry.managedObjectContext!.fetchOrCreateEntry(for: self.date.yesterday.trimmedTime, userID: Local.defaults.userID!)
+        return self.entry.managedObjectContext!.fetchOrCreateEntry(for: self.date.yesterday, userID: Local.defaults.userID!)
     }()
 
     override var numberOfSections: Int {
@@ -29,8 +29,8 @@ class EntryEditingVM: BaseTableVM {
         return fields.count
     }
 
-    init(date: Date, context: NSManagedObjectContext, enabled: Bool) {
-        self.date = date.trimmedTime
+    init(date: LocalDate, context: NSManagedObjectContext, enabled: Bool) {
+        self.date = date
         self.enabled = enabled
         entry = context.fetchOrCreateEntry(for: self.date, userID:Local.defaults.userID!)
         super.init()

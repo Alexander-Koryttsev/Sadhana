@@ -81,37 +81,35 @@ struct Main {
 class Common {
     static let shared = Common()
     let calendar : Calendar
-    private var dates = [[Date]]()
+    private var dates = [[LocalDate]]()
 
     init() {
-        var cal = Calendar.current
-        cal.timeZone = TimeZone.zero()
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = TimeZone.zero
         calendar = cal
     }
 
-    var calendarDates : [[Date]] {
-        get {
-            if dates.count == 0 || dates.first!.first! != Date().trimmedTime {
-                dates.removeAll()
-                var month = [Date]()
-                var date = Date().trimmedTime
-                var stop = false
+    var calendarDates : [[LocalDate]] {
+        if dates.count == 0 || dates.first!.first! != LocalDate() {
+            dates.removeAll()
+            var month = [LocalDate]()
+            var date = LocalDate()
+            var stop = false
 
-                while !stop {
-                    month.append(date)
+            while !stop {
+                month.append(date)
 
-                    if calendar.component(.day, from: date) == 1,
-                        month.count > 0 {
-                        dates.append(month)
-                        month.removeAll()
-                    }
-
-                    stop = dates.count == 12
-                    date = calendar.date(byAdding: .day, value: -1, to: date)!
+                if date.day == 1,
+                    month.count > 0 {
+                    dates.append(month)
+                    month.removeAll()
                 }
+
+                stop = dates.count == 12
+                date = date.add(days: -1)
             }
-            return dates
         }
+        return dates
     }
 
     static let avatarFilter = CircleFilter()

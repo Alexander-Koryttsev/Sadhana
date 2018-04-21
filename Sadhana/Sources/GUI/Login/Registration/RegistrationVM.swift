@@ -134,9 +134,9 @@ class RegistrationVM: BaseTableVM {
 
 
         let dateField = DataFormFieldVM(title: "birthday".localized,
-                                            type: .date(min:Calendar.local.date(byAdding: .year, value: -100, to: Date()),
-                                                        default:Calendar.local.date(byAdding: .year, value: -20, to: Date()),
-                                                        max:Calendar.local.date(byAdding: .year, value: -5, to: Date())),
+                                            type: .date(min:Calendar.current.date(byAdding: .year, value: -100, to: Date()),
+                                                        default:Calendar.current.date(byAdding: .year, value: -20, to: Date()),
+                                                        max:Calendar.current.date(byAdding: .year, value: -5, to: Date())),
                                         variable: KeyPathVariable(registration, \Registration.birthday),
                                         validSelector: validator.validate,
                                         beginValidation: registerDriver)

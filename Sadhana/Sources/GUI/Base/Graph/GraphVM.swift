@@ -28,7 +28,7 @@ class GraphVM : BaseTableVM {
     }
     
     private var maxCounts = [Int : Int16]()
-    var entries = [Date : [Date : Entry]]()
+    var entries = [LocalDate : [LocalDate : Entry]]()
     
     init(_ info:UserBriefInfo) {
         self.info = info
@@ -67,14 +67,14 @@ class GraphVM : BaseTableVM {
         return Common.shared.calendarDates[section].first!.monthMedium
     }
 
-    func monthDate(for section:Int) -> Date {
-        return Common.shared.calendarDates[section].first!.trimmedDayAndTime
+    func monthDate(for section:Int) -> LocalDate {
+        return Common.shared.calendarDates[section].first!.trimDay
     }
 
-    func section(for monthDate:Date) -> Int {
+    func section(for monthDate:LocalDate) -> Int {
         var index = 0
         for section in Common.shared.calendarDates {
-            if section.first!.trimmedDayAndTime == monthDate {
+            if section.first! == monthDate {
                 return index
             }
             index += 1
@@ -83,16 +83,16 @@ class GraphVM : BaseTableVM {
         return index
     }
 
-    func date(at indexPath:IndexPath) -> Date {
+    func date(at indexPath:IndexPath) -> LocalDate {
         return Common.shared.calendarDates[indexPath.section][indexPath.row]
     }
 
-    func entry(at indexPath:IndexPath) -> (Entry?, Date) {
+    func entry(at indexPath:IndexPath) -> (Entry?, LocalDate) {
         let date = self.date(at:indexPath)
         return (nil, date)
     }
 
-    func entries(for monthDate:Date) -> [Date : Entry] {
+    func entries(for monthDate:LocalDate) -> [LocalDate : Entry] {
         return entries[monthDate] ?? [:]
     }
 

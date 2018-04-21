@@ -84,7 +84,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         super.bindViewModel()
         navigationItem.leftBarButtonItem?.rx.tap.asDriver().drive(viewModel.cancel).disposed(by: disposeBag)
         navigationItem.rightBarButtonItem?.rx.tap.asDriver().drive(onNext:{ [unowned self] () in
-            let date = Date().trimmedTime
+            let date = LocalDate()
             switch date {
             case let date where date >= self.weekVC.firstDate && date <= self.weekVC.lastDate:
                 self.weekVC.selectedDate.value = date
@@ -172,7 +172,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
             Height(12)
         ])
 
-        for symbol in Calendar.local.orderedWeekDaySymbols {
+        for symbol in Calendar.current.orderedWeekDaySymbols {
             let label = UILabel()
             label.font = .sdTextStyle5Font
             label.text = String(symbol.first!).uppercased()
@@ -217,12 +217,12 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         weekKeysBar.arrangedSubviews.forEach { (view) in
             let label = view as! UILabel
             let isSunday = date.weekDay == 1
-            label.textColor = date <= Date() ? (isSunday ? .red : .black) : (isSunday ? .sdLightPeach : .sdSilver)
+            label.textColor = date <= LocalDate() ? (isSunday ? .red : .black) : (isSunday ? .sdLightPeach : .sdSilver)
             date = date.tomorrow
         }
     }
 
-    func weekVCDidSelect(date:Date) {
+    func weekVCDidSelect(date:LocalDate) {
         let vc = pageVC.viewControllers?.first as! EntryEditingVC
         switch date {
         case let date where date < vc.viewModel.date:
@@ -238,13 +238,13 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         }
     }
 
-    func updatedWeekVC(_ date: Date) -> WeekVC {
+    func updatedWeekVC(_ date: LocalDate) -> WeekVC {
         weekVC = WeekVC(date)
         bindWeekVC()
         return weekVC
     }
 
-    func updateWeekVC(for date: Date) {
+    func updateWeekVC(for date: LocalDate) {
         let selectedDate = weekVC.selectedDate.value
         weekPageVC.setViewControllers([updatedWeekVC(date)], direction: date < selectedDate ? .reverse : .forward, animated: true, completion: nil)
     }
@@ -320,7 +320,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         }
         else {
             let viewController = viewController as! WeekVC
-            return WeekVC(Calendar.local.date(byAdding: .weekOfYear, value: -1, to: viewController.selectedDate.value)!)
+            return WeekVC(viewController.selectedDate.value.add(weeks: -1))
         }
     }
 
@@ -333,15 +333,15 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         else {
             let viewController = viewController as! WeekVC
 
-            if Date() < viewController.lastDate {
+            if LocalDate() < viewController.lastDate {
                 //Selected week has current date. No possible to scroll next
                 return nil
             }
 
-            var targetDate = Calendar.local.date(byAdding: .weekOfYear, value: 1, to: viewController.selectedDate.value)!
-            if targetDate > Date() {
+            var targetDate = viewController.selectedDate.value.add(weeks: 1)
+            if targetDate > LocalDate() {
                 //Next week has current date and target date is future date, so reduce it to the current date
-                targetDate = Date()
+                targetDate = LocalDate()
             }
 
             return WeekVC(targetDate)
@@ -352,8 +352,8 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
         if pageViewController == weekPageVC {
             if let pendingWeekVC = pendingViewControllers.first as? WeekVC {
                 let addValue = pendingWeekVC.selectedDate.value > weekVC.selectedDate.value  ? 1 : -1
-                let targetDate = Calendar.local.date(byAdding: .weekOfYear, value: addValue, to: weekVC.selectedDate.value)!
-                if targetDate < Date() {
+                let targetDate = weekVC.selectedDate.value.add(weeks: addValue)
+                if targetDate < LocalDate() {
                     pendingWeekVC.selectedDate.value = targetDate
                 }
             }
@@ -371,8 +371,6 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
                 weekVC.selectedDate.value = entryEditingVC.viewModel.date
                 break
             }
-
-            Answers.logContentView(withName: "Editing", contentType: "Entry", contentId: entryEditingVC.viewModel.date.remoteDateString, customAttributes: nil)
         }
         else {
             weekVC = weekPageVC.viewControllers?.first as! WeekVC

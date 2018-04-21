@@ -22,16 +22,15 @@ class WeekVC: UIViewController {
             return stackView.arrangedSubviews as! [UILabel]
         }
     }
-    let selectedDate : RxSwift.Variable<Date>
+    let selectedDate : RxSwift.Variable<LocalDate>
 
-    let firstDate : Date
-    let lastDate : Date
+    let firstDate : LocalDate
+    let lastDate : LocalDate
 
-    init(_ selectedDate: Date) {
-        let trimmedSelectedDate = selectedDate.trimmedTime
-        self.selectedDate = RxSwift.Variable(trimmedSelectedDate)
-        firstDate = Calendar.local.date(byAdding: .day, value: -trimmedSelectedDate.weekDayIndex, to: trimmedSelectedDate)!
-        lastDate = Calendar.local.date(byAdding: .day, value: 6 - trimmedSelectedDate.weekDayIndex, to: trimmedSelectedDate)!
+    init(_ selectedDate: LocalDate) {
+        self.selectedDate = RxSwift.Variable(selectedDate)
+        firstDate = selectedDate.add(days: -selectedDate.weekDayIndex)
+        lastDate = selectedDate.add(days: 6 - selectedDate.weekDayIndex)
 
         super.init(nibName: nil, bundle: nil)
 
@@ -41,10 +40,10 @@ class WeekVC: UIViewController {
         stackView.distribution = .fillEqually
         stackView.easy.layout(Edges())
 
-        let currentDate = Date().trimmedTime
+        let currentDate = LocalDate()
 
         for i in (0..<7) {
-            let date = Calendar.local.date(byAdding: .day, value: i, to: firstDate)!
+            let date = firstDate.add(days: i)
             let label = UILabel()
             label.text = date.day.description
             label.highlightedTextColor = .white
@@ -52,7 +51,6 @@ class WeekVC: UIViewController {
             label.isUserInteractionEnabled = true
             stackView.addArrangedSubview(label)
             let isSunday = date.weekDay == 1
-            //label.textColor = date <= Date() ? (isSunday ? .red : .black) : (isSunday ? .sdLightPeach : .sdSilver)
 
             if date <= currentDate {
                 let gesture = UITapGestureRecognizer()
@@ -70,7 +68,7 @@ class WeekVC: UIViewController {
                 label.textColor = isSunday ? .sdLightPeach : .sdSilver
             }
 
-            if i == trimmedSelectedDate.weekDayIndex {
+            if i == selectedDate.weekDayIndex {
                 label.isHighlighted = true
             }
         }
@@ -89,7 +87,7 @@ class WeekVC: UIViewController {
 
             self.labels[self.selectedDate.value.weekDayIndex].isHighlighted = true
 
-            self.circle.tintColor = date == Date().trimmedTime ? .sdTangerine : .black
+            self.circle.tintColor = date.isToday ? .sdTangerine : .black
             self.circle.setNeedsDisplay()
             self.circle.easy.layout(CenterX().to(self.stackView.arrangedSubviews[self.selectedDate.value.weekDayIndex]))
             self.stackView.layoutIfNeeded()

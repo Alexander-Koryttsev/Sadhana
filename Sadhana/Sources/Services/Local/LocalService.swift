@@ -88,30 +88,30 @@ extension NSManagedObjectContext {
         return fetchSingle(request)
     }
     
-    func fetchEntry(for date:Date, userID:Int32) -> ManagedEntry? {
+    func fetchEntry(for date:LocalDate, userID:Int32) -> ManagedEntry? {
         let request = ManagedEntry.request()
-        request.predicate = NSPredicate(format: "date == %@ AND userID == %d", date.trimmedTime as NSDate, userID)
+        request.predicate = NSPredicate(format: "date == %@ AND userID == %d", date.date as NSDate, userID)
         return fetchSingle(request)
     }
 
-    func fetchOrCreateEntry(for date:Date, userID:Int32) -> ManagedEntry {
+    func fetchOrCreateEntry(for date:LocalDate, userID:Int32) -> ManagedEntry {
         if let localEntry = fetchEntry(for: date, userID:userID) {
             return localEntry
         }
         else {
             let newEntry = create(ManagedEntry.self)
             newEntry.userID = userID
-            newEntry.date = date
-            newEntry.month = date.trimmedDayAndTime
+            newEntry.date = date.date
+            newEntry.month = date.trimDay.date
             newEntry.dateCreated = Date()
             newEntry.dateUpdated = newEntry.dateCreated
             return newEntry
         }
     }
 
-    func fetchEntries(by month:Date, userID:Int32) -> [ManagedEntry] {
+    func fetchEntries(by month:LocalDate, userID:Int32) -> [ManagedEntry] {
         let request = ManagedEntry.request()
-        request.predicate = NSPredicate(format: "month == %@ AND userID == %d", month.trimmedDayAndTime as NSDate, userID)
+        request.predicate = NSPredicate(format: "month == %@ AND userID == %d", month.date as NSDate, userID)
         return fetchHandled(request)
     }
 
@@ -253,7 +253,7 @@ extension NSManagedObjectContext {
 
     func rxSave(_ entries:[Entry]) -> Single<[ManagedEntry]> {
         let request = ManagedEntry.request()
-        let IDs = entries.flatMap { (entry) -> Int32 in
+        let IDs = entries.compactMap { (entry) -> Int32 in
             return entry.ID!
         }
         request.predicate = NSPredicate(format: "id IN %@", IDs)

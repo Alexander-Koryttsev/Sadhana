@@ -297,7 +297,7 @@ class RemoteService {
         return apiRequest(.post, "options/\(user.ID)", parameters: user.json).completable
     }
 
-    func loadEntries(for userID:Int32, lastUpdatedDate:Date? = nil, month:Date? = nil) -> Single <[Entry]> {
+    func loadEntries(for userID:Int32, lastUpdatedDate:Date? = nil, month:LocalDate? = nil) -> Single <[Entry]> {
 
         var parameters = [String: Any]()
         if let lastUpdatedDate = lastUpdatedDate {
@@ -337,7 +337,7 @@ class RemoteService {
                         entryJson.removeValue(forKey: "entry_id")
                         return self.apiRequest(.post, path, parameters: entryJson)
                     case .entryExists:
-                        let loadEntries = self.loadEntries(for: entry.userID, month: entry.date.trimmedDayAndTime)
+                        let loadEntries = self.loadEntries(for: entry.userID, month: entry.localDate)
                         let mapEntries = loadEntries.flatMap({ [unowned self] (remoteEntries) -> Single<JSON> in
 
                             let currentRemoteEntryFilter = remoteEntries.filter({ (filterEntry) -> Bool in

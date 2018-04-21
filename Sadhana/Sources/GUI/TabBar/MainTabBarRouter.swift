@@ -11,7 +11,6 @@ import DynamicButton
 import EasyPeasy
 
 
-
 class MainTabBarRouter : EditingRouter, WindowRouter {
     var myGraphRouter = MyGraphRouter()
     let otherGraphListRouter = OtherGraphListRouter()
@@ -47,7 +46,7 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
     }
 
-    func showSadhanaEditing(date: Date) {
+    func showSadhanaEditing(date: LocalDate) {
         let vm = EditingVM(self, date:date)
         plusButton.isHidden = false;
         plusButton.rx.tap.bind(to:vm.save).disposed(by: vm.disposeBag)
@@ -106,12 +105,12 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
 protocol EditingRouter: class {
     var plusButton: DynamicButton { get }
 
-    func showSadhanaEditing(date: Date)
+    func showSadhanaEditing(date: LocalDate)
     func hideSadhanaEditing()
 }
 
 extension EditingRouter {
     func showSadhanaEditing() {
-        showSadhanaEditing(date: Date())
+        showSadhanaEditing(date: LocalDate())
     }
 }

@@ -24,7 +24,7 @@ class MyGraphRouter : EditingRouter {
         return navVC
     }
 
-    func showSadhanaEditing(date: Date) {
+    func showSadhanaEditing(date: LocalDate) {
         self.parent?.showSadhanaEditing(date: date)
     }
 
