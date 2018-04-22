@@ -11,7 +11,6 @@
 		9602B1001FFA4F1A00502E5A /* CountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9602B0FE1FFA4F1900502E5A /* CountView.swift */; };
 		9602B1011FFA4F1A00502E5A /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9602B0FF1FFA4F1A00502E5A /* TextField.swift */; };
 		9602B1031FFAA6F000502E5A /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9602B1021FFAA6F000502E5A /* Country.swift */; };
-		9602B1051FFCF36B00502E5A /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9602B1041FFCF36B00502E5A /* AdSupport.framework */; };
 		960A0D421F273F5700356152 /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960A0D411F273F5700356152 /* CircleView.swift */; };
 		960A0D451F2770D000356152 /* WeekVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960A0D441F2770D000356152 /* WeekVC.swift */; };
 		960A0D4F1F2876C000356152 /* EditingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960A0D471F2876C000356152 /* EditingVC.swift */; };
@@ -53,18 +52,10 @@
 		967D79271F00F3E100A961D6 /* RemoteUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79261F00F3E100A961D6 /* RemoteUser.swift */; };
 		967D79291F00F63E00A961D6 /* General.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79281F00F63E00A961D6 /* General.swift */; };
 		968F9E8D203F032100981D0E /* EasyPeasy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E8C203F032100981D0E /* EasyPeasy.framework */; };
-		968F9E9F203F0F3700981D0E /* ReactiveMoya_ModelMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E8F203F0F3600981D0E /* ReactiveMoya_ModelMapper.framework */; };
 		968F9EA0203F0F3700981D0E /* AlamofireImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E90203F0F3600981D0E /* AlamofireImage.framework */; };
-		968F9EA1203F0F3700981D0E /* ReactiveSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E91203F0F3600981D0E /* ReactiveSwift.framework */; };
 		968F9EA2203F0F3700981D0E /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E92203F0F3600981D0E /* RxSwift.framework */; };
-		968F9EA3203F0F3700981D0E /* Moya.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E93203F0F3600981D0E /* Moya.framework */; };
-		968F9EA4203F0F3700981D0E /* Moya_ModelMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E94203F0F3700981D0E /* Moya_ModelMapper.framework */; };
 		968F9EA5203F0F3700981D0E /* DynamicButton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E95203F0F3700981D0E /* DynamicButton.framework */; };
-		968F9EA6203F0F3700981D0E /* RxMoya.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E96203F0F3700981D0E /* RxMoya.framework */; };
-		968F9EA7203F0F3800981D0E /* ReactiveMoya.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E97203F0F3700981D0E /* ReactiveMoya.framework */; };
-		968F9EA8203F0F3800981D0E /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E98203F0F3700981D0E /* Result.framework */; };
 		968F9EA9203F0F3800981D0E /* RxBlocking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E99203F0F3700981D0E /* RxBlocking.framework */; };
-		968F9EAA203F0F3800981D0E /* RxMoya_ModelMapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E9A203F0F3700981D0E /* RxMoya_ModelMapper.framework */; };
 		968F9EAC203F0F3800981D0E /* Mapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E9C203F0F3700981D0E /* Mapper.framework */; };
 		968F9EAD203F0F3800981D0E /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E9D203F0F3700981D0E /* Alamofire.framework */; };
 		968F9EAE203F0F3800981D0E /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9E9E203F0F3700981D0E /* RxCocoa.framework */; };
@@ -291,23 +282,14 @@
 			files = (
 				968F9EB1203F15C400981D0E /* Crashlytics.framework in Frameworks */,
 				968F9EB2203F15C400981D0E /* Fabric.framework in Frameworks */,
-				968F9E9F203F0F3700981D0E /* ReactiveMoya_ModelMapper.framework in Frameworks */,
 				968F9EA0203F0F3700981D0E /* AlamofireImage.framework in Frameworks */,
-				968F9EA1203F0F3700981D0E /* ReactiveSwift.framework in Frameworks */,
 				968F9EA2203F0F3700981D0E /* RxSwift.framework in Frameworks */,
-				968F9EA3203F0F3700981D0E /* Moya.framework in Frameworks */,
-				968F9EA4203F0F3700981D0E /* Moya_ModelMapper.framework in Frameworks */,
 				968F9EA5203F0F3700981D0E /* DynamicButton.framework in Frameworks */,
-				968F9EA6203F0F3700981D0E /* RxMoya.framework in Frameworks */,
-				968F9EA7203F0F3800981D0E /* ReactiveMoya.framework in Frameworks */,
-				968F9EA8203F0F3800981D0E /* Result.framework in Frameworks */,
 				968F9EA9203F0F3800981D0E /* RxBlocking.framework in Frameworks */,
-				968F9EAA203F0F3800981D0E /* RxMoya_ModelMapper.framework in Frameworks */,
 				968F9EAC203F0F3800981D0E /* Mapper.framework in Frameworks */,
 				968F9EAD203F0F3800981D0E /* Alamofire.framework in Frameworks */,
 				968F9EAE203F0F3800981D0E /* RxCocoa.framework in Frameworks */,
 				968F9E8D203F032100981D0E /* EasyPeasy.framework in Frameworks */,
-				9602B1051FFCF36B00502E5A /* AdSupport.framework in Frameworks */,
 				96A921891F03FF360056BC5B /* CoreData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -805,7 +787,7 @@
 				96F6004D1EC996AC006DAECE /* Frameworks */,
 				96F6004E1EC996AC006DAECE /* Resources */,
 				9669D5741F435C4D00728E1A /* ShellScript */,
-				968F9E8E203F033E00981D0E /* ShellScript */,
+				968F9E8E203F033E00981D0E /* Carhage */,
 				9669FF0520583405004ECCEB /* CopyFiles */,
 			);
 			buildRules = (
@@ -883,7 +865,7 @@
 			shellPath = /bin/sh;
 			shellScript = "./Fabric.framework/run ae7d436e85f03ef575d86aef87d7e7df0fd98ac2 1b1141c6e7a9c114ba6eb45edd69536af0f097e956cda1c6562a75d5bf7f08a4";
 		};
-		968F9E8E203F033E00981D0E /* ShellScript */ = {
+		968F9E8E203F033E00981D0E /* Carhage */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -893,36 +875,20 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/AlamofireImage.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/DynamicButton.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/EasyPeasy.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Mapper.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Moya_ModelMapper.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Moya.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ReactiveMoya_ModelMapper.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ReactiveMoya.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ReactiveSwift.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Result.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RxBlocking.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxMoya_ModelMapper.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RxMoya.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
 			);
+			name = Carhage;
 			outputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/EasyPeasy.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Alamofire.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/AlamofireImage.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/DynamicButton.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Mapper.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Moya_ModelMapper.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Moya.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/ReactiveMoya_ModelMapper.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/ReactiveMoya.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/ReactiveSwift.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Result.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxBlocking.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxCocoa.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxMoya_ModelMapper.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxMoya.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxSwift.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

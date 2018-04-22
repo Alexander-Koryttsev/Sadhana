@@ -2,6 +2,6 @@ github "nakiostudio/EasyPeasy"
 github "ReactiveX/RxSwift"
 github "Alamofire/Alamofire"
 github "Alamofire/AlamofireImage"
-github "sunshinejr/Moya-ModelMapper"
+github "lyft/mapper"
 github "yannickl/DynamicButton"
 
