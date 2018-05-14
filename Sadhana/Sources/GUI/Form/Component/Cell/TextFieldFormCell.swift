@@ -85,16 +85,16 @@ class TextFieldFormCell: FormCell, ResponsibleContainer, Validable {
 
         textField.rx.textRequired.bind(to:viewModel.variable).disposed(by: disposeBag)
         textField.isEnabled = viewModel.enabled
+        textField.textAlignment = viewModel.enabled ? .left : .right
+        textField.textColor = viewModel.enabled ? .black : .sdSteel
         textField.returnKeyType = .next
         textField.font = UIFont.systemFont(ofSize: 15, weight: UIFont.Weight.regular)
         contentView.addSubview(textField)
         textField.easy.layout([
             Left(10).to(titleLabel, .right),
-            Top(),
-            Height(height).with(.medium),
-            Bottom(),
+            CenterY(),
             Width(*0.5).like(contentView),
-            Right(16)
+            Right(viewModel.enabled ? 16 : 37)
         ])
 
         selectionStyle = .none

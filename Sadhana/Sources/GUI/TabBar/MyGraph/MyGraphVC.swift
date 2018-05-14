@@ -11,7 +11,7 @@
 class MyGraphVC: GraphVC<MyGraphVM> {
     
     override var title:String? {
-        get { return "myGraph".localized }
+        get { return "my_graph".localized }
         set {}
     }
 
@@ -21,6 +21,10 @@ class MyGraphVC: GraphVC<MyGraphVM> {
         tabBarItem = UITabBarItem(title: title, image:UIImage(named:"tab-bar-icon-my"), tag:0)
         tableView.allowsSelection = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "settings-button"), style: .plain, target: viewModel, action: #selector(MyGraphVM.showSettings))
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
 
     override func tabBarItemAction() {

@@ -6,7 +6,7 @@
 //  Copyright © 2018 Alexander Koryttsev. All rights reserved.
 //
 
-class Variable<T> : ObserverType, ObservableType {
+class Variable<T> : ObserverType, ObservableType, Fillable {
 
     typealias E = T
 
@@ -23,35 +23,67 @@ class Variable<T> : ObserverType, ObservableType {
     }
 
     var driver : Driver<T> {
-        get {
-            let emptyValue : T
-            if T.self == String.self {
-                emptyValue = "" as! T
-            }
-            else if T.self == Bool.self {
-                emptyValue = false as! T
-            }
-            else if T.self == Int.self {
-                emptyValue = 0 as! T
-            }
-            else if T.self == Int16.self {
-                emptyValue = 0 as! T
-            }
-            else if T.self == Int32.self {
-                emptyValue = 0 as! T
-            }
-            else if T.self == Void.self {
-                emptyValue = () as! T
-            }
-            else if T.self == Optional<Any>.self {
-                emptyValue = () as! T
-            }
-            else {
-                fatalError("Unknown T type \(T.self)")
-            }
-
-            return asDriver(onErrorJustReturn: emptyValue)
+        let emptyValue : T
+        if T.self == String.self {
+            emptyValue = "" as! T
         }
+        else if T.self == Bool.self {
+            emptyValue = false as! T
+        }
+        else if T.self == Int.self {
+            emptyValue = 0 as! T
+        }
+        else if T.self == Int16.self {
+            emptyValue = 0 as! T
+        }
+        else if T.self == Int32.self {
+            emptyValue = 0 as! T
+        }
+        else if T.self == Void.self {
+            emptyValue = () as! T
+        }
+        else if T.self == Optional<Any>.self {
+            emptyValue = () as! T
+        }
+        else if T.self == Time.self {
+            emptyValue = Time(rawValue: 0) as! T
+        }
+        else {
+            fatalError("Unknown T type \(T.self)")
+        }
+
+        return asDriver(onErrorJustReturn: emptyValue)
+    }
+
+    var isFilled: Bool {
+        if T.self == Void.self {
+            return true
+        }
+
+        if let string = value as? String {
+            return string.count > 0
+        }
+        if let int = value as? Int {
+            return int > 0
+        }
+        if let int = value as? Int16 {
+            return int > 0
+        }
+        if let int = value as? Int32 {
+            return int > 0
+        }
+        if let time = value as? Time {
+            return time.rawValue > 0
+        }
+
+        if T.self == Optional<Any>.self {
+            let optional = value as Optional<Any>
+            return optional != nil
+        }
+
+
+
+        return true
     }
 
     func set(value: T) {
@@ -121,21 +153,20 @@ class KeyPathVariable<Object, Value> : Variable<Value> {
 }
 
 class ManagedKeyPathVariable<Object:ManagedObject, Value> : KeyPathVariable<Object, Value> {
-    var autosave = false
-
     override var value : Value {
         didSet {
             if let updatable = object as? ManagedUpdatable {
                 updatable.dateUpdated = Date()
-            }
-            if autosave {
-                object.managedObjectContext?.saveHandled()
             }
         }
     }
 }
 
 class AutoSaveKeyPathVariable<Object:ManagedObject, Value> : ManagedKeyPathVariable<Object, Value> {
-    override var autosave : Bool { get { return false }
-                                   set {} }
+    override var value : Value {
+        didSet {
+            object.managedObjectContext?.saveHandled()
+        }
+    }
+
 }

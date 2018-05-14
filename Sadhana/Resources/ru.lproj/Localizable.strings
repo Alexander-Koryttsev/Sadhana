@@ -9,7 +9,7 @@
 //General
 ok = "OК";
 cancel = "Отмена";
-discardChanges = "Стереть изменения";
+discard_changes = "Стереть изменения";
 sadhana = "Садхана";
 today = "Сегодня";
 hours = "часов";
@@ -17,14 +17,14 @@ minutes = "минут";
 begin = "Начать";
 
 //Login
-login = "Логин или email";
+login.login = "Логин или email";
 password = "Пароль";
-signIn = "Войти";
+sign_in = "Войти";
 login_welcome = "Харе Кришна, %@!\nЗагружаем Вашу садхану...";
 invalid_credentials = "Неправильный логин или пароль";
 
 //My Graph
-myGraph = "Мой график";
+my_graph = "Мой график";
 myGraphGuidePlusButton = "Чтобы заполнить график садханы за сегодня - нажмите эту кнопку";
 
 //EntryFieldKey
@@ -65,6 +65,19 @@ favorites_empty = "Нет избранных";
 settings = "Настройки";
 letterToDevs = "Письмо разработчикам";
 signOut = "Выйти";
+settings.login = "Логин";
+settings.show_on_main_page = "Показывать на главной странице";
+settings.show_more_16 = "Показывать более 16 кругов";
+settings.editing = "Редактирование графика";
+settings.developer = "Разработчик";
+settings.restart_guide = "Перезапустить гид";
+settings.fields = "Поля";
+settings.bed_time_yesterday = "Показывать отбой за вчера";
+settings.reading_in_minutes = "Чтение в минутах";
+settings.manual_keyboard = "Открывать клавиатуру вручную";
+settings.suggest = "Предложить настройку";
+settings.suggestion = "Предложение по настройкам";
+settings.registration_date = "Дата регистрации";
 
 //Feedback
 cantSendMailTitle = "Системный почтовый клиент не настроен";

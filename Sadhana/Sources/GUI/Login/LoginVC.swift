@@ -124,7 +124,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
 
     func setUpLoginField(){
         form.addSubview(loginField)
-        loginField.placeholder = "login".localized
+        loginField.placeholder = "login.login".localized
         loginField.borderStyle = .none
         loginField.textAlignment = .center
         loginField.font = UIFont.sdTextStyle3Font()
@@ -178,7 +178,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
 
     func setUpLoginButton() {
         form.addSubview(loginButton)
-        loginButton.setTitle("signIn".localized, for: .normal)
+        loginButton.setTitle("sign_in".localized, for: .normal)
         loginButton.titleLabel?.font = UIFont.sdTextStyle2Font()
         loginButton.easy.layout([
             Top().to(passwordField),

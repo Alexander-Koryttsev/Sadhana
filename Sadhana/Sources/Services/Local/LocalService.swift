@@ -8,6 +8,7 @@
 
 
 import CoreData
+import Crashlytics
 
 enum LocalError : Error {
     case noData
@@ -115,6 +116,13 @@ extension NSManagedObjectContext {
         return fetchHandled(request)
     }
 
+    func fetchUnsendedEntries(userID:Int32) -> [ManagedEntry] {
+        let request = ManagedEntry.request()
+        request.predicate = NSPredicate(format: "userID == %d AND (dateSynched == nil OR dateUpdated > dateSynched)", userID)
+        return fetchHandled(request)
+
+    }
+
     private func fetchHandled<T>(_ request: NSFetchRequest<T>) -> [T] {
         do {
             return try fetch(request)
@@ -169,6 +177,8 @@ extension NSManagedObjectContext {
         do {
             try self.save()
         } catch {
+            log("context error \(error)")
+            Crashlytics.sharedInstance().recordError(error)
             fatalError("Failure to save context: \(error)")
         }
     }

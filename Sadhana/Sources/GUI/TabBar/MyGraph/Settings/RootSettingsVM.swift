@@ -11,12 +11,13 @@ import Crashlytics
 
 class RootSettingsVM : BaseSettingsVM {
     override var title : String? { return "settings".localized }
+    private var signingOut = false
 
     override init(_ router: MyGraphRouter) {
         super.init(router)
 
         addUserInfoSection()
-        addCommonSection()
+        //addCommonSection()
         addMyGraphSection()
         addFeedbackItem()
 
@@ -28,11 +29,13 @@ class RootSettingsVM : BaseSettingsVM {
     }
 
     deinit {
-        //TODO: make user Syncable
-        if let user = Main.service.currentUser {
-            _ = Remote.service.send(user).subscribe()
+        if !signingOut {
+            //TODO: make user Syncable
+            if let user = Main.service.currentUser {
+                _ = Remote.service.send(user).subscribe()
+            }
+            Local.service.viewContext.saveHandled()
         }
-        Local.service.viewContext.saveHandled()
     }
 
     func addUserInfoSection() {
@@ -47,22 +50,21 @@ class RootSettingsVM : BaseSettingsVM {
 
     func addCommonSection() {
         let user = Main.service.currentUser!
-        //   Localize
+
         let items = [
-            DataFormFieldVM(title: "isPublic",
+            DataFormFieldVM(title: "settings.show_on_main_page".localized,
                             type: .switcher,
                             variable: AutoSaveKeyPathVariable(user, \ManagedUser.isPublic)),
-            DataFormFieldVM(title: "setting_show_more_16".localized,
+            DataFormFieldVM(title: "settings.show_more_16".localized,
                             type: .switcher,
                             variable: AutoSaveKeyPathVariable(user, \ManagedUser.showMore16))
         ]
 
-        sections.append(SettingsSection(title: "Common Settings", items: items))
+        sections.append(SettingsSection(title: "", items: items))
     }
 
     func addMyGraphSection() {
-        //TODO: localize
-        let action = FormAction(title: "Graph Editing Settings", actionType: .detail, presenter: false) { [weak self] in
+        let action = FormAction(title: "my_graph".localized, actionType: .detail, presenter: false) { [weak self] in
             self?.router.showGraphEditingSettings()
             return true
         }
@@ -110,19 +112,20 @@ class RootSettingsVM : BaseSettingsVM {
     }
 
     func addDevSection() {
-        let restartGuide = FormAction(title: "Restart Guide", actionType:.basic, presenter: false) { [unowned self] () in
+        let restartGuide = FormAction(title: "settings.restart_guide".localized, actionType:.basic, presenter: false) { [unowned self] () in
             Local.defaults.resetGuide()
             self.router.parent?.tabBarVC?.viewDidAppear(true)
             return true
         }
 
-        addSingle(item: restartGuide, title: "Developer")
+        addSingle(item: restartGuide, title: "settings.developer".localized)
     }
 
     func addSignOutItem() {
         let logoutAction = FormAction(title: "signOut".localized, actionType:.destructive, presenter: false) { [unowned self] in
             let alert = Alert()
-            alert.add(action:"signOut".localized, style: .destructive, handler: {
+            alert.add(action:"signOut".localized, style: .destructive, handler: { [weak self] in
+                self?.signingOut = true
                 RootRouter.shared?.logOut()
             })
 

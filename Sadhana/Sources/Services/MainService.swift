@@ -28,31 +28,15 @@ class MainService {
         }
     }
 
-    func loadMyEntries() -> Single<[ManagedEntry]> {
-        return loadEntries(for: currentUser!)
-    }
-    
-    func loadEntries(for user:ManagedUser) -> Single<[ManagedEntry]> {
-        let signal : Single<[ManagedEntry]>
-
-        if let sharedSignal = loadEntriesSharedSignals[user.ID] {
-            signal = sharedSignal
+    func register(_ registration: Registration) -> Single<ManagedUser> {
+        return Remote.service.register(registration)
+            .flatMap { _ in
+                Answers.logSignUp(withMethod: nil, success: true, customAttributes: ["Name": "\(registration.firstName) \(registration.lastName) \(registration.spiritualName)",
+                    "Country": registration.country,
+                    "City": registration.city,
+                    "Email": registration.email])
+                return Main.service.login(registration.email, password: registration.password)
         }
-        else {
-            signal = Remote.service.loadEntries(for: user.userID, lastUpdatedDate: user.entriesUpdatedDate)
-                .flatMap({ (entries) -> Single<[ManagedEntry]> in
-                    return Local.service.backgroundContext.rxSave(entries)
-                }).do(onSuccess: { [unowned self] (_) in
-                    user.managedObjectContext?.perform {
-                        user.entriesUpdatedDate = Date()
-                        user.managedObjectContext?.saveHandled()
-                    }
-                    self.loadEntriesSharedSignals.removeValue(forKey: user.ID)
-                }).asObservable().share(replay: 1, scope: .whileConnected).asSingle()
-            loadEntriesSharedSignals[user.ID] = signal
-        }
-
-        return signal
     }
 
     func login(_ name:String, password:String) -> Single<ManagedUser> {
@@ -85,22 +69,64 @@ class MainService {
                 Answers.logLogin(withMethod: nil, success: false, customAttributes: ["Error": error.localizedDescription])
             })
     }
-    
-    func register(_ registration: Registration) -> Single<ManagedUser> {
-        return Remote.service.register(registration)
-            .flatMap { _ in
-                Answers.logSignUp(withMethod: nil, success: true, customAttributes: ["Name": "\(registration.firstName) \(registration.lastName) \(registration.spiritualName)",
-                                                                                    "Country": registration.country,
-                                                                                    "City": registration.city,
-                                                                                    "Email": registration.email])
-                return Main.service.login(registration.email, password: registration.password)
-            }
-    }
 
     func updateFabricUserData() {
         if let user = currentUser  {
             Crashlytics.sharedInstance().setUserName(user.name)
             Crashlytics.sharedInstance().setUserIdentifier("\(user.ID)")
         }
+    }
+
+    func loadMyEntries() -> Single<[ManagedEntry]> {
+        return loadEntries(for: currentUser!)
+    }
+
+    func loadEntries(for user:ManagedUser) -> Single<[ManagedEntry]> {
+        let signal : Single<[ManagedEntry]>
+
+        if let sharedSignal = loadEntriesSharedSignals[user.ID] {
+            signal = sharedSignal
+        }
+        else {
+            signal = Remote.service.loadEntries(for: user.userID, lastUpdatedDate: user.entriesUpdatedDate)
+                .flatMap({ (entries) -> Single<[ManagedEntry]> in
+                    return Local.service.backgroundContext.rxSave(entries)
+                }).do(onSuccess: { [unowned self] (_) in
+                    user.managedObjectContext?.perform {
+                        user.entriesUpdatedDate = Date()
+                        user.managedObjectContext?.saveHandled()
+                    }
+                    self.loadEntriesSharedSignals.removeValue(forKey: user.ID)
+                }).asObservable().share(replay: 1, scope: .whileConnected).asSingle()
+            loadEntriesSharedSignals[user.ID] = signal
+        }
+
+        return signal
+    }
+
+    func sendEntries() -> Observable<Bool> {
+        var signals = [Observable<Bool>]()
+        let entries = Local.service.viewContext.fetchUnsendedEntries(userID: Local.defaults.userID!)
+
+        for entry in entries {
+            let signal = Remote.service.send(entry)
+                .subscribeOn(MainScheduler.instance)
+                .observeOn(MainScheduler.instance)
+                .do(onSuccess: { (ID) in
+                    entry.ID = ID
+                    entry.dateSynched = Date()
+                    Local.service.viewContext.saveHandledRecursive()
+                    }, onError:{ (error) in
+                        Crashlytics.sharedInstance().recordError(error, withAdditionalUserInfo: entry.json)
+                })
+                .asBoolObservable()
+            signals.append(signal)
+        }
+
+        return Observable.merge(signals)
+            .observeOn(MainScheduler.instance)
+            .do(onCompleted: {
+                NotificationCenter.default.post(name: .local(.entriesDidSend), object: nil)
+            })
     }
 }

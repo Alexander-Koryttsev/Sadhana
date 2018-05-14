@@ -123,7 +123,7 @@ class CountContainerCell: CountsLayoutCell, UITextFieldDelegate {
                 if value > 0 {
                     view.valueField.text = value.description
                 }
-                view.valueField.rx.textRequired.asDriver().distinctUntilChanged().skip(2).map {
+                view.valueField.rx.textRequired.asDriver().distinctUntilChanged().skip(1).map {
                     Int16($0) ?? 0
                 } .drive(variableField.variable).disposed(by: disposeBag)
             }

@@ -17,6 +17,7 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
     weak var tabBarVC : MainTabBarVC?
     let window : UIWindow
     let plusButton = UIFactory.editingButton
+    weak var editingVM : EditingVM?
     var isEditing = false {
         didSet {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -45,17 +46,21 @@ class MainTabBarRouter : EditingRouter, WindowRouter {
         self.tabBarVC = tabBarVC
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChange(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
     }
-
+    
     func showSadhanaEditing(date: LocalDate) {
+        plusButton.isHidden = false
         let vm = EditingVM(self, date:date)
-        plusButton.isHidden = false;
-        plusButton.rx.tap.bind(to:vm.save).disposed(by: vm.disposeBag)
+        plusButton.addTarget(vm, action: #selector(vm.save), for: .touchUpInside)
         let vc = EditingVC(vm)
         tabBarVC?.present(vc, animated: true, completion: nil)
         isEditing = true
     }
 
     func hideSadhanaEditing() {
+        if let vm = editingVM {
+            plusButton.removeTarget(vm, action: nil, for: .touchUpInside)
+        }
+
         tabBarVC?.presentedViewController?.setEditing(false, animated: true)
         tabBarVC?.dismiss(animated: true, completion: { [unowned self] in
             self.plusButton.isHidden = true

@@ -21,6 +21,7 @@ protocol User: UserBriefInfo, JSONConvertible {
     var lectionsEnabled : Bool { get }
     var bedTimeEnabled : Bool { get }
 }
+
 protocol UserBriefInfo {
     var userID : Int32 { get }
     var userName : String { get }

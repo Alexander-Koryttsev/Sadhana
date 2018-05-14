@@ -57,7 +57,7 @@ struct RemoteProfile : Profile, Mappable {
 
         try firstName = map.from("first_name")
         try lastName = map.from("last_name")
-        try spiritualName = map.from("spiritual_name") ?? ""
+        spiritualName = map.optionalFrom("spiritual_name") ?? ""
 
         try login = map.from("login")
         try email = map.from("email")

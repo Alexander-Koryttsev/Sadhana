@@ -20,6 +20,7 @@ class DatePickerFormCell: ResponsibleFormCell, UITextFieldDelegate, Validable {
     let datePicker = UIDatePicker()
     var active : Bool = false {
         didSet {
+            if !viewModel.enabled { return }
             UIView.animate(withDuration: 0.25) {
                 self.backgroundColor = self.active ? .sdPaleGrey : .white
             }
@@ -105,6 +106,8 @@ class DatePickerFormCell: ResponsibleFormCell, UITextFieldDelegate, Validable {
                 self.set(valid:valid)
             }).drive().disposed(by: disposeBag)
         }
+
+        selectionStyle = viewModel.enabled ? .gray : .none
     }
 
     required init?(coder aDecoder: NSCoder) {

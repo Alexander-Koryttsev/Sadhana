@@ -166,7 +166,7 @@ extension FormFieldVM {
     }
 }
 
-struct DataFormFieldVM<T> : FormFieldVM {
+struct DataFormFieldVM<T> : FormFieldVM, Fillable {
     let title : String
     let type : FormFieldType
     var variable : Variable<T>
@@ -175,6 +175,9 @@ struct DataFormFieldVM<T> : FormFieldVM {
     var beginValidation : Driver<Void>?
     var isValid = true
     var enabled = true
+    var isFilled: Bool {
+        return variable.isFilled
+    }
 
     init(title: String,
          type: FormFieldType,

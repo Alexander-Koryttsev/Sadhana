@@ -7,8 +7,7 @@
 //
 
 class ProfileEditingSettingsVM : BaseSettingsVM {
-    //TODO: Localize
-    override var title : String? { return "Profile" }
+    override var title : String? { return "profile".localized }
     let validator = Validator()
     private let context = Local.service.newSubViewForegroundContext()
     private let user : ManagedUser
@@ -34,7 +33,7 @@ class ProfileEditingSettingsVM : BaseSettingsVM {
 
         sections.append(SettingsSection(title: "", items: [spiritNameField, firstNameField, lastNameField]))
         
-        let loginField = DataFormFieldVM(title: "login".localized,
+        let loginField = DataFormFieldVM(title: "settings.login".localized,
                                               type: .text(.basic),
                                               variable: KeyPathVariable(user, \ManagedUser.login),
                                               enabled: false)
@@ -44,7 +43,7 @@ class ProfileEditingSettingsVM : BaseSettingsVM {
                                          variable: KeyPathVariable(user, \ManagedUser.email),
                                          enabled: false)
         
-        let registrationDateField = DataFormFieldVM(title: "registration_date".localized,
+        let registrationDateField = DataFormFieldVM(title: "settings.registration_date".localized,
                                             type: .date(min: nil, default: nil, max: nil),
                                             variable: KeyPathVariable(user, \ManagedUser.registrationDateOptional),
                                             enabled: false)

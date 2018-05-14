@@ -17,6 +17,7 @@ class LocalDefaults {
         case guidesShown
         case showBedTimeForYesterday
         case readingOnlyInMinutes
+        case manualKeyboardEnabled
 
         var string : String {
             get {
@@ -87,6 +88,15 @@ class LocalDefaults {
         }
         set {
             set(newValue, for:.readingOnlyInMinutes)
+        }
+    }
+
+    var manualKeyboardEnabled: Bool {
+        get {
+            return bool(for: .manualKeyboardEnabled)
+        }
+        set {
+            set(newValue, for:.manualKeyboardEnabled)
         }
     }
 

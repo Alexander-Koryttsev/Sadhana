@@ -85,15 +85,20 @@ class TimeKeyboardFormCell: CountsLayoutCell, UITextFieldDelegate {
             }
 
             if let number = Int(resultString) {
-                if textField == hoursView.valueField,
-                    (0..<24).contains(number) {
-                    if number > 2 ||
-                        resultString.count == 2 {
-                        DispatchQueue.main.async {
-                            textField.goNext.onNext(())
+                if textField == hoursView.valueField {
+                    if (0..<24).contains(number) {
+                        if number > 2 ||
+                            resultString.count == 2 {
+                            DispatchQueue.main.async {
+                                textField.goNext.onNext(())
+                            }
                         }
+                        return true
                     }
-                    return true
+                    else if (24..<26).contains(number) {
+                        textField.goNext.onNext(())
+                    }
+                    return false
                 }
                 if textField == minutesView.valueField,
                     (0..<60).contains(number) {

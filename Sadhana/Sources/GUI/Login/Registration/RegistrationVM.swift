@@ -67,11 +67,13 @@ class RegistrationVM: BaseTableVM {
                                              type: .text(.password),
                                              variable: KeyPathVariable(registration, \Registration.password))
 
-        let passwordConfirmationField = DataFormFieldVM(title: "password".localized,
-                                                type: .text(.password),
-                                                variable: StoredVariable(""))
+        let passwordConfirmationField = DataFormFieldVM(title: "confirm_password".localized,
+                                                        type: .text(.password),
+                                                        variable: StoredVariable(""))
 
-        let passwordValid = Observable.combineLatest(passwordField.variable.asObservable(), passwordConfirmationField.variable.asObservable(), resultSelector: validator.validate(password:confirmation:))
+        let passwordValid = Observable.combineLatest(passwordField.variable.asObservable(),
+                                                     passwordConfirmationField.variable.asObservable(),
+                                                     resultSelector: validator.validate(password:confirmation:))
         let passwordValidSimple = passwordValid.map { (flag, _) in flag }.asDriver(onErrorJustReturn: false)
 
         fields.append(passwordField)
@@ -150,9 +152,23 @@ class RegistrationVM: BaseTableVM {
                                            emailField.valid!,
                                            countryField.valid!,
                                            cityField.valid!,
-                                           dateField.valid!) { spiritNameValid, firstNameValid, lastNameValid, passwordValid, emailValid, countryValid, cityValid, dateValid  in
+                                           dateField.valid!) {  spiritNameValid,
+                                                                firstNameValid,
+                                                                lastNameValid,
+                                                                passwordValid,
+                                                                emailValid,
+                                                                countryValid,
+                                                                cityValid,
+                                                                dateValid in
 
-            return spiritNameValid && firstNameValid && lastNameValid && passwordValid && emailValid && countryValid && cityValid && dateValid
+            return  spiritNameValid &&
+                    firstNameValid &&
+                    lastNameValid &&
+                    passwordValid &&
+                    emailValid &&
+                    countryValid &&
+                    cityValid &&
+                    dateValid
         }.distinctUntilChanged()
 
         sections = [

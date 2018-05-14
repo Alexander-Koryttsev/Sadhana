@@ -21,11 +21,11 @@ class ManagedUser: ManagedObject, User, Profile {
     
     var name: String {
         get {
-            if spiritualName.count > 0 {
+            if spiritualName.trimmingCharacters(in: .whitespacesAndNewlines).count > 0 {
                 return spiritualName
             }
             
-            if firstName.count > 0  {
+            if firstName.trimmingCharacters(in: .whitespacesAndNewlines).count > 0  {
                 return "\(firstName) \(lastName)"
             }
             

@@ -191,7 +191,8 @@ class RemoteService {
     func baseRequest(_ method: Alamofire.HTTPMethod,
                      _ path: String,
                      parameters: [String: Any]? = nil,
-                     authorise: Bool = false) -> Single<JSON> {
+                     authorise: Bool = false,
+                     shouldLog: Bool = true) -> Single<JSON> {
         
         return Single<JSON>.create { [unowned self] (observer) -> Disposable in
             
@@ -202,16 +203,22 @@ class RemoteService {
             
             let request = self.manager.request("\(Remote.URL.prefix)\(path)", method: method, parameters: parameters, encoding: JSONEncoding.default, headers: authorise ? self.authorizationHeaders : nil)
             
-            remoteLog("\n\t\t\t\t\t--- \(method) \(path) ---\n\nHead: \(desc(request.request?.allHTTPHeaderFields))\n\nParamteters: \(desc(parameters))")
+            if shouldLog {
+                remoteLog("\n\t\t\t\t\t--- \(method) \(path) ---\n\nHead: \(desc(request.request?.allHTTPHeaderFields))\n\nParamteters: \(desc(parameters))")
+            }
             request .validate(statusCode: self.acceptableStatusCodes)
                     .validate(contentType: ["application/json"])
                     .responseJSON(completionHandler: { (response) in
-                remoteLog("\nResponse (\(path))\n\(response)\n")
+                        if shouldLog {
+                            remoteLog("\nResponse (\(path))\n\(response)\n")
+                        }
                 switch response.result {
                 case .success(let value):
 
                     let statusCode = response.response!.statusCode
-                    remoteLog("Status Code:\(statusCode)")
+                    if shouldLog {
+                        remoteLog("Status Code:\(statusCode)")
+                    }
 
                     var result:JSON
 
@@ -265,9 +272,13 @@ class RemoteService {
     
     func apiRequest(_ method: Alamofire.HTTPMethod,
                     _ path: String,
-                    parameters: [String: Any]? = nil) -> Single<JSON> {
+                    parameters: [String: Any]? = nil,
+                    shouldLog: Bool = true) -> Single<JSON> {
 
-            let request = baseRequest(method, "\(Remote.URL.api.relativeString)/\(path)", parameters: parameters, authorise: true)
+            let request = baseRequest(method, "\(Remote.URL.api.relativeString)/\(path)",
+                                      parameters: parameters,
+                                      authorise: true,
+                                      shouldLog: shouldLog)
             
             return request.catchError { (handler: Error) -> Single<JSON> in
                 let returningError = Single<JSON>.error(handler)
@@ -321,7 +332,8 @@ class RemoteService {
                                                                    "city": city,
                                                                    "search_term": searchString,
                                                                    "page_num": page,
-                                                                   "items_per_page": pageSize]).map(object: AllEntriesResponse.self)
+                                                                   "items_per_page": pageSize],
+                          shouldLog: false).map(object: AllEntriesResponse.self)
     }
 
     func send(_ entry: Entry) -> Single<Int32?> {

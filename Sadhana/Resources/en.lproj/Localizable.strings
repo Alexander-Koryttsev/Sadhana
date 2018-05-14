@@ -9,7 +9,7 @@
 //General
 ok = "OK";
 cancel = "Cancel";
-discardChanges = "Discard changes";
+discard_changes = "Discard changes";
 sadhana = "Sadhana";
 today = "Today";
 hours = "hours";
@@ -17,14 +17,14 @@ minutes = "minutes";
 begin = "Begin";
 
 //Login
-login = "Login or email";
+login.login = "Login or email";
 password = "Password";
-signIn = "Sign In";
+sign_in = "Sign In";
 login_welcome = "Hare Krishna, %@!\nLoading your sadhana...";
 invalid_credentials = "Invalid username or password";
 
 //My Graph
-myGraph = "My Graph";
+my_graph = "My Graph";
 myGraphGuidePlusButton = "To fill the sadhana graph for today - tap this button";
 
 //EntryFieldKey
@@ -65,6 +65,19 @@ favorites_empty = "No favorites";
 settings = "Settings";
 letterToDevs = "Feedback";
 signOut = "Sign Out";
+settings.login = "Login";
+settings.show_on_main_page = "Show on main page";
+settings.show_more_16 = "Show more than 16 rounds";
+settings.editing = "Graph editing";
+settings.developer = "Developer";
+settings.restart_guide = "Restart guide";
+settings.fields = "Fields";
+settings.bed_time_yesterday = "Show bed time for yesterday";
+settings.reading_in_minutes = "Reading in minutes";
+settings.manual_keyboard = "Manual keyboard opening";
+settings.suggest = "Suggest setting";
+settings.suggestion = "Settings suggestion";
+settings.registration_date = "Registration date";
 
 //Feedback
 cantSendMailTitle = "The system mail client isn't configured";

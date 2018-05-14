@@ -40,7 +40,7 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
     }
 
     override func viewDidLoad() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: nil, action: nil)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: viewModel, action: #selector(EditingVM.cancel))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "today".localized, style: .plain, target: nil, action: nil)
         view.backgroundColor = .white
         super.viewDidLoad()
@@ -59,7 +59,8 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if base.firstAppearing {
+        if base.firstAppearing,
+           !Local.defaults.manualKeyboardEnabled {
             DispatchQueue.main.async {
                 if let vc = self.pageVC.viewControllers?.first as? EntryEditingVC {
                     vc.becomeActive()
@@ -82,7 +83,6 @@ class EditingVC: BaseVC<EditingVM>, UIPageViewControllerDelegate, UIPageViewCont
 
     override func bindViewModel() {
         super.bindViewModel()
-        navigationItem.leftBarButtonItem?.rx.tap.asDriver().drive(viewModel.cancel).disposed(by: disposeBag)
         navigationItem.rightBarButtonItem?.rx.tap.asDriver().drive(onNext:{ [unowned self] () in
             let date = LocalDate()
             switch date {

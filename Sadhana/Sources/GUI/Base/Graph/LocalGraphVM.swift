@@ -16,19 +16,22 @@ class LocalGraphVM : GraphVM {
         self.user = user
         
         super.init(user)
-    
+
         refresh.flatMap { [unowned self] _ in
-            return Main.service.loadEntries(for: user)
-                .do(onSuccess: {[weak self] _ in
-                    self?.reloadData()	
-                    self?.dataDidReload.onNext(())
-                })
-                .track(self.errors)
-                .track(self.pageRunning, index: 0)
-                .asBoolObservable()
-            }
-            .subscribe()
+            return self.syncEntries()
+        }   .subscribe()
             .disposed(by: disposeBag)
+    }
+
+    func syncEntries() -> Observable<Bool> {
+        return Main.service.loadEntries(for: user)
+            .do(onSuccess: {[weak self] _ in
+                self?.reloadData()
+                self?.dataDidReload.onNext(())
+            })
+            .track(self.errors)
+            .track(self.pageRunning, index: 0)
+            .asBoolObservable()
     }
     
     override func reloadData() {
