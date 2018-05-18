@@ -22,9 +22,7 @@ class GraphVM : BaseTableVM {
         return true
     }
     var favorite : Bool {
-        get {
-            return Main.service.currentUser!.containsFavorite(with: info.userID)
-        }
+        return Main.service.currentUser!.containsFavorite(with: info.userID)
     }
     
     private var maxCounts = [Int : Int16]()

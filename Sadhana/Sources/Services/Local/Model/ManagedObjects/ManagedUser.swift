@@ -135,17 +135,17 @@ class ManagedUser: ManagedObject, User, Profile {
         favoriteUser.avatarURL = favorite.avatarURL
         favoriteUser.name = favorite.userName
         favoriteUser.resetEntriesUpdatedDate()
-        add(favorite: favoriteUser)
+        add(favoriteInternal: favoriteUser)
     }
     
-    func add(favorite: ManagedUser) {
+    func add(favoriteInternal: ManagedUser) {
         guard let context = managedObjectContext else {
             fatalError("User's MO context is nil")
         }
-        addToFavorites(favorite)
+        addToFavorites(favoriteInternal)
         context.saveHandled()
 
-        _ = Main.service.loadEntries(for: favorite).subscribe()
+        _ = Main.service.loadEntries(for: favoriteInternal).subscribe()
     }
     
     func removeFromFavorites() {
