@@ -22,7 +22,7 @@ class BaseVM {
 
     init() {
         errors.asDriver(onErrorJustReturn: GeneralError.error)
-            .map(handle(error:))
+            .map{[weak self] (error) in self?.handle(error: error) ?? error.localizedDescription}
             .filter { $0.count > 0 }
             .drive(messages)
             .disposed(by: disposeBag)

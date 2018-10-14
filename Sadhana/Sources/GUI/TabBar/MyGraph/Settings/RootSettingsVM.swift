@@ -124,8 +124,6 @@ class RootSettingsVM : BaseSettingsVM {
         }
 
         sections.append(SettingsSection(title: "settings.developer".localized, items: [restartGuide, tokens]))
-
-        //addSingle(item: restartGuide, title: "settings.developer".localized)
     }
 
     func addSignOutItem() {

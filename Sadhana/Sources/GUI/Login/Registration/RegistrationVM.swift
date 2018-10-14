@@ -217,6 +217,14 @@ class RegistrationVM: BaseTableVM {
             })
             .disposed(by: disposeBag)
     }
+
+
+    override func handle(error:Error) -> String {
+        switch error {
+        case RemoteErrorKey.emailExist: return "error_email_exist".localized
+        default: return error.localizedDescription
+        }
+    }
 }
 
 class Validator {

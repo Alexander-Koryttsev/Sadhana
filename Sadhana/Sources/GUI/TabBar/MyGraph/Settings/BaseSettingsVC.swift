@@ -143,6 +143,7 @@ class BaseSettingsVC : BaseTableVC <BaseSettingsVM> {
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         return " "
     }
+     
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -168,7 +169,6 @@ class BaseSettingsVC : BaseTableVC <BaseSettingsVM> {
                 Right(16)
                 ])
         }
-
         required init?(coder aDecoder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }

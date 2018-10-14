@@ -34,6 +34,7 @@ enum RemoteErrorKey : String, Error {
     case restForbidden = "rest_forbidden"
     case entryNotFound = "entry_not_found"
     case userNotFound = "user_not_found"
+    case emailExist = "existing_user_email"
 }
 
 struct Remote {

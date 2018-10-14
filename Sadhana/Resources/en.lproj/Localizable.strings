@@ -113,3 +113,4 @@ passwords_not_equal = "Passwords are not equal";
 
 //Error
 error_session_expired = "Your session is expired. Please, sign in again to recover the session";
+error_email_exist = "This email already registered";
