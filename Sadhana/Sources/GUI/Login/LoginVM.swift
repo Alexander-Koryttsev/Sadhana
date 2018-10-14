@@ -15,11 +15,10 @@ enum LoginErrorMessage: String {
 }
 
 class LoginVM : BaseVM {
-    let login = RxSwift.Variable(Config.defaultLogin)
+    let login = RxSwift.Variable(Local.defaults.userEmail ?? Config.defaultLogin)
     let password = RxSwift.Variable(Config.defaultPassword)
     let tap = PublishSubject<Void>()
     let canSignIn: Driver<Bool>
-    let taptic = UINotificationFeedbackGenerator()
 
     private let running = ActivityIndicator()
 
@@ -41,8 +40,8 @@ class LoginVM : BaseVM {
             .flatMap { [unowned self] _ -> Observable<Bool> in
                 return Main.service.login(self.login.value, password: self.password.value)
                     .observeOn(MainScheduler.instance)
-                    .flatMap { [unowned self] (user) -> Single<[ManagedEntry]> in
-                        self.taptic.notificationOccurred(.success)
+                    .flatMap { [unowned self] (user) -> Observable<[ManagedEntry]> in
+                        self.tapticEngine.notificationOccurred(.success)
                         self.messages.onNext(String(format: "login_welcome".localized, user.name))
                         return Main.service.loadMyEntries()
                     }
@@ -55,11 +54,22 @@ class LoginVM : BaseVM {
                     .track(self.running)
                     .catchErrorJustReturn(false)
                     .do(onNext:{ [unowned self] success in
-                        self.taptic.notificationOccurred(success ? .success : .error)
+                        self.tapticEngine.notificationOccurred(success ? .success : .error)
                     })
             }
             .subscribe()
             .disposed(by: disposeBag)
+    }
+
+    override func handle(error: Error) -> String {
+        switch error {
+        case RemoteErrorKey.notLoggedIn,
+             RemoteErrorKey.restForbidden,
+             RemoteErrorKey.invalidGrant:
+            return "invalid_credentials".localized
+        default:
+            return error.localizedDescription
+        }
     }
 
     @objc func register() {

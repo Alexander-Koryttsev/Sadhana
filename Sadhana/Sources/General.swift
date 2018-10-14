@@ -38,6 +38,7 @@ typealias Block = () -> Void
 enum GeneralError : Error {
     case error
     case noSelf
+    case message(String)
 }
 
 let Device = UIDevice.current

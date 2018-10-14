@@ -72,7 +72,7 @@ extension ViewControllerProtected {
         }).disposed(by: disposeBag)
 
         if base.defaultErrorMessagingEnabled {
-            viewModel.errorMessages.throttle(2).drive(onNext:{ (message) in
+            viewModel.messagesUI.throttle(2).drive(onNext:{ (message) in
                 if let window = AppDelegate.shared.window {
                     let container = BlurView()
                     let label = UILabel()

@@ -156,14 +156,7 @@ extension ObservableConvertibleType {
     public func trackActivity(_ activity: ActivityIndicator) -> Observable<E> {
         return activity.trackActivityOfObservable(self)
     }
-}
-
-extension PrimitiveSequence where Trait == SingleTrait {
-    public func track(_ activity: ActivityIndicator) -> Single<E> {
-        return activity.trackActivityOfObservable(self).asSingle()
-    }
-
-    func track(_ activity: IndexedActivityIndicator, index:Int) -> Single<E> {
-        return activity.trackActivityOfObservable(self, index: index).asSingle()
+    func track(_ activity: IndexedActivityIndicator, index:Int) -> Observable<E> {
+        return activity.trackActivityOfObservable(self, index: index)
     }
 }

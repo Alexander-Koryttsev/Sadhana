@@ -40,7 +40,7 @@ class GraphVM : BaseTableVM {
         }
         else {
             Main.service.currentUser!.add(favorite: info)
-            _ = Local.service.viewContext.rxSave(entries(for: 0)).subscribe()
+            _ = Local.service.viewContext.rxSave(entries:entries(for: 0)).subscribe()
         }
     }
 

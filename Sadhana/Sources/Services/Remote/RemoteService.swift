@@ -22,23 +22,18 @@ enum GrantType : String {
 enum RemoteError : Error {
     case invalidResponse
     case responseBodyIsNotJSON
-    case noRefreshToken
     case invalidData
     case noTokens
-    case notLoggedIn
-    case tokensExpired
-    case authorisationRequired
-    case invalidRequest(type:InvalidRequestType, description:String)
+    case userNotFound(Int32)
 }
 
-enum InvalidRequestType : String {
+enum RemoteErrorKey : String, Error {
     case invalidGrant = "invalid_grant"
     case notLoggedIn = "json_not_logged_in"
     case entryExists = "sadhana_entry_exists"
     case restForbidden = "rest_forbidden"
     case entryNotFound = "entry_not_found"
     case userNotFound = "user_not_found"
-    case unknown
 }
 
 struct Remote {
@@ -74,37 +69,34 @@ class SessionDelegate : NSObject, URLSessionDelegate {
 }
 
 class RemoteService {
-
     let networkDidAppear : Observable<Void>
 
     private let clientID = "IXndKqmEoXPTwu46f7nmTcoJ2CfIS6"
     private let clientSecret = "1A4oOPOatd8j6EOaL3i9pblOUnqa6j"
     
-    private var tokens = Tokens()
+    private var tokens : Tokens?
     struct Tokens {
-        var access : String?
-        var refresh : String?
-        var type : String?
+        let access : String
+        let refresh : String
+        let type : String
     }
     
     private var authorizationHeaders : [String : String]? {
         get {
-            guard let tokenType = tokens.type, let accessToken = tokens.access else {
+            guard let tokens = tokens else {
                 return nil
             }
-            return ["Authorization" : "\(tokenType) \(accessToken)"];
+            return ["Authorization" : "\(tokens.type) \(tokens.access)"];
         }
     }
     private let acceptableStatusCodes:Array<Int>
     private let manager : Alamofire.SessionManager
     private let running = ActivityIndicator()
-    private let session : URLSession
+    private let session = URLSession(configuration: .default, delegate: SessionDelegate(), delegateQueue: nil)
     private let reachability : NetworkReachabilityManager
+    private var pendingAuthorizedRequests = [ConnectableObservable<JSON>]()
     
     init() {
-
-        session = URLSession(configuration: .default, delegate: SessionDelegate(), delegateQueue: nil)
-
         var codes = Array(200..<300)
         codes.append(contentsOf: (400..<500))
         acceptableStatusCodes = codes
@@ -153,51 +145,87 @@ class RemoteService {
         map(tokens: cachedTokens)
     }
     
-    func map(tokens: JSON) -> Void {
-        //TODO: validate tokens
-        self.tokens.access = tokens["access_token"] as? String
-        self.tokens.refresh = tokens["refresh_token"] as? String
-        self.tokens.type = tokens["token_type"] as? String
+    func map(tokens: JSON) {
+        if  let access = tokens["access_token"] as? String,
+            let refresh = tokens["refresh_token"] as? String,
+            let type = tokens["token_type"] as? String {
+            self.tokens = Tokens(access: access, refresh: refresh, type: type)
+        }
+        else {
+            self.tokens = nil
+        }
     }
     
     func mapAndCache(tokens: JSON) -> Void {
         map(tokens: tokens)
         Local.defaults.tokens = tokens
     }
+
+    func clearTokens() {
+        self.tokens = nil
+        Local.defaults.tokens = nil
+    }
     
-    func refreshTokens() -> Completable {
-        guard let tokenRefresh = tokens.refresh  else { return Completable.error(RemoteError.noRefreshToken) }
-        return baseRequest(.post, Remote.URL.authToken.relativeString, parameters:
+    func refreshTokens() -> Observable<Bool> {
+        guard let tokens = self.tokens else { return relogin() }
+        let request = baseRequest(.post, Remote.URL.authToken.relativeString, parameters:
             ["grant_type" : GrantType.refreshToken.rawValue,
-             "refresh_token" : tokenRefresh,
+             "refresh_token" : tokens.refresh,
              "client_id" : clientID,
-             "client_secret" : clientSecret]).do(onSuccess: { [weak self] (json) in
-                self?.mapAndCache(tokens: json)
-             }).completable
+             "client_secret" : clientSecret]).map { (json) -> Bool in
+                self.mapAndCache(tokens: json)
+                return true
+        }
+
+        return request.catchError({ [unowned self] (error) -> Observable<Bool> in
+                let returningError = Observable<Bool>.error(error)
+                switch error {
+                case RemoteErrorKey.invalidGrant:
+                    self.clearTokens()
+                    return self.relogin()
+                default: return returningError
+                }
+             })
     }
 
-    func login(name:String, password:String) -> Completable {
+    func relogin() -> Observable<Bool> {
+        guard   let email = Local.defaults.userEmail,
+                let password = Local.defaults.userPassword else {
+                return Observable<Bool>.error(RemoteErrorKey.notLoggedIn)
+        }
 
+        return self.login(name: email, password: password).do(onError: { (error) in
+            switch error {
+            case RemoteErrorKey.invalidGrant: Local.defaults.userPassword = nil; break
+            default: break
+            }
+        })
+    }
+
+    var hasCachedCredentials : Bool {
+        return Local.defaults.userEmail != nil && Local.defaults.userPassword != nil
+    }
+
+    func login(name:String, password:String) -> Observable<Bool> {
         return baseRequest(.post, Remote.URL.authToken.relativeString, parameters:
             ["grant_type" : GrantType.password.rawValue,
              "client_id" : clientID,
              "client_secret" : clientSecret,
              "username" : name,
-             "password" : password]).do(onSuccess: { [weak self] (json) in
-                self?.mapAndCache(tokens: json)
-             }).completable
+             "password" : password]).map({ [unowned self] (json) -> Bool in
+                self.mapAndCache(tokens: json)
+                return true
+             })
     }
     
     func baseRequest(_ method: Alamofire.HTTPMethod,
                      _ path: String,
                      parameters: [String: Any]? = nil,
                      authorise: Bool = false,
-                     shouldLog: Bool = true) -> Single<JSON> {
-        
-        return Single<JSON>.create { [unowned self] (observer) -> Disposable in
-            
-            if authorise == true && self.tokens.access == nil {
-                observer(.error(RemoteError.noTokens))
+                     shouldLog: Bool = true) -> Observable<JSON> {
+        return Observable<JSON>.create { [unowned self] (observer) -> Disposable in
+            if authorise && self.tokens == nil {
+                observer.onError(RemoteError.noTokens)
                 return Disposables.create {} 
             }
             
@@ -214,7 +242,6 @@ class RemoteService {
                         }
                 switch response.result {
                 case .success(let value):
-
                     let statusCode = response.response!.statusCode
                     if shouldLog {
                         remoteLog("Status Code:\(statusCode)")
@@ -229,7 +256,7 @@ class RemoteService {
                         result = resultObject
                     }
                     else {
-                        observer(.error(RemoteError.responseBodyIsNotJSON))
+                        observer.onError(RemoteError.responseBodyIsNotJSON)
                         return
                     }
 
@@ -237,31 +264,37 @@ class RemoteService {
                     guard (200..<300).contains(statusCode) else {
                         //TODO: test in postman when tokens are not valid (for example login, check tokens,logout, check tokens)
 
-                        guard   let errorTypeRawValue = (result["error"] ?? result["code"]) as? String,
+                        guard   let errorKeyRawValue = (result["error"] ?? result["code"]) as? String,
                                 let errorDescription = (result["error_description"] ?? result["message"]) as? String
                         else {
-                            observer(.error(RemoteError.invalidResponse))
+                            observer.onError(RemoteError.invalidResponse)
                             return
                         }
 
-                        let errorType = InvalidRequestType(rawValue: errorTypeRawValue) ?? .unknown
-                        var error = RemoteError.invalidRequest(type:errorType, description:errorDescription)
-
-                        switch errorType {
-                            case .notLoggedIn, .restForbidden:
-                                error = authorise ? RemoteError.tokensExpired : RemoteError.authorisationRequired
-                            break
-                            default: break
+                        var error: Error
+                        if let errorKey = RemoteErrorKey(rawValue: errorKeyRawValue) {
+                            if errorKey == RemoteErrorKey.userNotFound,
+                                let stringID = errorDescription.components(separatedBy: " ").last,
+                                let ID = Int32(stringID) {
+                                error = RemoteError.userNotFound(ID)
+                            }
+                            else {
+                                error = errorKey
+                            }
                         }
-
-                        observer(.error(error))
+                        else {
+                            error = GeneralError.message(errorDescription)
+                        }
+                        observer.onError(error)
                         return
                     }
-
-                    observer(.success(result))
+                    observer.onNext(result)
+                    observer.onCompleted()
+                    return
                     
                 case .failure(let error):
-                    observer(.error(error))
+                    observer.onError(error)
+                    return
                 }
             })
             return Disposables.create {
@@ -273,42 +306,69 @@ class RemoteService {
     func apiRequest(_ method: Alamofire.HTTPMethod,
                     _ path: String,
                     parameters: [String: Any]? = nil,
-                    shouldLog: Bool = true) -> Single<JSON> {
-
-            let request = baseRequest(method, "\(Remote.URL.api.relativeString)/\(path)",
-                                      parameters: parameters,
-                                      authorise: true,
-                                      shouldLog: shouldLog)
-            
-            return request.catchError { (handler: Error) -> Single<JSON> in
-                let returningError = Single<JSON>.error(handler)
-                guard let remoteError = handler as? RemoteError else { return returningError }
-                
-                switch remoteError {
-                case .noTokens: return Single<JSON>.error(RemoteError.notLoggedIn)
-                case .tokensExpired: return request.after(self.refreshTokens()).catchError({ (handler) -> Single<JSON> in
-                    let returningError = Single<JSON>.error(handler)
-                    guard let remoteError = handler as? RemoteError else { return returningError }
-                    switch remoteError {
-                        case .tokensExpired: return Single<JSON>.error(RemoteError.notLoggedIn)
-                        default: return returningError
-                    }
-                })
-                    default: return returningError
-                }
-            }
+                    shouldLog: Bool = true) -> Observable<JSON> {
+        return baseRequest(method, "\(Remote.URL.api.relativeString)/\(path)",
+                          parameters: parameters,
+                          shouldLog: shouldLog)
     }
+
+    func authorizedApiRequest(_ method: Alamofire.HTTPMethod,
+                              _ path: String,
+                              parameters: [String: Any]? = nil,
+                              shouldLog: Bool = true) -> Observable<JSON> {
+        let request = baseRequest(method, "\(Remote.URL.api.relativeString)/\(path)",
+                                 parameters: parameters,
+                                 authorise: true,
+                                 shouldLog: shouldLog)
+
+        let requestFinal = request.catchError { [unowned self] (error: Error) -> Observable<JSON> in
+            switch error {
+            case RemoteErrorKey.invalidGrant,
+                 RemoteErrorKey.notLoggedIn,
+                 RemoteErrorKey.restForbidden,
+                 RemoteError.noTokens:
+                return self.refreshTokens().flatMap{_ in request}
+            default: return Observable<JSON>.error(error)
+            }
+        }
+
+        return add(authorizedApiRequest: requestFinal)
+    }
+
+    func add(authorizedApiRequest request:Observable<JSON>) -> ConnectableObservable<JSON> {
+        let connectable = request.do(onError: { [unowned self] (_) in
+            self.pendingAuthorizedRequests.removeFirst()
+            self.connectRequest()
+            }, onCompleted: { [unowned self] in
+                self.pendingAuthorizedRequests.removeFirst()
+                self.connectRequest()
+        }).publish()
+
+        pendingAuthorizedRequests.append(connectable)
+        if pendingAuthorizedRequests.count == 1 {
+            connectRequest()
+        }
+
+        return connectable
+    }
+
+    func connectRequest() {
+        if let first = pendingAuthorizedRequests.first {
+            _ = first.connect()
+        }
+    }
+
     // MARK: API Methods
-    func loadCurrentUser() -> Single <User> {
-        return apiRequest(.get, "me").map(object: RemoteUser.self).cast(to: User.self)
+    func loadCurrentUser() -> Observable<User> {
+        return authorizedApiRequest(.get, "me").map(object: RemoteUser.self).cast(User.self)
     }
     
     @discardableResult
-    func send(_ user: User) -> Completable {
-        return apiRequest(.post, "options/\(user.ID)", parameters: user.json).completable
+    func send(_ user: User) -> Observable<Bool> {
+        return authorizedApiRequest(.post, "options/\(user.ID)", parameters: user.json).mapTrue()
     }
 
-    func loadEntries(for userID:Int32, lastUpdatedDate:Date? = nil, month:LocalDate? = nil) -> Single <[Entry]> {
+    func loadEntries(for userID:Int32, lastUpdatedDate:Date? = nil, month:LocalDate? = nil) -> Observable <[Entry]> {
 
         var parameters = [String: Any]()
         if let lastUpdatedDate = lastUpdatedDate {
@@ -324,10 +384,10 @@ class RemoteService {
                 throw RemoteError.invalidData
             }
             return entries
-        }).map(array:RemoteEntry.self).cast(to: [Entry].self)
+        }).map(array:RemoteEntry.self).cast([Entry].self)
     }
 
-    func loadAllEntries(country:String = "all", city:String = "", searchString:String = "", page:Int = 0, pageSize:Int = 30) -> Single<AllEntriesResponse> {
+    func loadAllEntries(country:String = "all", city:String = "", searchString:String = "", page:Int = 0, pageSize:Int = 30) -> Observable<AllEntriesResponse> {
         return apiRequest(.post, "allSadhanaEntries", parameters: ["country": country,
                                                                    "city": city,
                                                                    "search_term": searchString,
@@ -336,49 +396,41 @@ class RemoteService {
                           shouldLog: false).map(object: AllEntriesResponse.self)
     }
 
-    func send(_ entry: Entry) -> Single<Int32?> {
+    func send(_ entry: Entry) -> Observable<Int32?> {
         let path = "sadhanaEntry/\(entry.userID)"
 
-        return apiRequest(entry.ID == nil ? .post : .put, path, parameters: entry.json).catchError({ [unowned self] (error) -> PrimitiveSequence<SingleTrait, JSON> in
-            
+        return authorizedApiRequest(entry.ID == nil ? .post : .put, path, parameters: entry.json).catchError({ [unowned self] (error) -> Observable<JSON> in
             switch error {
-            case RemoteError.invalidRequest(let type, _):
-                switch type {
-                    case .entryNotFound:
-                        var entryJson = entry.json
-                        entryJson.removeValue(forKey: "entry_id")
-                        return self.apiRequest(.post, path, parameters: entryJson)
-                    case .entryExists:
-                        let loadEntries = self.loadEntries(for: entry.userID, month: entry.localDate)
-                        let mapEntries = loadEntries.flatMap({ [unowned self] (remoteEntries) -> Single<JSON> in
+                case RemoteErrorKey.entryNotFound:
+                    var entryJson = entry.json
+                    entryJson.removeValue(forKey: "entry_id")
+                    return self.apiRequest(.post, path, parameters: entryJson)
+                case RemoteErrorKey.entryExists:
+                    let loadEntries = self.loadEntries(for: entry.userID, month: entry.localDate)
+                    let mapEntries = loadEntries.flatMap({ [unowned self] (remoteEntries) -> Observable<JSON> in
 
-                            let currentRemoteEntryFilter = remoteEntries.filter({ (filterEntry) -> Bool in
-                                return filterEntry.date == entry.date
-                            })
-
-                            if let remoteEntry = currentRemoteEntryFilter.first {
-                                if remoteEntry.dateUpdated > entry.dateUpdated {
-                                    return Single.just(["entry_id": remoteEntry.ID!])
-                                }
-                                var entryJson = entry.json
-                                entryJson["entry_id"] = remoteEntry.ID!
-                                return self.apiRequest(.put, path, parameters: entryJson)
-                            }
-
-                            return Single.error(error)
+                        let currentRemoteEntryFilter = remoteEntries.filter({ (filterEntry) -> Bool in
+                            return filterEntry.date == entry.date
                         })
 
-                        return mapEntries
+                        if let remoteEntry = currentRemoteEntryFilter.first {
+                            if remoteEntry.dateUpdated > entry.dateUpdated {
+                                return Observable.just(["entry_id": remoteEntry.ID!])
+                            }
+                            var entryJson = entry.json
+                            entryJson["entry_id"] = remoteEntry.ID!
+                            return self.apiRequest(.put, path, parameters: entryJson)
+                        }
 
-                    default: break
-                }
-                
-                break
+                        return Observable.error(error)
+                    })
 
-            default: break
+                    return mapEntries
+
+                default: break
             }
             
-            return Single.error(error)
+            return Observable.error(error)
         })
             .map({ (json) -> Int32? in
 
@@ -408,8 +460,8 @@ class RemoteService {
         parameters: Parameters? = nil,
         encoding: ParameterEncoding = URLEncoding.default,
         headers: HTTPHeaders? = nil)
-        -> Single<JSON> {
-            return Single<JSON>.create { [unowned self] (observer) -> Disposable in
+        -> Observable<JSON> {
+            return Observable<JSON>.create { [unowned self] (observer) -> Disposable in
 
                 let request = self.manager.request(url, method: method, parameters:parameters, encoding: encoding, headers:headers)
 
@@ -417,15 +469,16 @@ class RemoteService {
                     switch response.result {
                     case .success(let value):
                         if let json = value as? JSON {
-                            observer(.success(json))
+                            observer.onNext(json)
+                            observer.onCompleted()
                         }
                         else {
-                            observer(.error(RemoteError.invalidData))
+                            observer.onError(RemoteError.invalidData)
                         }
-                        break;
+                        break
 
                     case .failure(let error):
-                        observer(.error(error))
+                        observer.onError(error)
                         break
                     }
                 })
@@ -436,7 +489,7 @@ class RemoteService {
             }
     }
 
-    func loadCountries() -> Single<[Country]> {
+    func loadCountries() -> Observable<[Country]> {
         return request("https://vaishnavaseva.net/vs-api/v2/sadhana/countries",
                        method: HTTPMethod.get,
                        parameters: ["v": 5.71,
@@ -456,7 +509,7 @@ class RemoteService {
         }
     }
 
-    func loadCities(countryID: Int32, query: String? = nil) -> Single<[City]> {
+    func loadCities(countryID: Int32, query: String? = nil) -> Observable<[City]> {
         return request("https://vaishnavaseva.net/vs-api/v2/sadhana/cities",
                        method: HTTPMethod.get,
                        parameters: ["country_id": countryID,
@@ -478,22 +531,22 @@ class RemoteService {
             }
     }
 
-    func register(_ registration: Registration) -> Single<Int32> {
-        return baseRequest(.post, "\(Remote.URL.api.relativeString)/registration", parameters: registration.json, authorise: false).map({ (json) -> Int32 in
+    func register(_ registration: Registration) -> Observable<Int32> {
+        return baseRequest(.post, "\(Remote.URL.api.relativeString)/registration", parameters: registration.json).map({ (json) -> Int32 in
             return try Int32.create(json["user_id"])
         });
     }
 
-    func initialize(_ userID: Int32) -> Completable {
-        return apiRequest(.post, "initialize/\(userID)").completable
+    func initialize(_ userID: Int32) -> Observable<Bool> {
+        return authorizedApiRequest(.post, "initialize/\(userID)").mapTrue()
     }
 
-    func loadProfile(_ userID: Int32) -> Single<Profile> {
-        return apiRequest(.get, "userProfile/\(userID)").map(object: RemoteProfile.self).cast(to: Profile.self)
+    func loadProfile(_ userID: Int32) -> Observable<Profile> {
+        return apiRequest(.get, "userProfile/\(userID)").map(object: RemoteProfile.self).cast(Profile.self)
     }
 
-    func send(profile: Profile) -> Completable {
-        return apiRequest(.post, "userProfile/\(profile.ID)", parameters: profile.profileJson).completable
+    func send(profile: Profile) -> Observable<Bool> {
+        return authorizedApiRequest(.post, "userProfile/\(profile.ID)", parameters: profile.profileJson).mapTrue()
     }
 }
 

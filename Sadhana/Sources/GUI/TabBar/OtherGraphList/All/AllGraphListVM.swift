@@ -49,7 +49,7 @@ class AllGraphListVM : GraphListVM {
         let combined = Driver.combineLatest(refreshDriver, searchDriver) { _,_ in }
         combined.drive(onNext: { [unowned self] in
             self.load(page: 0)
-                .subscribe(onSuccess: { [unowned self] (response) in
+                .subscribe(onNext: { [unowned self] (response) in
                     self.pages.removeAll()
                     self.pages[response.page] = response.entries
                     self.dataDidReload.onNext(())
@@ -89,8 +89,8 @@ class AllGraphListVM : GraphListVM {
         }
     }
 
-    func load(page:Int) -> Single<AllEntriesResponse> {
-        return Remote.service.loadAllEntries(searchString:search.value, page:page).do(onSuccess: {[unowned self] (response) in
+    func load(page:Int) -> Observable<AllEntriesResponse> {
+        return Remote.service.loadAllEntries(searchString:search.value, page:page).do(onNext: {[unowned self] (response) in
             self.lastResponse = response
         })  .track(pageRunning, index:page)
             .track(self.errors)
@@ -115,7 +115,7 @@ class AllGraphListVM : GraphListVM {
                 
                 load(page: nextPageIndex)
                     .subscribeOn(MainScheduler.instance)
-                    .subscribe(onSuccess: { [unowned self] (newResponse) in
+                    .subscribe(onNext: { [unowned self] (newResponse) in
                         self.pages[newResponse.page] = newResponse.entries
                         self.pageDidUpdate.onNext(newResponse.page)
                         self.loadingPages.remove(newResponse.page)
@@ -148,7 +148,7 @@ class AllGraphListVM : GraphListVM {
             else {
                 let action = UIContextualAction(style: .normal, title:"favorites_add_list".localized) { (action, view, handler) in
                     user.add(favorite: entry)
-                    _ = Local.service.viewContext.rxSave([ entry ]).subscribe()
+                    _ = Local.service.viewContext.rxSave(entries:[ entry ]).subscribe()
                     handler(true)
                 }
                 action.backgroundColor = .sdTangerine

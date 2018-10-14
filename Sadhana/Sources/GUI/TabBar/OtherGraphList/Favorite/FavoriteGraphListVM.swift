@@ -41,11 +41,11 @@ class FavoriteGraphListVM : GraphListVM {
                  let user = any as! ManagedUser
                 return Main.service.loadEntries(for: user)
                     .observeOn(MainScheduler.instance)
-                    .do(onSuccess:{ [unowned self] _ in
+                    .do(onNext:{ [unowned self] _ in
                         self.changeInternal.onNext((.update, IndexPath(row: self.favorites.index(of: user), section: 0)))
                     })
                     .track(self.errors)
-                    .asBoolObservable()
+                    .asBoolNoErrorObservable()
             })
 
             return Observable.merge(signals)

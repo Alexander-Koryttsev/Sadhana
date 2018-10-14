@@ -18,7 +18,7 @@ class FormPickerVM: BaseTableVM {
     let refresh = PublishSubject<Void>()
     let activity = ActivityIndicator()
 
-    init<T:Titled>(fieldVM: DataFormFieldVM<Titled?>, load:Single<[T]>? = nil, searchSelector: ((String?) -> Single<[T]>)? = nil) {
+    init<T:Titled>(fieldVM: DataFormFieldVM<Titled?>, load:Observable<[T]>? = nil, searchSelector: ((String?) -> Observable<[T]>)? = nil) {
         self.title = fieldVM.title
         
         dataDidReload = Driver.of([])

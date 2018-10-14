@@ -12,6 +12,8 @@ class LocalDefaults {
         case tokens
         case entriesUpdatedDate
         case userID
+        case userEmail
+        case userPassword
         case optionFields
         case otherGraphsEnabled
         case guidesShown
@@ -20,13 +22,9 @@ class LocalDefaults {
         case manualKeyboardEnabled
 
         var string : String {
-            get {
-                return Key.prefix.rawValue.appending(rawValue.capitalizedFirstLetter)
-            }
+            return Key.prefix.rawValue.appending(rawValue.capitalizedFirstLetter)
         }
     }
-
-    private let keyPrefix = "LocalDefaults"
     
     var userID: Int32? {
         get {
@@ -34,6 +32,24 @@ class LocalDefaults {
         }
         set {
             set(newValue, for:.userID)
+        }
+    }
+
+    var userEmail: String? {
+        get {
+            return string(for: .userEmail)
+        }
+        set {
+            set(newValue, for: .userEmail)
+        }
+    }
+
+    var userPassword: String? {
+        get {
+            return string(for: .userPassword)
+        }
+        set {
+            set(newValue, for: .userPassword)
         }
     }
 
@@ -129,7 +145,8 @@ class LocalDefaults {
 
     func reset() {
         for key in UserDefaults.standard.dictionaryRepresentation().keys {
-            if key != Key.guidesShown.string {
+            if  key != Key.guidesShown.string,
+                key != Key.userEmail.string {
                 UserDefaults.standard.removeObject(forKey: key)
             }
         }

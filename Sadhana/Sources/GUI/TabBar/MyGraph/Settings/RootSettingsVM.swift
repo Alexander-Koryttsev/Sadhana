@@ -21,7 +21,7 @@ class RootSettingsVM : BaseSettingsVM {
         addMyGraphSection()
         addFeedbackItem()
 
-        #if DEV
+        #if DEV || DEBUG
             addDevSection()
         #endif
 
@@ -118,7 +118,14 @@ class RootSettingsVM : BaseSettingsVM {
             return true
         }
 
-        addSingle(item: restartGuide, title: "settings.developer".localized)
+        let tokens = FormAction(title: "Долбануть токены", actionType: .destructive, presenter: false) { () -> Bool in
+            Remote.service.clearTokens()
+            return true
+        }
+
+        sections.append(SettingsSection(title: "settings.developer".localized, items: [restartGuide, tokens]))
+
+        //addSingle(item: restartGuide, title: "settings.developer".localized)
     }
 
     func addSignOutItem() {

@@ -15,11 +15,11 @@ class RemoteGraphVM : GraphVM {
         super.init(info)
 
         refresh.flatMap { [unowned self] _ in
-            self.load(pageIndex: 0).do(onSuccess:{ [unowned self] (page) in
+            self.load(pageIndex: 0).do(onNext:{ [unowned self] (page) in
                 self.clearData()
                 self.map(page: page, index: 0)
                 self.dataDidReload.onNext(())
-            }).concat(self.load(pageIndex: 1).do(onSuccess:{ [unowned self] (page) in
+            }).concat(self.load(pageIndex: 1).do(onNext:{ [unowned self] (page) in
                 self.handle(page: page, index: 1)
             }))
         }   .subscribe()
@@ -36,7 +36,7 @@ class RemoteGraphVM : GraphVM {
             if nextSection < numberOfSections,
                 !pageRunning.has(index: nextSection),
                  entries[self.monthDate(for: nextSection)] == nil {
-                load(pageIndex: nextSection).subscribe(onSuccess: { [unowned self] (page) in
+                load(pageIndex: nextSection).subscribe(onNext: { [unowned self] (page) in
                     self.handle(page: page, index: nextSection)
                 }).disposed(by:disposeBag)
             }
@@ -58,7 +58,7 @@ class RemoteGraphVM : GraphVM {
         entries[monthDate(for: index)] = monthDict
     }
 
-    func load(pageIndex:Int) -> Single<[Entry]> {
+    func load(pageIndex:Int) -> Observable<[Entry]> {
         return Remote.service.loadEntries(for: info.userID, month: monthDate(for: pageIndex))
             .track(pageRunning, index: pageIndex)
             .track(errors)

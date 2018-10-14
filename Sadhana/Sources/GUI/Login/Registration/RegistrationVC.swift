@@ -196,7 +196,7 @@ class RegistrationVC: BaseTableVC<RegistrationVM> {
             .disposed(by: disposeBag)
 
         //Error handling
-        Driver.merge(viewModel.errorMessages, viewModel.messagesUI).do(onNext:{ _ in
+        viewModel.messagesUI.do(onNext:{ _ in
             let deadlineTime = DispatchTime.now() + .milliseconds(500)
             DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
                 self.tableView.scrollRectToVisible(self.tableView.rectForFooter(inSection: 1), animated: true)

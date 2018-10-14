@@ -806,8 +806,8 @@
 		96F600481EC996AC006DAECE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0830;
-				LastUpgradeCheck = 0930;
+				LastSwiftUpdateCheck = 0930;
+				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = "Alexander Koryttsev";
 				TargetAttributes = {
 					96F6004F1EC996AC006DAECE = {
@@ -863,7 +863,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Fabric.framework/run ae7d436e85f03ef575d86aef87d7e7df0fd98ac2 1b1141c6e7a9c114ba6eb45edd69536af0f097e956cda1c6562a75d5bf7f08a4";
+			shellScript = "./Fabric.framework/run ae7d436e85f03ef575d86aef87d7e7df0fd98ac2 1b1141c6e7a9c114ba6eb45edd69536af0f097e956cda1c6562a75d5bf7f08a4\n";
 		};
 		968F9E8E203F033E00981D0E /* Carhage */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1082,8 +1082,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9669D5781F43696D00728E1A /* Dev-Debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 48MD2JEP44;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1093,8 +1095,8 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Sadhana/SupportingFiles/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_SWIFT_FLAGS = "-Onone";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				OTHER_SWIFT_FLAGS = " ";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1156,8 +1158,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9669D5791F43696D00728E1A /* Dev-Release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 48MD2JEP44;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1287,8 +1291,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9669D57B1F43696D00728E1A /* Prod-Debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 48MD2JEP44;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1309,8 +1315,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9669D57C1F43696D00728E1A /* Prod-Release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEVELOPMENT_TEAM = 48MD2JEP44;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

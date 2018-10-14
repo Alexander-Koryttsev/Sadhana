@@ -55,30 +55,6 @@ class LocalService: NSObject {
         context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         return context
     }
-
-    func dropDatabase(completionClosure: @escaping () -> ()) {
-        let stores = persistentContainer.persistentStoreCoordinator.persistentStores
-        for store in stores {
-            if let urlLet = store.url {
-                do {
-                try persistentContainer.persistentStoreCoordinator.remove(store)
-                try FileManager.default.removeItem(at: urlLet)
-                }
-                catch {
-                    log(error)
-                }
-            }
-        }
-        persistentContainer = NSPersistentContainer(name: "Model")
-        persistentContainer.loadPersistentStores() { (description, error) in
-            if let error = error {
-                fatalError("Failed to load Core Data stack: \(error)")
-            }
-            completionClosure()
-        }
-        backgroundContext = persistentContainer.newBackgroundContext()
-        backgroundContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-    }
 }
 
 
@@ -174,6 +150,7 @@ extension NSManagedObjectContext {
     }
 
     private func saveHandledInternal() {
+        self.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         do {
             try self.save()
         } catch {
@@ -187,18 +164,19 @@ extension NSManagedObjectContext {
         return NSEntityDescription.insertNewObject(forEntityName: NSStringFromClass(T.self), into: self) as! T
     }
 
-    private func rxFetch<T:NSManagedObject>(_ request:NSFetchRequest<T>) -> Single<[T]> {
-        return Single<[T]>.create { [weak self] (observer) -> Disposable in
+    private func rxFetch<T:NSManagedObject>(_ request:NSFetchRequest<T>) -> Observable<[T]> {
+        return Observable<[T]>.create { [weak self] (observer) -> Disposable in
             self?.perform {
                 do {
                     if let result = try self?.fetch(request) {
-                        observer(.success(result))
+                        observer.onNext(result)
+                        observer.onCompleted()
                     }
                     else {
-                        observer(.error(LocalError.noData))
+                        observer.onError(GeneralError.error)
                     }
                 } catch {
-                    observer(.error(error))
+                    observer.onError(error)
                     #if DEBUG
                     fatalError("Failure to fetch data: \(error)")
                     #endif
@@ -208,32 +186,33 @@ extension NSManagedObjectContext {
         }
     }
 
-    private func rxFetchSingle<T:NSManagedObject>(_ request:NSFetchRequest<T>) -> Single<T?> {
+    private func rxFetchSingle<T:NSManagedObject>(_ request:NSFetchRequest<T>) -> Observable<T?> {
         request.fetchLimit = 1;
         return rxFetch(request).map({ (objects) -> T? in
             return objects.first
         })
     }
 
-    func rxSave() -> Completable {
-        return Completable.create { [unowned self] (observer) -> Disposable in
+    private func rxSave<T>(_ object:T) -> Observable<T> {
+        return Observable.create { [unowned self] (observer) -> Disposable in
             self.perform {
                 do {
                     if self.persistentStoreCoordinator != nil && self.persistentStoreCoordinator!.persistentStores.count == 0 {
                         log("trying save without persistent stores")
                         //TODO: create pretty error
-                        observer(.error(GeneralError.error))
+                        observer.onError(GeneralError.error)
                         return
                     }
                     try self.save()
                     if let parent = self.parent {
-                        _ = parent.rxSave().subscribe(observer)
+                        _ = parent.rxSave(object).subscribe(observer)
                     }
                     else {
-                        observer(.completed)
+                        observer.onNext(object)
+                        observer.onCompleted()
                     }
                 } catch {
-                    observer(.error(error))
+                    observer.onError(error)
 
                     #if DEBUG
                         fatalError("Failure to save context: \(error)")
@@ -245,7 +224,7 @@ extension NSManagedObjectContext {
         }
     }
 
-    func rxSave(user:User) -> Single<ManagedUser> {
+    func rxSave(user:User) -> Observable<ManagedUser> {
         let request = ManagedUser.request()
         request.predicate = NSPredicate(format: "id = %d", user.ID)
         request.fetchLimit = 1
@@ -258,10 +237,10 @@ extension NSManagedObjectContext {
             }
 
             return localUser!
-            }.concat(rxSave())
+        }.flatMap {[unowned self] (localUser) in self.rxSave(localUser)}
     }
 
-    func rxSave(_ entries:[Entry]) -> Single<[ManagedEntry]> {
+    func rxSave(entries:[Entry]) -> Observable<[ManagedEntry]> {
         let request = ManagedEntry.request()
         let IDs = entries.compactMap { (entry) -> Int32 in
             return entry.ID!
@@ -304,7 +283,7 @@ extension NSManagedObjectContext {
             }
 
             return updatedLocalEntries
-        }.concat(rxSave())
+            }.flatMap {[unowned self] (entries) in self.rxSave(entries)}
     }
 }
 

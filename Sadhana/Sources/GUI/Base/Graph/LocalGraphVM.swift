@@ -7,8 +7,6 @@
 //
 
 
-
-
 class LocalGraphVM : GraphVM {
     let user : ManagedUser
     
@@ -25,13 +23,13 @@ class LocalGraphVM : GraphVM {
 
     func syncEntries() -> Observable<Bool> {
         return Main.service.loadEntries(for: user)
-            .do(onSuccess: {[weak self] _ in
+            .do(onNext: {[weak self] _ in
                 self?.reloadData()
                 self?.dataDidReload.onNext(())
             })
             .track(self.errors)
             .track(self.pageRunning, index: 0)
-            .asBoolObservable()
+            .asBoolNoErrorObservable()
     }
     
     override func reloadData() {

@@ -25,7 +25,6 @@ class RegistrationVM: BaseTableVM {
     let activityIndicator = ActivityIndicator()
     let register = PublishSubject<Void>()
     let validator : Validator
-    let tapticEngine = UINotificationFeedbackGenerator()
     override init() {
 
         let localDisposeBag = DisposeBag()
@@ -208,10 +207,10 @@ class RegistrationVM: BaseTableVM {
                         .observeOn(MainScheduler.instance)
                         .track(self.errors)
                         .track(self.activityIndicator)
-                        .do(onSuccess: { _ in
+                        .do(onNext: { _ in
                             RootRouter.shared?.commitSignIn()
                         })
-                        .asBoolObservable()
+                        .asBoolNoErrorObservable()
                  }
             .subscribe(onNext:{ [weak self] (success) in
                  self?.tapticEngine.notificationOccurred(success ? .success : .error)
@@ -235,7 +234,6 @@ class Validator {
     }
 
     func validate(password:String, confirmation:String) -> (Bool, String) {
-
         if password.count < 8 {
             return (false, "password_short".localized)
         }
@@ -243,7 +241,6 @@ class Validator {
         if password != confirmation {
             return (false, "passwords_not_equal".localized)
         }
-
         return (true, "👍")
     }
 

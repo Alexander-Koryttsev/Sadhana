@@ -36,13 +36,12 @@ class RootRouter : WindowRouter {
         self.showTabBarVC()
     }
 
-    func logOut(error: Error? = nil) {
+    func logOut(message: String? = nil) {
         mainTabBarRouter = nil
         //TODO: show progress
-        self.showLoginVC(error: error)
+        self.showLoginVC(message: message)
 
         Local.defaults.reset()
-        Local.service.dropDatabase {}
     }
 
     func setPlusButton(hidden:Bool, animated:Bool) {
@@ -60,11 +59,11 @@ class RootRouter : WindowRouter {
         }
     }
     
-    private func showLoginVC(error: Error? = nil) {
+    private func showLoginVC(message: String? = nil) {
         let vm = LoginVM()
         setRootViewController(LoginVC(vm))
-        if let error = error {
-            vm.errors.onNext(error)
+        if let message = message {
+            vm.messages.onNext(message)
         }
     }
 

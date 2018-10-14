@@ -205,13 +205,13 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
     }
 
     func setUpErrorLabel() {
-        view.addSubview(errorLabel)
+        formArea.addSubview(errorLabel)
         errorLabel.numberOfLines = 0
         errorLabel.textColor = UIColor.white
         errorLabel.textAlignment = .center
         errorLabel.text = ""
         errorLabel.easy.layout([
-            Top(12).to(form),
+            Top(12).to(formContainer),
             CenterX(),
             Width(280)
         ])
@@ -256,6 +256,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
 
     func animateForm() {
         formContainer.alpha = 0
+        errorLabel.alpha = 0
         let deadlineTime = DispatchTime.now() + .milliseconds(500)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime, execute: {
             self.formContainer.easy.layout(Top(-5).to(self.formArea, .centerY))
@@ -264,6 +265,7 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
             UIView.animate(withDuration: 1.5, animations: {
                 self.formArea.layoutIfNeeded()
                 self.formContainer.alpha = 1
+                self.errorLabel.alpha = 1
                 self.registerButton.alpha = 1
             })
         })
@@ -306,7 +308,6 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
             .do(onNext:{ [weak self] _ in self?.errorLabel.text = nil})
             .drive(viewModel.password).disposed(by: disposeBag)
 
-
         let tapBackground = UITapGestureRecognizer()
         tapBackground.rx.event
             .subscribe(onNext: { [weak self] _ in
@@ -331,22 +332,16 @@ class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {
 
         enabled.drive(loginField.rx.isEnabled).disposed(by: disposeBag)
         enabled.drive(passwordField.rx.isEnabled).disposed(by: disposeBag)
-        enabled.map({ (flag) -> CGFloat in
-            return flag ? 1.0 : 0.0
-        }).drive(loginButton.titleLabel!.rx.alpha).disposed(by: disposeBag)
+        enabled.map { $0 ? 1.0 : 0.0 }.drive(loginButton.titleLabel!.rx.alpha).disposed(by: disposeBag)
         viewModel.activityIndicator.drive(registerButton.rx.isHidden).disposed(by: disposeBag)
 
         //Errors
-        viewModel.errorMessages.drive(errorLabel.rx.text).disposed(by: disposeBag)
-
         viewModel.errors.asObservable()
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (error) in
                 switch error {
-                case RemoteError.invalidRequest(let type, _):
-                    if type == InvalidRequestType.invalidGrant {
-                        self?.form.shake()
-                    }
+                case RemoteErrorKey.invalidGrant:
+                    self?.form.shake()
                     break
                 default: break
                 }

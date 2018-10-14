@@ -9,40 +9,39 @@
 
 
 class BaseVM {
-    let errorMessages : Driver<String>
     let errors = PublishSubject<Error>()
     let messages = PublishSubject<String>()
-    var messagesUI : Driver<String>
     let alerts = PublishSubject<Alert>()
     let disposeBag = DisposeBag()
     var disappearBag = DisposeBag()
 
+    lazy var tapticEngine = UINotificationFeedbackGenerator()
+    lazy var messagesUI = {
+        self.messages.asDriver(onErrorJustReturn: "")
+    }()
+
     init() {
-        messagesUI = messages.asDriver(onErrorJustReturn: "")
-        
-        errorMessages = errors.asDriver(onErrorJustReturn: GeneralError.error)
-            .map({ (error) -> String in
-                switch error {
-                case RemoteError.notLoggedIn:
-                    let message = "error_session_expired".localized
-                    RootRouter.shared?.logOut(error:error)
-                    return message
-                case RemoteError.invalidRequest(let errorType, let description):
-                    switch (errorType) {
-                        case .invalidGrant: return "invalid_credentials".localized
-                        default: return description
-                    }
-                default:
-                    return error.localizedDescription
-                }
-            }).asSharedSequence()
-        
-        errorMessages.drive().disposed(by: disposeBag)
+        errors.asDriver(onErrorJustReturn: GeneralError.error)
+            .map(handle(error:))
+            .filter { $0.count > 0 }
+            .drive(messages)
+            .disposed(by: disposeBag)
+    }
+
+    func handle(error:Error) -> String {
+        switch error {
+        case RemoteErrorKey.notLoggedIn,
+             RemoteErrorKey.restForbidden,
+             RemoteErrorKey.invalidGrant:
+            RootRouter.shared?.logOut(message: "error_session_expired".localized)
+            return ""
+        default:
+            return error.localizedDescription
+        }
     }
 }
 
 class BaseTableVM : BaseVM {
-
     var numberOfSections : Int {
         return 0
     }
@@ -56,9 +55,7 @@ class BaseTableVM : BaseVM {
         return UISwipeActionsConfiguration(actions: [])
     }
     
-    func select(_ indexPath: IndexPath) {
-        
-    }
+    func select(_ indexPath: IndexPath) {}
 }
 
 extension ObservableType {
@@ -66,26 +63,5 @@ extension ObservableType {
         return self.do(onError:{(error) in
             errors.onNext(error)
         })
-    }
-}
-
-extension PrimitiveSequence where Trait == SingleTrait {
-    func track(_ errors:PublishSubject<Error>) -> Single<PrimitiveSequence.E> {
-        return self.do(onError:{(error) in
-            errors.onNext(error)
-        })
-    }
-    func track(errors:PublishSubject<Error>) -> Single<PrimitiveSequence.E> {
-        return self.do(onError:{(error) in
-            errors.onNext(error)
-        })
-    }
-}
-
-extension PrimitiveSequence where Trait == CompletableTrait {
-    func track(_ errors:PublishSubject<Error>) -> Completable {
-        return self.asObservable().do(onError:{(error) in
-            errors.onNext(error)
-        }).completable
     }
 }
