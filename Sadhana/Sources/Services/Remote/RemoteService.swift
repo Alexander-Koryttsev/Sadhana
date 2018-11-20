@@ -405,7 +405,7 @@ class RemoteService {
                 case RemoteErrorKey.entryNotFound:
                     var entryJson = entry.json
                     entryJson.removeValue(forKey: "entry_id")
-                    return self.apiRequest(.post, path, parameters: entryJson)
+                    return self.authorizedApiRequest(.post, path, parameters: entryJson)
                 case RemoteErrorKey.entryExists:
                     let loadEntries = self.loadEntries(for: entry.userID, month: entry.localDate)
                     let mapEntries = loadEntries.flatMap({ [unowned self] (remoteEntries) -> Observable<JSON> in
@@ -420,7 +420,7 @@ class RemoteService {
                             }
                             var entryJson = entry.json
                             entryJson["entry_id"] = remoteEntry.ID!
-                            return self.apiRequest(.put, path, parameters: entryJson)
+                            return self.authorizedApiRequest(.put, path, parameters: entryJson)
                         }
 
                         return Observable.error(error)
