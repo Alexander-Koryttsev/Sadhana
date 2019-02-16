@@ -51,6 +51,7 @@ let iPhone = UI_USER_INTERFACE_IDIOM() == .phone
 let iPhoneX = max(ScreenWidth, ScreenHeight) == 812.0
 let iPad = UI_USER_INTERFACE_IDIOM() == .pad
 let TopInset = CGFloat(iPhoneX ? 88 : 64)
+let App = UIApplication.shared
 
 enum NotificationName : String {
     case entriesDidSend

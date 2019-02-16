@@ -101,6 +101,6 @@ class FavoriteGraphListVM : GraphListVM {
         let favorite = user(at: sourceIndexPath)
         Main.service.currentUser!.removeFromFavorites(at:sourceIndexPath.row)
         Main.service.currentUser!.insertIntoFavorites(favorite, at: targetIndexPath.row)
-
+        Local.service.viewContext.saveHandled()
     }
 }

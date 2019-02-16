@@ -2,13 +2,8 @@
 import UIKit
 import Foundation
 
-import PlaygroundSupport
+let date1 = Date()
+let date2 = Calendar.current.date(from: DateComponents.init(calendar: Calendar.current, year: 2019, month: 2, day: 1))!
 
 
-let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 400, height: 400))
-containerView.backgroundColor = UIColor.white
-
-
-PlaygroundPage.current.liveView = containerView
-
-
+Calendar.current.date(byAdding: .month, value: 2, to: date2)! > date1

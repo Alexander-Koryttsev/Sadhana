@@ -38,7 +38,10 @@ class MyGraphVM: LocalGraphVM {
     }
     
     override func select(_ indexPath: IndexPath) {
-        self.router.showSadhanaEditing(date: self.date(at: indexPath))
+        let date = self.date(at: indexPath)
+        if date.date.isLast2Months {
+            self.router.showSadhanaEditing(date: date)
+        }
     }
 
     @objc func showSettings() {

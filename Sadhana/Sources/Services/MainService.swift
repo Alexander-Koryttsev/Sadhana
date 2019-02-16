@@ -114,11 +114,17 @@ class MainService {
                 })
             signals.append(signal)
         }
-
+        var taskID = UIBackgroundTaskIdentifier()
         return Observable.concat(signals)
             .observeOn(MainScheduler.instance)
-            .do(onCompleted: {
+            .do(onError: { (_) in
+                App.endBackgroundTask(taskID)
+            }, onCompleted: {
                 NotificationCenter.default.post(name: .local(.entriesDidSend), object: nil)
+            }, onSubscribe: {
+                taskID = App.beginBackgroundTask(expirationHandler: nil)
+            }, onDispose: {
+                App.endBackgroundTask(taskID)
             })
     }
 }

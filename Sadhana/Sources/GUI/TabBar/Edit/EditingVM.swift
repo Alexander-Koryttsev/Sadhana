@@ -93,6 +93,6 @@ class EditingVM: BaseVM {
 
     func viewModelForEntryEditing(for date: LocalDate? = nil) -> EntryEditingVM {
         let date = date ?? initialDate
-        return  EntryEditingVM(date: date, context: context, enabled: date <= LocalDate())
+        return EntryEditingVM(date: date, context: context, enabled: date <= LocalDate() && date.date.isLast2Months)
     }
 }

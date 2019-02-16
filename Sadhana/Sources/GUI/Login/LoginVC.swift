@@ -6,9 +6,6 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-
-
-
 import EasyPeasy
 
 class LoginVC: BaseVC<LoginVM>, UITextFieldDelegate {

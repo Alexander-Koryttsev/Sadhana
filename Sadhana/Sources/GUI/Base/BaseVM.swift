@@ -29,6 +29,11 @@ class BaseVM {
     }
 
     func handle(error:Error) -> String {
+        log(error)
+        let nsError = error as NSError
+        if nsError.code == -1005 { //"Сетевое соединение потеряно."
+            return ""
+        }
         switch error {
         case RemoteErrorKey.notLoggedIn,
              RemoteErrorKey.restForbidden,

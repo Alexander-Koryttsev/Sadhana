@@ -63,6 +63,8 @@ class EntryCell: UITableViewCell {
 
         weekDayLabel.text = date.weekDayShort.uppercased()
         weekDayLabel.textColor = isSunday ? .sdLightPeach : .sdSilver
+
+        selectionStyle = date.date.isLast2Months ? .gray : .none;
     }
     
     required init?(coder aDecoder: NSCoder) {
