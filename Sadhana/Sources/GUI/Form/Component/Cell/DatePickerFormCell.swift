@@ -88,8 +88,8 @@ class DatePickerFormCell: ResponsibleFormCell, UITextFieldDelegate, Validable {
         datePicker.rx.date.skip(1).bind(to: viewModel.variable).disposed(by: disposeBag)
 
         accessoryView = UIView()
-
-        becomeActive.debounce(1, scheduler: MainScheduler.instance).subscribe(onNext:activate).disposed(by: disposeBag)
+        
+        becomeActive.debounce(.seconds(1), scheduler: MainScheduler.instance).subscribe(onNext:activate).disposed(by: disposeBag)
 
         let didEndEditing = textField.rx.controlEvent(.editingDidEnd)
         didEndEditing.asDriver().drive(onNext:deactivate).disposed(by: disposeBag)

@@ -141,6 +141,13 @@ extension String {
     var capitalizedFirstLetter: String {
         return prefix(1).uppercased() + dropFirst()
     }
+
+    mutating func appendCSV(_ newElement: String) {
+        if count > 0 {
+            append(",")
+        }
+        append(newElement)
+    }
 }
 
 extension Array {
@@ -188,6 +195,16 @@ extension UIView {
     func removeAllSubviews() {
         subviews.forEach { (subview) in
             subview.removeFromSuperview()
+        }
+    }
+
+    var cornerRadius : CGFloat {
+        set {
+            layer.cornerRadius = newValue
+            layer.masksToBounds = true
+        }
+        get {
+            return layer.cornerRadius
         }
     }
 }

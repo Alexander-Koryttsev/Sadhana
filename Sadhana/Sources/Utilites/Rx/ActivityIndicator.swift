@@ -36,7 +36,12 @@ If there is at least one sequence computation in progress, `true` will be sent.
 When all activities complete `false` will be sent.
 */
 public class ActivityIndicator : SharedSequenceConvertibleType {
-    public typealias E = Bool
+    public func asSharedSequence() -> SharedSequence<DriverSharingStrategy, ActivityIndicator.Element> {
+        return _loading
+    }
+    
+    public typealias Element = Bool
+    
     public typealias SharingStrategy = DriverSharingStrategy
 
     private let _lock = NSRecursiveLock()
@@ -55,8 +60,8 @@ public class ActivityIndicator : SharedSequenceConvertibleType {
             .distinctUntilChanged()
     }
 
-    fileprivate func trackActivityOfObservable<O: ObservableConvertibleType>(_ source: O) -> Observable<O.E> {
-        return Observable.using({ [unowned self] () -> ActivityToken<O.E> in
+    fileprivate func trackActivityOfObservable<O: ObservableConvertibleType>(_ source: O) -> Observable<O.Element> {
+        return Observable.using({ [unowned self] () -> ActivityToken<O.Element> in
             self.increment()
             return ActivityToken(source: source.asObservable(), disposeAction: self.decrement)
         }) { t in
@@ -75,20 +80,16 @@ public class ActivityIndicator : SharedSequenceConvertibleType {
         _variable.value = _variable.value - 1
         _lock.unlock()
     }
-
-    public func asSharedSequence() -> SharedSequence<SharingStrategy, E> {
-        return _loading
-    }
 }
 
 class IndexedActivityIndicator : SharedSequenceConvertibleType {
-    typealias E = (Bool, Int)
+    typealias Element = (Bool, Int)
     typealias SharingStrategy = DriverSharingStrategy
 
     private let lock = NSRecursiveLock()
     private var indexSet = IndexSet()
-    private let loadingSubject = PublishSubject<E>()
-    private let loading: SharedSequence<SharingStrategy, E>
+    private let loadingSubject = PublishSubject<Element>()
+    private let loading: SharedSequence<SharingStrategy, Element>
 
     var isActive : Bool {
         return indexSet.count > 0
@@ -98,8 +99,8 @@ class IndexedActivityIndicator : SharedSequenceConvertibleType {
         loading = loadingSubject.asDriver(onErrorJustReturn: (false, 0))
     }
 
-    fileprivate func trackActivityOfObservable<O: ObservableConvertibleType>(_ source: O, index: Int) -> Observable<O.E> {
-        return Observable.using({ [unowned self] () -> ActivityToken<O.E> in
+    fileprivate func trackActivityOfObservable<O: ObservableConvertibleType>(_ source: O, index: Int) -> Observable<O.Element> {
+        return Observable.using({ [unowned self] () -> ActivityToken<O.Element> in
             self.increment(index)
             return ActivityToken(source: source.asObservable(), disposeAction:{
                 self.decrement(index)
@@ -127,7 +128,7 @@ class IndexedActivityIndicator : SharedSequenceConvertibleType {
         return indexSet.contains(index)
     }
 
-    func asSharedSequence() -> SharedSequence<SharingStrategy, E> {
+    func asSharedSequence() -> SharedSequence<SharingStrategy, Element> {
         return loading
     }
 
@@ -147,16 +148,16 @@ class IndexedActivityIndicator : SharedSequenceConvertibleType {
 
 
 extension ObservableConvertibleType {
-    public func track(_ activity: ActivityIndicator) -> Observable<E> {
+    public func track(_ activity: ActivityIndicator) -> Observable<Element> {
         return activity.trackActivityOfObservable(self)
     }
-    public func track(activity: ActivityIndicator) -> Observable<E> {
+    public func track(activity: ActivityIndicator) -> Observable<Element> {
         return activity.trackActivityOfObservable(self)
     }
-    public func trackActivity(_ activity: ActivityIndicator) -> Observable<E> {
+    public func trackActivity(_ activity: ActivityIndicator) -> Observable<Element> {
         return activity.trackActivityOfObservable(self)
     }
-    func track(_ activity: IndexedActivityIndicator, index:Int) -> Observable<E> {
+    func track(_ activity: IndexedActivityIndicator, index:Int) -> Observable<Element> {
         return activity.trackActivityOfObservable(self, index: index)
     }
 }

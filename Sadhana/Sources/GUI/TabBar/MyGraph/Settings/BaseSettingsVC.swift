@@ -78,7 +78,7 @@ class BaseSettingsVC : BaseTableVC <BaseSettingsVM> {
         if section.shown {
             height += 30
 
-            if section.title.count > 0 {
+            if section.headerTitle.count > 0 {
                 height += 14
             }
         }
@@ -91,8 +91,8 @@ class BaseSettingsVC : BaseTableVC <BaseSettingsVM> {
         var title : String
 
         if section.shown,
-            section.title.count > 0 {
-            title = section.title
+            section.headerTitle.count > 0 {
+            title = section.headerTitle
         }
         else {
             title = " "
@@ -101,11 +101,46 @@ class BaseSettingsVC : BaseTableVC <BaseSettingsVM> {
         return title
     }
 
-
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let title = self.tableView(tableView, titleForHeaderInSection: section)!
         if (title.trimmingCharacters(in: .whitespaces).count > 0) {
             return Header(title)
+        }
+        return nil
+    }
+
+    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        let section = viewModel.sections[section]
+
+        var height = CGFloat(0)
+        if section.shown {
+            if section.footerTitle.count > 0 {
+                height += Footer.height(for: section.footerTitle)
+            }
+        }
+
+        return height
+    }
+
+    override func tableView(_ tableView: UITableView, titleForFooterInSection sectionIndex: Int) -> String? {
+        let section = viewModel.sections[sectionIndex]
+        var title : String
+
+        if section.shown,
+            section.footerTitle.count > 0 {
+            title = section.footerTitle
+        }
+        else {
+            title = " "
+        }
+
+        return title
+    }
+
+    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let title = self.tableView(tableView, titleForFooterInSection: section)!
+        if (title.trimmingCharacters(in: .whitespaces).count > 0) {
+            return Footer(title)
         }
         return nil
     }
@@ -135,15 +170,6 @@ class BaseSettingsVC : BaseTableVC <BaseSettingsVM> {
             }
         }
     }
-    
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0
-    }
-
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return " "
-    }
-     
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -172,5 +198,39 @@ class BaseSettingsVC : BaseTableVC <BaseSettingsVM> {
         required init?(coder aDecoder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
         }
+    }
+
+    class Footer : UIView {
+        let label = UILabel()
+
+        init (_ title: String) {
+            super.init(frame: CGRect())
+            label.font = UIFont.systemFont(ofSize: 13)
+            label.textColor = .sdSteel
+            label.text = title
+            label.numberOfLines = 0
+            addSubview(label)
+            label.easy.layout( Top(8),
+                Bottom(8),
+                Left(16),
+                Right(16)
+                )
+        }
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        static func height(for title: String) -> CGFloat {
+            return title.height(withConstrainedWidth: ScreenWidth - 32, font: .systemFont(ofSize: 13)) + 16
+        }
+    }
+}
+
+extension String {
+    func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = self.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, attributes: [.font: font], context: nil)
+
+        return ceil(boundingBox.height)
     }
 }

@@ -37,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ = Remote.service
         _ = Local.service
         _ = Main.service
-
+        
         return true
     }
 

@@ -69,7 +69,12 @@ class RootSettingsVM : BaseSettingsVM {
             return true
         }
 
-        addSingle(item: action)
+        let exportCSV = FormAction(title: "settings.export_csv".localized, actionType: .basic, presenter: true) { [weak self] in
+            self?.router.showCSVExport()
+            return true
+        }
+
+        sections.append(SettingsSection(title: "", items: [action, exportCSV], footer: "СSV - это упрощенный аналог Exel. С его помощью Вы можете распечатать свой график садханы или просто поделиться с наставником в электронном виде"))
     }
 
     func addFeedbackItem() {

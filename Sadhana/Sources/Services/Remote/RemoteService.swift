@@ -95,7 +95,7 @@ class RemoteService {
     private let running = ActivityIndicator()
     private let session = URLSession(configuration: .default, delegate: SessionDelegate(), delegateQueue: nil)
     private let reachability : NetworkReachabilityManager
-    private var pendingAuthorizedRequests = [ConnectableObservable<JSON>]()
+    private let queue = DispatchQueue(label: "network-queue", qos: .background)
     
     init() {
         var codes = Array(200..<300)
@@ -140,6 +140,8 @@ class RemoteService {
         restoreTokensFromCache()
         remoteLog("host: \(Config.host)")
     }
+
+    // MARK: - Service Methods
     
     func restoreTokensFromCache() -> Void {
         guard let cachedTokens = Local.defaults.tokens else { return }
@@ -166,59 +168,11 @@ class RemoteService {
         self.tokens = nil
         Local.defaults.tokens = nil
     }
-    
-    func refreshTokens() -> Observable<Bool> {
-        guard let tokens = self.tokens else { return relogin() }
-        let request = baseRequest(.post, Remote.URL.authToken.relativeString, parameters:
-            ["grant_type" : GrantType.refreshToken.rawValue,
-             "refresh_token" : tokens.refresh,
-             "client_id" : clientID,
-             "client_secret" : clientSecret]).map { (json) -> Bool in
-                self.mapAndCache(tokens: json)
-                return true
-        }
-
-        return request.catchError({ [unowned self] (error) -> Observable<Bool> in
-                let returningError = Observable<Bool>.error(error)
-                switch error {
-                case RemoteErrorKey.invalidGrant:
-                    self.clearTokens()
-                    return self.relogin()
-                default: return returningError
-                }
-             })
-    }
-
-    func relogin() -> Observable<Bool> {
-        guard   let email = Local.defaults.userEmail,
-                let password = Local.defaults.userPassword else {
-                return Observable<Bool>.error(RemoteErrorKey.notLoggedIn)
-        }
-
-        return self.login(name: email, password: password).do(onError: { (error) in
-            switch error {
-            case RemoteErrorKey.invalidGrant: Local.defaults.userPassword = nil; break
-            default: break
-            }
-        })
-    }
 
     var hasCachedCredentials : Bool {
         return Local.defaults.userEmail != nil && Local.defaults.userPassword != nil
     }
 
-    func login(name:String, password:String) -> Observable<Bool> {
-        return baseRequest(.post, Remote.URL.authToken.relativeString, parameters:
-            ["grant_type" : GrantType.password.rawValue,
-             "client_id" : clientID,
-             "client_secret" : clientSecret,
-             "username" : name,
-             "password" : password]).map({ [unowned self] (json) -> Bool in
-                self.mapAndCache(tokens: json)
-                return true
-             })
-    }
-    
     func baseRequest(_ method: Alamofire.HTTPMethod,
                      _ path: String,
                      parameters: [String: Any]? = nil,
@@ -235,12 +189,15 @@ class RemoteService {
             if shouldLog {
                 remoteLog("\n\t\t\t\t\t--- \(method) \(path) ---\n\nHead: \(desc(request.request?.allHTTPHeaderFields))\n\nParamteters: \(desc(parameters))")
             }
+
             request .validate(statusCode: self.acceptableStatusCodes)
                     .validate(contentType: ["application/json"])
-                    .responseJSON(completionHandler: { (response) in
-                        if shouldLog {
-                            remoteLog("\nResponse (\(path))\n\(response)\n")
-                        }
+
+            self.queue.async {
+                let response = request.responseJSON()
+                if shouldLog {
+                    remoteLog("\nResponse (\(path))\n\(response)\n")
+                }
                 switch response.result {
                 case .success(let value):
                     let statusCode = response.response!.statusCode
@@ -266,10 +223,10 @@ class RemoteService {
                         //TODO: test in postman when tokens are not valid (for example login, check tokens,logout, check tokens)
 
                         guard   let errorKeyRawValue = (result["error"] ?? result["code"]) as? String,
-                                let errorDescription = (result["error_description"] ?? result["message"]) as? String
-                        else {
-                            observer.onError(RemoteError.invalidResponse)
-                            return
+                            let errorDescription = (result["error_description"] ?? result["message"]) as? String
+                            else {
+                                observer.onError(RemoteError.invalidResponse)
+                                return
                         }
 
                         var error: Error
@@ -292,12 +249,13 @@ class RemoteService {
                     observer.onNext(result)
                     observer.onCompleted()
                     return
-                    
+
                 case .failure(let error):
                     observer.onError(error)
                     return
                 }
-            })
+            }
+
             return Disposables.create {
                 request.cancel()
             }
@@ -333,33 +291,95 @@ class RemoteService {
             }
         }
 
-        return add(authorizedApiRequest: requestFinal)
+        return requestFinal
     }
 
-    func add(authorizedApiRequest request:Observable<JSON>) -> ConnectableObservable<JSON> {
-        let connectable = request.do(onError: { [unowned self] (_) in
-            self.pendingAuthorizedRequests.removeFirst()
-            self.connectRequest()
-            }, onCompleted: { [unowned self] in
-                self.pendingAuthorizedRequests.removeFirst()
-                self.connectRequest()
-        }).publish()
 
-        pendingAuthorizedRequests.append(connectable)
-        if pendingAuthorizedRequests.count == 1 {
-            connectRequest()
+    func request(
+        _ url: URLConvertible,
+        method: HTTPMethod = .get,
+        parameters: Parameters? = nil,
+        encoding: ParameterEncoding = URLEncoding.default,
+        headers: HTTPHeaders? = nil)
+        -> Observable<JSON> {
+            return Observable<JSON>.create { [unowned self] (observer) -> Disposable in
+
+                let request = self.manager.request(url, method: method, parameters:parameters, encoding: encoding, headers:headers)
+
+                request.responseJSON(completionHandler: { (response) in
+                    switch response.result {
+                    case .success(let value):
+                        if let json = value as? JSON {
+                            observer.onNext(json)
+                            observer.onCompleted()
+                        }
+                        else {
+                            observer.onError(RemoteError.invalidData)
+                        }
+                        break
+
+                    case .failure(let error):
+                        observer.onError(error)
+                        break
+                    }
+                })
+
+                return Disposables.create {
+                    request.cancel()
+                }
+            }
+    }
+
+    // MARK: - API Methods
+
+    func login(name:String, password:String) -> Observable<Bool> {
+        return baseRequest(.post, Remote.URL.authToken.relativeString, parameters:
+            ["grant_type" : GrantType.password.rawValue,
+             "client_id" : clientID,
+             "client_secret" : clientSecret,
+             "username" : name,
+             "password" : password]).map({ [unowned self] (json) -> Bool in
+                self.mapAndCache(tokens: json)
+                return true
+             })
+    }
+
+    func refreshTokens() -> Observable<Bool> {
+        guard let tokens = self.tokens else { return relogin() }
+        let request = baseRequest(.post, Remote.URL.authToken.relativeString, parameters:
+            ["grant_type" : GrantType.refreshToken.rawValue,
+             "refresh_token" : tokens.refresh,
+             "client_id" : clientID,
+             "client_secret" : clientSecret]).map { (json) -> Bool in
+                self.mapAndCache(tokens: json)
+                return true
         }
 
-        return connectable
+        return request.catchError({ [unowned self] (error) -> Observable<Bool> in
+            let returningError = Observable<Bool>.error(error)
+            switch error {
+            case RemoteErrorKey.invalidGrant:
+                self.clearTokens()
+                return self.relogin()
+            default: return returningError
+            }
+        })
     }
 
-    func connectRequest() {
-        if let first = pendingAuthorizedRequests.first {
-            _ = first.connect()
+    func relogin() -> Observable<Bool> {
+        guard   let email = Local.defaults.userEmail,
+            let password = Local.defaults.userPassword else {
+                return Observable<Bool>.error(RemoteErrorKey.notLoggedIn)
         }
+
+        return self.login(name: email, password: password).do(onError: { (error) in
+            switch error {
+            case RemoteErrorKey.invalidGrant: Local.defaults.userPassword = nil; break
+            default: break
+            }
+        })
     }
 
-    // MARK: API Methods
     func loadCurrentUser() -> Observable<User> {
         return authorizedApiRequest(.get, "me").map(object: RemoteUser.self).cast(User.self)
     }
@@ -453,41 +473,6 @@ class RemoteService {
 
             throw RemoteError.invalidData
         })
-    }
-
-    func request(
-        _ url: URLConvertible,
-        method: HTTPMethod = .get,
-        parameters: Parameters? = nil,
-        encoding: ParameterEncoding = URLEncoding.default,
-        headers: HTTPHeaders? = nil)
-        -> Observable<JSON> {
-            return Observable<JSON>.create { [unowned self] (observer) -> Disposable in
-
-                let request = self.manager.request(url, method: method, parameters:parameters, encoding: encoding, headers:headers)
-
-                request.responseJSON(completionHandler: { (response) in
-                    switch response.result {
-                    case .success(let value):
-                        if let json = value as? JSON {
-                            observer.onNext(json)
-                            observer.onCompleted()
-                        }
-                        else {
-                            observer.onError(RemoteError.invalidData)
-                        }
-                        break
-
-                    case .failure(let error):
-                        observer.onError(error)
-                        break
-                    }
-                })
-
-                return Disposables.create {
-                    request.cancel()
-                }
-            }
     }
 
     func loadCountries() -> Observable<[Country]> {

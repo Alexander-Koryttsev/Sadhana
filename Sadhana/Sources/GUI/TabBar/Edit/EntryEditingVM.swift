@@ -195,6 +195,7 @@ struct DataFormFieldVM<T> : FormFieldVM, Fillable {
         self.valid = valid
         if valid == nil,
             let selector = validSelector {
+            
             self.valid = variable.map(selector).asDriver(onErrorJustReturn: false).distinctUntilChanged()
         }
         self.beginValidation = beginValidation

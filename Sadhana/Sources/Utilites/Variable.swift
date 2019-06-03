@@ -6,11 +6,9 @@
 //  Copyright © 2018 Alexander Koryttsev. All rights reserved.
 //
 
-class Variable<T> : ObserverType, ObservableType, Fillable {
+class Variable<Element> : ObserverType, ObservableType, Fillable {
 
-    typealias E = T
-
-    var value : T {
+    var value : Element {
         get {
             fatalError("Value getter should be overriden")
         }
@@ -22,41 +20,41 @@ class Variable<T> : ObserverType, ObservableType, Fillable {
         }
     }
 
-    var driver : Driver<T> {
-        let emptyValue : T
-        if T.self == String.self {
-            emptyValue = "" as! T
+    var driver : Driver<Element> {
+        let emptyValue : Element
+        if Element.self == String.self {
+            emptyValue = "" as! Element
         }
-        else if T.self == Bool.self {
-            emptyValue = false as! T
+        else if Element.self == Bool.self {
+            emptyValue = false as! Element
         }
-        else if T.self == Int.self {
-            emptyValue = 0 as! T
+        else if Element.self == Int.self {
+            emptyValue = 0 as! Element
         }
-        else if T.self == Int16.self {
-            emptyValue = 0 as! T
+        else if Element.self == Int16.self {
+            emptyValue = 0 as! Element
         }
-        else if T.self == Int32.self {
-            emptyValue = 0 as! T
+        else if Element.self == Int32.self {
+            emptyValue = 0 as! Element
         }
-        else if T.self == Void.self {
-            emptyValue = () as! T
+        else if Element.self == Void.self {
+            emptyValue = () as! Element
         }
-        else if T.self == Optional<Any>.self {
-            emptyValue = () as! T
+        else if Element.self == Optional<Any>.self {
+            emptyValue = () as! Element
         }
-        else if T.self == Time.self {
-            emptyValue = Time(rawValue: 0) as! T
+        else if Element.self == Time.self {
+            emptyValue = Time(rawValue: 0) as! Element
         }
         else {
-            fatalError("Unknown T type \(T.self)")
+            fatalError("Unknown Element type \(Element.self)")
         }
 
         return asDriver(onErrorJustReturn: emptyValue)
     }
 
     var isFilled: Bool {
-        if T.self == Void.self {
+        if Element.self == Void.self {
             return true
         }
 
@@ -76,7 +74,7 @@ class Variable<T> : ObserverType, ObservableType, Fillable {
             return time.rawValue > 0
         }
 
-        if T.self == Optional<Any>.self {
+        if Element.self == Optional<Any>.self {
             let optional = value as Optional<Any>
             return optional != nil
         }
@@ -86,13 +84,13 @@ class Variable<T> : ObserverType, ObservableType, Fillable {
         return true
     }
 
-    func set(value: T) {
+    func set(value: Element) {
         self.value = value
     }
 
-    private var observers = [Date : AnyObserver<T>]()
+    private var observers = [Date : AnyObserver<Element>]()
 
-    func on(_ event: Event<T>) {
+    func on(_ event: Event<Element>) {
         switch event {
         case .next(let element):
             value = element
@@ -102,9 +100,9 @@ class Variable<T> : ObserverType, ObservableType, Fillable {
         }
     }
 
-    func subscribe<O: ObserverType>(_ observer: O) -> Disposable where O.E == T {
+    func subscribe<O: ObserverType>(_ observer: O) -> Disposable where O.Element == Element {
         let date = Date()
-        observers[date] = AnyObserver<E>(observer)
+        observers[date] = AnyObserver<Element>(observer)
         observer.onNext(value)
 
         return Disposables.create { [weak self] in
@@ -114,8 +112,8 @@ class Variable<T> : ObserverType, ObservableType, Fillable {
 
 }
 
-class StoredVariable<T> : Variable<T> {
-    override var value : T {
+class StoredVariable<Element> : Variable<Element> {
+    override var value : Element {
         get {
             return valueInternal
         }
@@ -124,9 +122,9 @@ class StoredVariable<T> : Variable<T> {
             super.value = newValue
         }
     }
-    private var valueInternal: T
+    private var valueInternal: Element
 
-    init(_ value : T) {
+    init(_ value : Element) {
         valueInternal = value
     }
 }

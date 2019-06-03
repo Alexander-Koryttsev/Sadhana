@@ -27,7 +27,7 @@ public enum RxObjectMapperError: Error {
     case parsingError
 }
 
-extension ObservableType where E:Any {
+extension ObservableType where Element:Any {
      func map<T>(object:T.Type) -> Observable<T> where T:Mappable {
         
         return self.map { (element) -> T in
@@ -57,7 +57,7 @@ extension ObservableType where E:Any {
         }
     }
 
-    func filterAll() -> Observable<E> {
+    func filterAll() -> Observable<Element> {
         return filter{_ in false}
     }
 }

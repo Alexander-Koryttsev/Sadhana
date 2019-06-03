@@ -64,7 +64,7 @@ class BaseTableVM : BaseVM {
 }
 
 extension ObservableType {
-    func track(_ errors:PublishSubject<Error>) -> Observable<Self.E> {
+    func track(_ errors:PublishSubject<Error>) -> Observable<Self.Element> {
         return self.do(onError:{(error) in
             errors.onNext(error)
         })

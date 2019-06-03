@@ -89,6 +89,15 @@ extension NSManagedObjectContext {
     func fetchEntries(by month:LocalDate, userID:Int32) -> [ManagedEntry] {
         let request = ManagedEntry.request()
         request.predicate = NSPredicate(format: "month == %@ AND userID == %d", month.date as NSDate, userID)
+        request.sortDescriptors = [.init(key: "date", ascending: true)]
+        return fetchHandled(request)
+    }
+
+    func fetchEntries(by monthes:[LocalDate], userID:Int32) -> [ManagedEntry] {
+        let request = ManagedEntry.request()
+        request.predicate = NSPredicate(format: "month IN %@ AND userID == %d", monthes.map({ (localDate) -> NSDate in
+            return localDate.date as NSDate
+        }), userID)
         return fetchHandled(request)
     }
 

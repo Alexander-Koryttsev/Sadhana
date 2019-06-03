@@ -87,6 +87,7 @@ class FavoriteGraphListVC : GraphListVC<FavoriteGraphListVM> {
         }).disposed(by: disposeBag)
 
         refreshControl!.rx.controlEvent(.valueChanged).bind(to: viewModel.refresh).disposed(by: disposeBag)
+        
         viewModel.activityIndicator.asDriver().filter { !$0 } .drive(refreshControl!.rx.isRefreshing).disposed(by: disposeBag)
 
         setUpDefaultActivityIndicator(with: viewModel.activityIndicator.asDriver())

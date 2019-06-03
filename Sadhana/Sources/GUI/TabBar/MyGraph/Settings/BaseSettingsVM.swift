@@ -24,13 +24,15 @@ class BaseSettingsVM : BaseTableVM {
 }
 
 class SettingsSection {
-    let title : String
+    let headerTitle : String
     let items : [FormFieldVM]
     var shown = true
+    let footerTitle : String
 
-    init(title: String, items: [FormFieldVM]) {
-        self.title = title
+    init(title: String, items: [FormFieldVM], footer: String = "") {
+        self.headerTitle = title
         self.items = items
+        self.footerTitle = footer
     }
 }
 

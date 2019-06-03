@@ -15,6 +15,8 @@ today = "Сегодня";
 hours = "часов";
 minutes = "минут";
 begin = "Начать";
+date = "Дата";
+done = "Готово";
 
 //Login
 login.login = "Логин или email";
@@ -69,6 +71,7 @@ settings.login = "Логин";
 settings.show_on_main_page = "Показывать на главной странице";
 settings.show_more_16 = "Показывать более 16 кругов";
 settings.editing = "Редактирование графика";
+settings.export_csv = "Экспорт CSV";
 settings.developer = "Разработчик";
 settings.restart_guide = "Перезапустить гид";
 settings.fields = "Поля";

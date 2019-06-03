@@ -16,6 +16,7 @@ class DateUtility {
 class DateFormatterService {
     let weekDayShortFormatter = DateFormatter()
     let monthMediumFormatter = DateFormatter()
+    let monthShortFormatter = DateFormatter()
     let dateShortFormatter = DateFormatter()
 
     init (timeZone:TimeZone) {
@@ -24,6 +25,9 @@ class DateFormatterService {
 
         monthMediumFormatter.timeZone = timeZone
         monthMediumFormatter.dateFormat = "LLLL YYYY"
+
+        monthShortFormatter.timeZone = timeZone
+        monthShortFormatter.dateFormat = "LLLL"
 
         dateShortFormatter.timeZone = timeZone
         dateShortFormatter.dateStyle = .medium
@@ -88,6 +92,10 @@ extension Date {
 
     var monthMedium: String {
         return DateUtility.shared.localFormatter.monthMediumFormatter.string(from: self).capitalized
+    }
+
+    var monthShort: String {
+        return DateUtility.shared.localFormatter.monthShortFormatter.string(from: self).capitalized
     }
 
     var dateShort: String {

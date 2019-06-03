@@ -44,10 +44,40 @@ class MyGraphRouter : EditingRouter {
         navVC.pushViewController(BaseSettingsVC(ProfileEditingSettingsVM(self)), animated: true)
     }
 
+    func showCSVExport() {
+        let vc = CSVExporterVC(CSVExporterVM(self))
+        present(vc)
+    }
+
+    func doneCSVExport(with urls: [URL]) {
+        navVC.dismiss(animated: true) {
+            let vc = UIActivityViewController(activityItems: urls, applicationActivities: [])
+            vc.excludedActivityTypes = [
+                UIActivityType.assignToContact,
+                UIActivityType.saveToCameraRoll,
+                UIActivityType.postToFlickr,
+                UIActivityType.postToVimeo,
+                UIActivityType.postToTencentWeibo,
+                UIActivityType.postToTwitter,
+                UIActivityType.postToFacebook,
+                UIActivityType.openInIBooks
+            ]
+            self.present(vc)
+        }
+    }
+
+    func hideCSVExport() {
+        navVC.dismiss(animated: true, completion: nil)
+    }
+
     func show(mailComposer: MFMailComposeViewController) {
         mailComposer.navigationBar.tintColor = AppDelegate.shared.window?.tintColor
         mailComposer.mailComposeDelegate = composerDelegate
         navVC.present(mailComposer, animated: true, completion: nil)
+    }
+
+    func present(_ viewController: UIViewController) {
+        navVC.present(viewController, animated: true, completion: nil)
     }
 }
 

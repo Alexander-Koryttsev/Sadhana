@@ -46,6 +46,7 @@
 		9665AF871FE3B44100A8CFE5 /* GraphVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9665AF851FE3B44100A8CFE5 /* GraphVC.swift */; };
 		9667E4511F1148AC002589AE /* ManagedEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9667E4501F1148AC002589AE /* ManagedEntry.swift */; };
 		9669D58D1F4369A100728E1A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9669D58F1F4369A100728E1A /* InfoPlist.strings */; };
+		96754CE322982A6000E57AC1 /* RxRelay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96754CE222982A6000E57AC1 /* RxRelay.framework */; };
 		967D791E1F00F10D00A961D6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D791D1F00F10C00A961D6 /* User.swift */; };
 		967D79241F00F3CD00A961D6 /* LocalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79201F00F3CD00A961D6 /* LocalService.swift */; };
 		967D79251F00F3CD00A961D6 /* RemoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967D79231F00F3CD00A961D6 /* RemoteService.swift */; };
@@ -62,6 +63,7 @@
 		968F9EB1203F15C400981D0E /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9EAF203F15C300981D0E /* Crashlytics.framework */; };
 		968F9EB2203F15C400981D0E /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 968F9EB0203F15C400981D0E /* Fabric.framework */; };
 		9696D2591FE798FF0014CA44 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9696D2581FE798FF0014CA44 /* Alert.swift */; };
+		96A065D522A3CA0900370B33 /* Alamofire+Synchronous.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A065D422A3CA0900370B33 /* Alamofire+Synchronous.swift */; };
 		96A196BF1F4AFB7C00AAB635 /* AllGraphListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196BE1F4AFB7C00AAB635 /* AllGraphListVC.swift */; };
 		96A196C11F4AFB8D00AAB635 /* AllGraphListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196C01F4AFB8D00AAB635 /* AllGraphListVM.swift */; };
 		96A196C31F4AFBA400AAB635 /* FavoriteGraphListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A196C21F4AFBA400AAB635 /* FavoriteGraphListVC.swift */; };
@@ -113,6 +115,9 @@
 		96F9B24F1FFFB39700DF88E3 /* FormPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F9B24E1FFFB39700DF88E3 /* FormPickerVC.swift */; };
 		96F9B2511FFFB3BE00DF88E3 /* FormPickerVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F9B2501FFFB3BE00DF88E3 /* FormPickerVM.swift */; };
 		96F9B2531FFFB98B00DF88E3 /* PickerFormCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F9B2521FFFB98B00DF88E3 /* PickerFormCell.swift */; };
+		96FF991D22A3F87F007A4F98 /* CSVExporterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FF991C22A3F87F007A4F98 /* CSVExporterVC.swift */; };
+		96FF991F22A3F88D007A4F98 /* CSVExporterVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FF991E22A3F88D007A4F98 /* CSVExporterVM.swift */; };
+		96FF992122A50C4E007A4F98 /* DimTransitionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96FF992022A50C4E007A4F98 /* DimTransitionController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -194,6 +199,7 @@
 		9669D5801F43696D00728E1A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9669D58E1F4369A100728E1A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		9669D5901F4369A300728E1A /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		96754CE222982A6000E57AC1 /* RxRelay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxRelay.framework; path = Carthage/Build/iOS/RxRelay.framework; sourceTree = "<group>"; };
 		967D791D1F00F10C00A961D6 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		967D79201F00F3CD00A961D6 /* LocalService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalService.swift; sourceTree = "<group>"; };
 		967D79231F00F3CD00A961D6 /* RemoteService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoteService.swift; sourceTree = "<group>"; };
@@ -219,6 +225,7 @@
 		968F9EAF203F15C300981D0E /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		968F9EB0203F15C400981D0E /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		9696D2581FE798FF0014CA44 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
+		96A065D422A3CA0900370B33 /* Alamofire+Synchronous.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alamofire+Synchronous.swift"; sourceTree = "<group>"; };
 		96A196BE1F4AFB7C00AAB635 /* AllGraphListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllGraphListVC.swift; sourceTree = "<group>"; };
 		96A196C01F4AFB8D00AAB635 /* AllGraphListVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllGraphListVM.swift; sourceTree = "<group>"; };
 		96A196C21F4AFBA400AAB635 /* FavoriteGraphListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteGraphListVC.swift; sourceTree = "<group>"; };
@@ -273,6 +280,9 @@
 		96F9B24E1FFFB39700DF88E3 /* FormPickerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormPickerVC.swift; sourceTree = "<group>"; };
 		96F9B2501FFFB3BE00DF88E3 /* FormPickerVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormPickerVM.swift; sourceTree = "<group>"; };
 		96F9B2521FFFB98B00DF88E3 /* PickerFormCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerFormCell.swift; sourceTree = "<group>"; };
+		96FF991C22A3F87F007A4F98 /* CSVExporterVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVExporterVC.swift; sourceTree = "<group>"; };
+		96FF991E22A3F88D007A4F98 /* CSVExporterVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVExporterVM.swift; sourceTree = "<group>"; };
+		96FF992022A50C4E007A4F98 /* DimTransitionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DimTransitionController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -288,6 +298,7 @@
 				968F9EA9203F0F3800981D0E /* RxBlocking.framework in Frameworks */,
 				968F9EAC203F0F3800981D0E /* Mapper.framework in Frameworks */,
 				968F9EAD203F0F3800981D0E /* Alamofire.framework in Frameworks */,
+				96754CE322982A6000E57AC1 /* RxRelay.framework in Frameworks */,
 				968F9EAE203F0F3800981D0E /* RxCocoa.framework in Frameworks */,
 				968F9E8D203F032100981D0E /* EasyPeasy.framework in Frameworks */,
 				96A921891F03FF360056BC5B /* CoreData.framework in Frameworks */,
@@ -309,6 +320,7 @@
 			isa = PBXGroup;
 			children = (
 				960A0D441F2770D000356152 /* WeekVC.swift */,
+				96FF992022A50C4E007A4F98 /* DimTransitionController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -340,6 +352,7 @@
 			children = (
 				9612BD881F02BD3400336A1B /* RxSwift+Extensions.swift */,
 				96E9768C1F1734A000F6766F /* RxCocoa+Extensions.swift */,
+				96A065D422A3CA0900370B33 /* Alamofire+Synchronous.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -622,6 +635,8 @@
 				96A874251F865B270097E432 /* RootSettingsVM.swift */,
 				96B709722046FDD700B4BB16 /* GraphEditingSettingsVM.swift */,
 				96B7097420471C6500B4BB16 /* ProfileSettingsVM.swift */,
+				96FF991C22A3F87F007A4F98 /* CSVExporterVC.swift */,
+				96FF991E22A3F88D007A4F98 /* CSVExporterVM.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -751,6 +766,7 @@
 		BE0E881CE1E0CBEEC8CB8F93 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				96754CE222982A6000E57AC1 /* RxRelay.framework */,
 				968F9EAF203F15C300981D0E /* Crashlytics.framework */,
 				968F9EB0203F15C400981D0E /* Fabric.framework */,
 				968F9E9D203F0F3700981D0E /* Alamofire.framework */,
@@ -820,7 +836,7 @@
 			};
 			buildConfigurationList = 96F6004B1EC996AC006DAECE /* Build configuration list for PBXProject "Sadhana" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -879,6 +895,7 @@
 				"$(SRCROOT)/Carthage/Build/iOS/RxBlocking.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RxCocoa.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RxSwift.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RxRelay.framework",
 			);
 			name = Carhage;
 			outputPaths = (
@@ -890,10 +907,11 @@
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxBlocking.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxCocoa.framework",
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxSwift.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxRelay.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "FILE=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Carthage-Installation-Flag\"\nif [ -f \"$FILE\" ]; then\nexit 0\nfi\ntouch \"$FILE\"\n/usr/local/bin/carthage copy-frameworks";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -902,6 +920,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96FF991D22A3F87F007A4F98 /* CSVExporterVC.swift in Sources */,
 				96A55B481F12919300FD3700 /* RootRouter.swift in Sources */,
 				96A196C51F4AFBAD00AAB635 /* FavoriteGraphListVM.swift in Sources */,
 				9602B1001FFA4F1A00502E5A /* CountView.swift in Sources */,
@@ -950,9 +969,11 @@
 				960A0D4F1F2876C000356152 /* EditingVC.swift in Sources */,
 				96B607DC1F1BB92A002B9AB5 /* UIColor+SDAdditions.swift in Sources */,
 				967D791E1F00F10D00A961D6 /* User.swift in Sources */,
+				96A065D522A3CA0900370B33 /* Alamofire+Synchronous.swift in Sources */,
 				963EB990203AC939005BDB62 /* BlurView.swift in Sources */,
 				96A196BF1F4AFB7C00AAB635 /* AllGraphListVC.swift in Sources */,
 				96A874261F865B270097E432 /* RootSettingsVM.swift in Sources */,
+				96FF992122A50C4E007A4F98 /* DimTransitionController.swift in Sources */,
 				96B607F91F1D01DE002B9AB5 /* EntryView.swift in Sources */,
 				96B709732046FDD700B4BB16 /* GraphEditingSettingsVM.swift in Sources */,
 				967D79241F00F3CD00A961D6 /* LocalService.swift in Sources */,
@@ -966,6 +987,7 @@
 				961B0E93200685FE00865A6C /* FormFactory.swift in Sources */,
 				96A196C11F4AFB8D00AAB635 /* AllGraphListVM.swift in Sources */,
 				9647A9F61FFE9C3F00FEA9DA /* RegistrationVM.swift in Sources */,
+				96FF991F22A3F88D007A4F98 /* CSVExporterVM.swift in Sources */,
 				96A9217E1F03FC9D0056BC5B /* Model.xcdatamodeld in Sources */,
 				967D79291F00F63E00A961D6 /* General.swift in Sources */,
 				96B607F81F1D01DE002B9AB5 /* JapaView.swift in Sources */,
