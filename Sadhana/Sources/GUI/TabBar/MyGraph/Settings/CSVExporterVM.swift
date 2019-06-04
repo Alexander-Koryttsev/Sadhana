@@ -40,10 +40,10 @@ class CSVExporterVM : BaseVM {
 
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone.zero
-        dateFormatter.dateFormat = "YYYY LLLL"
+        dateFormatter.dateFormat = "LL_YY"
 
         for month in selectedMothes.sorted().reversed() {
-            let fileName = "\(user.name) - \("sadhana".localized) - \(dateFormatter.string(from: month.date).capitalized).csv"
+            let fileName = "\(user.name)-\("sadhana".localized)-\(dateFormatter.string(from: month.date)).csv"
             let path = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
             var csvText = "🗓"
 

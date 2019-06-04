@@ -35,7 +35,6 @@ class DateFormatterService {
 }
 
 extension Date {
-
     var isLast2Months : Bool {
         return Calendar.current.date(byAdding: .month, value: 2, to: self.trimmedDayAndTime)! > Date().trimmedDayAndTime
     }

@@ -74,7 +74,7 @@ class RootSettingsVM : BaseSettingsVM {
             return true
         }
 
-        sections.append(SettingsSection(title: "", items: [action, exportCSV], footer: "СSV - это упрощенный аналог Exel. С его помощью Вы можете распечатать свой график садханы или просто поделиться с наставником в электронном виде"))
+        sections.append(SettingsSection(title: "", items: [action, exportCSV], footer: "settings.export_csv_footer".localized))
     }
 
     func addFeedbackItem() {

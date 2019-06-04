@@ -38,7 +38,6 @@ class CSVExporterVC : BaseVC <CSVExporterVM>, UICollectionViewDelegate, UICollec
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpViews()
-
     }
 
     func setUpViews() {
@@ -79,7 +78,7 @@ class CSVExporterVC : BaseVC <CSVExporterVM>, UICollectionViewDelegate, UICollec
         container.addSubview(separator2)
         separator2.easy.layout(Left(), Bottom().to(monthesView), Right(), Height(0.5))
 
-        titleLabel.text = "Пожалуйста, выберите месяцы, которые Вы хотите экспортировать" //TODO: Localize
+        titleLabel.text = "settings.export_csv_exporter_title".localized
         titleLabel.numberOfLines = 0
         titleLabel.textAlignment = .center
         titleLabel.font = .systemFont(ofSize: 14)
@@ -120,14 +119,24 @@ class CSVExporterVC : BaseVC <CSVExporterVM>, UICollectionViewDelegate, UICollec
         return viewModel.monthes[viewModel.monthes.count - index - 1]
     }
 
-    func updateColor(for cell: MonthCell, at indexPath: IndexPath) {
+    func updateSelection(for cell: MonthCell, at indexPath: IndexPath) {
         updateSelection(for: cell, with: month(at: indexPath.row))
     }
 
     func updateSelection(for cell: MonthCell, with month: LocalDate) {
         let isSelected = viewModel.selectedMothes.contains(month)
-        cell.titleLabel.textColor = isSelected ? .sdTangerine : .black
-        cell.titleLabel.font = .systemFont(ofSize: 16, weight: isSelected ? .regular : .light)
+        let isCurrent = LocalDate().month == month.month
+
+        if isCurrent {
+            cell.titleLabel.textColor = isSelected ? .white : .sdTangerine
+            cell.titleLabel.font = .systemFont(ofSize: 16, weight:isSelected ? .medium : .regular )
+            cell.contentView.backgroundColor = isSelected ? .sdTangerine : .white
+        }
+        else {
+            cell.titleLabel.textColor = .black
+            cell.titleLabel.font = .systemFont(ofSize: 16, weight: isSelected ? .regular : .ultraLight)
+            cell.contentView.backgroundColor = isSelected ? .sdPaleGrey : .white
+        }
     }
 
     class MonthCell : UICollectionViewCell {
