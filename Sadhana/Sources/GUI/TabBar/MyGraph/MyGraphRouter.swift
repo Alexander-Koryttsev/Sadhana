@@ -59,9 +59,11 @@ class MyGraphRouter : EditingRouter {
                 UIActivityType.postToVimeo,
                 UIActivityType.postToTencentWeibo,
                 UIActivityType.postToTwitter,
-                UIActivityType.postToFacebook,
-                UIActivityType.openInIBooks
+                UIActivityType.postToFacebook
             ]
+            vc.completionWithItemsHandler = {(type, completed, _, error) -> Void in
+                log("Share CSV Completion:\ntype: \(String(describing: type))\ncompleted: \(completed)\nerror: \(String(describing: error))")
+            }
             self.present(vc)
         }
     }

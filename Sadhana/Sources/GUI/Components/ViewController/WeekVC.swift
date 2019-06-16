@@ -10,7 +10,6 @@
 import EasyPeasy
 
 
-
 class WeekVC: UIViewController {
 
     private let stackView = UIStackView()
@@ -67,7 +66,6 @@ class WeekVC: UIViewController {
             else {
                 label.textColor = isSunday ? .sdLightPeach : .sdSilver
             }
-
             if i == selectedDate.weekDayIndex {
                 label.isHighlighted = true
             }
