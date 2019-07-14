@@ -6,8 +6,6 @@
 //  Copyright © 2017 Alexander Koryttsev. All rights reserved.
 //
 
-
-
 import Alamofire
 import Mapper
 import AlamofireImage
@@ -504,17 +502,16 @@ class RemoteService {
                                     "count":100,
                                     "lang":Locale.current.languageCode!,
                                     "q":query ?? ""])
-            .map { json in
-                if  let root = json["response"] as? NSDictionary,
-                    let items = root["items"] as? [NSDictionary] {
-                    
-                    return try! items.map { try City(map: Mapper(JSON: $0))
-                    }
-                }
-                else {
-                    throw RemoteError.invalidData
+        .map { json in
+            if  let root = json["response"] as? NSDictionary,
+                let items = root["items"] as? [NSDictionary] {
+                return try! items.map { try City(map: Mapper(JSON: $0))
                 }
             }
+            else {
+                throw RemoteError.invalidData
+            }
+        }
     }
 
     func register(_ registration: Registration) -> Observable<Int32> {

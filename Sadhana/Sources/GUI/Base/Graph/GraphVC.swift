@@ -34,7 +34,6 @@ class GraphVC<VM:GraphVM>: BaseTableVC <VM> {
 
     //MARK: - View Lifecycle
     override func viewDidLoad() {
-        
         refreshControl = UIRefreshControl()
 
         super.viewDidLoad()
