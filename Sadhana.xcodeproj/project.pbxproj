@@ -802,7 +802,7 @@
 				96F6004C1EC996AC006DAECE /* Sources */,
 				96F6004D1EC996AC006DAECE /* Frameworks */,
 				96F6004E1EC996AC006DAECE /* Resources */,
-				9669D5741F435C4D00728E1A /* ShellScript */,
+				9669D5741F435C4D00728E1A /* Fabric */,
 				968F9E8E203F033E00981D0E /* Carhage */,
 				9669FF0520583405004ECCEB /* CopyFiles */,
 			);
@@ -868,13 +868,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		9669D5741F435C4D00728E1A /* ShellScript */ = {
+		9669D5741F435C4D00728E1A /* Fabric */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 			);
+			name = Fabric;
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;

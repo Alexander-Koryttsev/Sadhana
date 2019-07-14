@@ -184,14 +184,13 @@ class RemoteService {
             
             let request = self.manager.request("\(Remote.URL.prefix)\(path)", method: method, parameters: parameters, encoding: JSONEncoding.default, headers: authorise ? self.authorizationHeaders : nil)
             
-            if shouldLog {
-                remoteLog("\n\t\t\t\t\t--- \(method) \(path) ---\n\nHead: \(desc(request.request?.allHTTPHeaderFields))\n\nParamteters: \(desc(parameters))")
-            }
-
             request .validate(statusCode: self.acceptableStatusCodes)
                     .validate(contentType: ["application/json"])
 
             self.queue.async {
+                if shouldLog {
+                    remoteLog("\n\t\t\t\t\t--- \(method) \(path) ---\n\nHead: \(desc(request.request?.allHTTPHeaderFields))\n\nParamteters: \(desc(parameters))")
+                }
                 let response = request.responseJSON()
                 if shouldLog {
                     remoteLog("\nResponse (\(path))\n\(response)\n")

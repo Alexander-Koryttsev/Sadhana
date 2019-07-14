@@ -102,8 +102,9 @@ extension NSManagedObjectContext {
     }
 
     func fetchUnsendedEntries(userID:Int32) -> [ManagedEntry] {
+        let previousMonth = Calendar.global.date(byAdding: .month, value: -1, to: Date())!.trimmedDayAndTime
         let request = ManagedEntry.request()
-        request.predicate = NSPredicate(format: "userID == %d AND (dateSynched == nil OR dateUpdated > dateSynched)", userID)
+        request.predicate = NSPredicate(format: "userID == %d AND (dateSynched == nil OR dateUpdated > dateSynched) AND month >= %@", userID, previousMonth as NSDate)
         return fetchHandled(request)
 
     }
