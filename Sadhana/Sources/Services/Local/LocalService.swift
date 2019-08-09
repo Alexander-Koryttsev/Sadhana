@@ -24,6 +24,10 @@ class LocalService: NSObject {
     private var persistentContainer: NSPersistentContainer
     var backgroundContext: NSManagedObjectContext
     
+    var url : URL? {
+        return persistentContainer.persistentStoreDescriptions.first?.url
+    }
+    
     init(completionClosure: @escaping () -> ()) {
         persistentContainer = NSPersistentContainer(name: "Model")
         persistentContainer.loadPersistentStores() { (description, error) in
